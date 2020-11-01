@@ -1,0 +1,18 @@
+orthanc-patient
+Patient-level commands
+
+USAGE:
+    orthanc patient <SUBCOMMAND>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    list         List all patients
+    show         Show patient details
+    anonymize    Anonymize patient
+    modify       Modify patient
+    delete       Delete patient
+    download     Download patient
+    help         Prints this message or the help of the given subcommand(s)

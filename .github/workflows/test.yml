@@ -1,0 +1,43 @@
+name: tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  integration_test:
+    runs-on: ubuntu-latest
+    name: integration_test
+    services:
+      orthanc:
+        image: jodogne/orthanc:1.7.1
+        ports:
+          - 8042:8042
+    env:
+      ORC_ORTHANC_ADDRESS: http://localhost:8042
+      ORC_ORTHANC_USERNAME: orthanc
+      ORC_ORTHANC_PASSWORD: orthanc
+      ORC_DATAFILES_PATH: /tmp/orc_test_data
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: prepare rust env
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: run tests
+        run: |
+          cargo install cargo-tarpaulin && \
+          ./populate_orthanc.sh && \
+          cargo tarpaulin --test integration --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
+
+      - name: upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          flags: integration_test
+          fail_ci_if_error: true

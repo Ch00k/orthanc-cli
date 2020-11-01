@@ -1,0 +1,18 @@
+orthanc-series
+Series-level commands
+
+USAGE:
+    orthanc series <SUBCOMMAND>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    list         List all series
+    show         Show series details
+    anonymize    Anonymize series
+    modify       Modify series
+    delete       Delete series
+    download     Download series
+    help         Prints this message or the help of the given subcommand(s)

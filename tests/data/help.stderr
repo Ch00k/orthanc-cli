@@ -1,0 +1,23 @@
+orthanc x.y.z
+Andrii Yurchuk <ay@mntw.re>
+Command-line interface for Orthanc, an open-source, lightweight DICOM server
+
+USAGE:
+    orthanc [OPTIONS] <SUBCOMMAND>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -s, --server <server>        Orthanc server address
+    -u, --username <username>    Orthanc username
+    -p, --password <password>    Orthanc password
+
+SUBCOMMANDS:
+    patient     Patient-level commands
+    study       Study-level commands
+    series      Series-level commands
+    instance    Instance-level commands
+    store       Send entities (patients, studies, series or instances) to a modality
+    help        Prints this message or the help of the given subcommand(s)
