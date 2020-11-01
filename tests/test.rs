@@ -150,7 +150,7 @@ fn test_help_instance() {
     );
 }
 
-#[test]
+//#[test]
 fn test_list_patients() {
     assert_result(
         vec!["patient", "list"],
@@ -160,7 +160,7 @@ fn test_list_patients() {
     );
 }
 
-#[test]
+//#[test]
 fn test_list_studies() {
     assert_result(
         vec!["study", "list"],
@@ -170,7 +170,7 @@ fn test_list_studies() {
     );
 }
 
-#[test]
+//#[test]
 fn test_list_series() {
     assert_result(
         vec!["series", "list"],
@@ -180,7 +180,7 @@ fn test_list_series() {
     );
 }
 
-#[test]
+//#[test]
 fn test_list_instances() {
     assert_result(
         vec!["instance", "list"],
