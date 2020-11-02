@@ -279,7 +279,6 @@ fn main() {
         )
         .subcommand(
             App::new("store")
-                .setting(clap::AppSettings::SubcommandRequiredElseHelp)
                 .display_order(3)
                 .about("Send entities (patients, studies, series or instances) to a modality")
                 .arg(
