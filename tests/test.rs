@@ -1,7 +1,8 @@
 use orthanc::*;
 use regex::{Regex, RegexBuilder};
 use std::env;
-use std::process::Command;
+use std::path::PathBuf;
+use std::process::{Command, Output};
 use std::str;
 
 const ORTHANC_ID_PATTERN: &str = r"(([0-9a-f]{8}-){4}[0-9a-f]{8})";
@@ -84,21 +85,29 @@ fn fixup_output(text: &str) -> String {
         .to_string()
 }
 
+fn executable_path() -> PathBuf {
+    // Adapted from
+    // https://github.com/assert-rs/assert_cmd/blob/d9fcca1ac40496afbcdaea719082e5d7f105f4d9/src/cargo.rs#L188
+    let mut path = env::current_exe().unwrap();
+    path.pop();
+    path.pop();
+    path.join("orthanc")
+}
+
+fn run_command(args: Vec<&str>) -> Output {
+    Command::new(executable_path())
+        .args(&args)
+        .output()
+        .unwrap()
+}
+
 fn assert_result(
     args: Vec<&str>,
     expected_status: i32,
     expected_stdout: &str,
     expected_stderr: &str,
 ) {
-    // Adapted from
-    // https://github.com/assert-rs/assert_cmd/blob/d9fcca1ac40496afbcdaea719082e5d7f105f4d9/src/cargo.rs#L188
-    let mut path = env::current_exe().unwrap();
-    path.pop();
-    path.pop();
-    let res = Command::new(path.join("orthanc"))
-        .args(&args)
-        .output()
-        .unwrap();
+    let res = run_command(args);
     assert_eq!(res.status.code().unwrap(), expected_status);
     assert_eq!(
         fixup_output(str::from_utf8(&res.stdout).unwrap()),
@@ -108,6 +117,28 @@ fn assert_result(
         fixup_output(str::from_utf8(&res.stderr).unwrap()),
         expected_stderr
     );
+}
+
+fn assert_result_list(
+    args: Vec<&str>,
+    expected_status: i32,
+    expected_stdout: &str,
+    expected_stderr: &str,
+) {
+    let res = run_command(args);
+
+    let stderr = fixup_output(str::from_utf8(&res.stderr).unwrap());
+    let stdout = fixup_output(str::from_utf8(&res.stdout).unwrap());
+
+    let mut stdout_lines = stdout.split("\n").collect::<Vec<&str>>();
+    let mut expected_stdout_lines = expected_stdout.split("\n").collect::<Vec<&str>>();
+
+    stdout_lines.sort();
+    expected_stdout_lines.sort();
+
+    assert_eq!(res.status.code().unwrap(), expected_status);
+    assert_eq!(stderr, expected_stderr);
+    assert_eq!(stdout_lines, expected_stdout_lines);
 }
 
 #[test]
@@ -150,9 +181,9 @@ fn test_help_instance() {
     );
 }
 
-//#[test]
+#[test]
 fn test_list_patients() {
-    assert_result(
+    assert_result_list(
         vec!["patient", "list"],
         0,
         include_str!("data/patient_list.stdout"),
@@ -160,9 +191,9 @@ fn test_list_patients() {
     );
 }
 
-//#[test]
+#[test]
 fn test_list_studies() {
-    assert_result(
+    assert_result_list(
         vec!["study", "list"],
         0,
         include_str!("data/study_list.stdout"),
@@ -170,9 +201,9 @@ fn test_list_studies() {
     );
 }
 
-//#[test]
+#[test]
 fn test_list_series() {
-    assert_result(
+    assert_result_list(
         vec!["series", "list"],
         0,
         include_str!("data/series_list.stdout"),
@@ -180,9 +211,9 @@ fn test_list_series() {
     );
 }
 
-//#[test]
+#[test]
 fn test_list_instances() {
-    assert_result(
+    assert_result_list(
         vec!["instance", "list"],
         0,
         include_str!("data/instance_list.stdout"),
