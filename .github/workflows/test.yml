@@ -34,8 +34,7 @@ jobs:
         run: |
           cargo install cargo-tarpaulin && \
           ./populate_orthanc.sh && \
-          cargo tarpaulin --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
-          #cargo tarpaulin --test integration --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
+          cargo tarpaulin --test integration --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
 
       - name: upload coverage
         uses: codecov/codecov-action@v1
