@@ -21,6 +21,7 @@ serde_yaml = "0.8"
 
 [dev-dependencies]
 regex = "1.4"
+zip = "0.5"
 
 [[bin]]
 name = "orthanc"

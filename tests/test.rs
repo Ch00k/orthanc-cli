@@ -1,9 +1,12 @@
 use orthanc::*;
 use regex::{Regex, RegexBuilder};
 use std::env;
-use std::path::PathBuf;
+use std::fs;
+use std::io::BufReader;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 use std::str;
+use zip;
 
 const ORTHANC_ID_PATTERN: &str = r"(([0-9a-f]{8}-){4}[0-9a-f]{8})";
 const ORTHANC_FAKE_ID: &str = "00000000-00000000-00000000-00000000-00000000";
@@ -108,15 +111,15 @@ fn assert_result(
     expected_stderr: &str,
 ) {
     let res = run_command(args);
+    let stdout = str::from_utf8(&res.stdout).unwrap();
+    let stderr = str::from_utf8(&res.stderr).unwrap();
+
+    println!("STDOUT\n{:?}", &stdout);
+    println!("STDERR\n{:?}", &stderr);
+
     assert_eq!(res.status.code().unwrap(), expected_status);
-    assert_eq!(
-        fixup_output(str::from_utf8(&res.stdout).unwrap()),
-        expected_stdout
-    );
-    assert_eq!(
-        fixup_output(str::from_utf8(&res.stderr).unwrap()),
-        expected_stderr
-    );
+    assert_eq!(fixup_output(&stdout), expected_stdout);
+    assert_eq!(fixup_output(stderr), expected_stderr);
 }
 
 fn assert_result_list(
@@ -263,4 +266,87 @@ fn test_show_instance() {
         include_str!("data/instance_show.stdout"),
         "",
     );
+}
+
+#[test]
+fn test_download_patient() {
+    let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
+    assert_result(
+        vec!["patient", "download", &patient.id, "/tmp/patient.zip"],
+        0,
+        "",
+        "",
+    );
+    let file = fs::File::open("/tmp/patient.zip").unwrap();
+    let reader = BufReader::new(file);
+    let zip = zip::ZipArchive::new(reader).unwrap();
+    let mut files: Vec<&str> = zip.file_names().collect();
+    files.sort();
+
+    assert_eq!(
+        files,
+        vec![
+            "patient_2 Patient 2/REMOVED Study 1/MR Series 1/MR000000.dcm",
+            "patient_2 Patient 2/REMOVED Study 1/PR/PR000000.dcm",
+        ]
+    );
+}
+
+#[test]
+fn test_download_study() {
+    let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
+    assert_result(
+        vec!["study", "download", &study.id, "/tmp/study.zip"],
+        0,
+        "",
+        "",
+    );
+    let file = fs::File::open("/tmp/study.zip").unwrap();
+    let reader = BufReader::new(file);
+    let zip = zip::ZipArchive::new(reader).unwrap();
+    let mut files: Vec<&str> = zip.file_names().collect();
+    files.sort();
+
+    assert_eq!(
+        files,
+        vec![
+            "patient_2 Patient 2/REMOVED Study 1/MR Series 1/MR000000.dcm",
+            "patient_2 Patient 2/REMOVED Study 1/PR/PR000000.dcm",
+        ]
+    );
+}
+
+#[test]
+fn test_download_series() {
+    let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
+    assert_result(
+        vec!["series", "download", &series.id, "/tmp/series.zip"],
+        0,
+        "",
+        "",
+    );
+    let file = fs::File::open("/tmp/series.zip").unwrap();
+    let reader = BufReader::new(file);
+    let zip = zip::ZipArchive::new(reader).unwrap();
+    let mut files: Vec<&str> = zip.file_names().collect();
+    files.sort();
+
+    assert_eq!(
+        files,
+        vec!["patient_2 Patient 2/REMOVED Study 1/MR Series 1/MR000000.dcm",]
+    );
+}
+
+#[test]
+fn test_download_instance() {
+    let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
+    assert_result(
+        vec!["instance", "download", &instance.id, "/tmp/instance.dcm"],
+        0,
+        "",
+        "",
+    );
+    assert!(Path::new("/tmp/instance.dcm").exists());
+    // TODO: At least check that it is a DICOM file.
+    // Perhaps also check that it contains some DICOM tags.
 }
