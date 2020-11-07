@@ -10,8 +10,7 @@ use std::str;
 use zip;
 
 const ORTHANC_ID_PATTERN: &str = r"(([0-9a-f]{8}-){4}[0-9a-f]{8})";
-const ORTHANC_DICOM_UID_PATTERN: &str =
-    r"1\.2\.276\.0\.7230010\.3\.1\.[2|3]\.2752122880\.24160\.(\d{10}\.\d{6})";
+const ORTHANC_DICOM_UID_PATTERN: &str = r"1\.2\.276\.0\.7230010\.3\.1\.[2|3]\.([\d|\.]+)";
 const ANONYMIZED_PATIENT_ID_PATTERN: &str = r"([0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12})";
 const ANONYMIZED_PATIENT_NAME_PATTERN: &str = r"Anonymized(\d+)";
 const TRAILING_WHITESPACE_PATTERN: &str = r"([ ]+$)";
@@ -24,9 +23,9 @@ const SERIES_INSTANCE_UID: &str = "1.3.46.670589.11.1.5.0.3724.20110728152659260
 const STUDY_INSTANCE_UID: &str = "1.3.46.670589.11.1.5.0.6560.2011072814060507000";
 const PATIENT_ID: &str = "patient_2";
 
-const ORTHANC_FAKE_ID: &str = "00000000-00000000-00000000-00000000-00000000";
-const ORTHANC_FAKE_DICOM_UID: &str = "0.00.000.0000.00000.000000";
-const ANONYMIZED_PATIENT_FAKE_ID: &str = "00000000-0000-0000-0000-000000000000";
+const REPLACEMENT_ORTHANC_ID: &str = "00000000-00000000-00000000-00000000-00000000";
+const REPLACEMENT_ORTHANC_DICOM_UID: &str = "0.00.000.0000.00000.000000";
+const REPLACEMENT_ANONYMIZED_PATIENT_ID: &str = "00000000-0000-0000-0000-000000000000";
 
 struct CommandResult {
     exit_code: i32,
@@ -158,7 +157,7 @@ fn fixup_output(output: &str) -> String {
         .unwrap();
 
     let no_orthanc_ids = orthanc_id_regex
-        .replace_all(output, ORTHANC_FAKE_ID)
+        .replace_all(output, REPLACEMENT_ORTHANC_ID)
         .to_string();
     let no_trailing_whitespace = trailing_whitespace_regex
         .replace_all(&no_orthanc_ids, "")
@@ -167,14 +166,14 @@ fn fixup_output(output: &str) -> String {
         .replace_all(&no_trailing_whitespace, "orthanc x.y.z")
         .to_string();
     let no_anonymized_patient_id = anonymized_patient_id_regex
-        .replace_all(&no_version, ANONYMIZED_PATIENT_FAKE_ID)
+        .replace_all(&no_version, REPLACEMENT_ANONYMIZED_PATIENT_ID)
         .to_string();
 
     let no_anonymized_patient_name = anonymized_patient_name_regex
         .replace_all(&no_anonymized_patient_id, "Anonymized000")
         .to_string();
     let no_orthanc_dicom_uid = orthanc_dicom_uid_regex
-        .replace_all(&no_anonymized_patient_name, ORTHANC_FAKE_DICOM_UID)
+        .replace_all(&no_anonymized_patient_name, REPLACEMENT_ORTHANC_DICOM_UID)
         .to_string();
     no_orthanc_dicom_uid
 }
