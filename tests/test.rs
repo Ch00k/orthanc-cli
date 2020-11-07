@@ -2,22 +2,86 @@ use orthanc::*;
 use regex::{Regex, RegexBuilder};
 use std::env;
 use std::fs;
+use std::io::prelude::*;
 use std::io::BufReader;
 use std::path::{Path, PathBuf};
-use std::process::{Command, Output};
+use std::process::Command;
 use std::str;
 use zip;
 
 const ORTHANC_ID_PATTERN: &str = r"(([0-9a-f]{8}-){4}[0-9a-f]{8})";
-const ORTHANC_FAKE_ID: &str = "00000000-00000000-00000000-00000000-00000000";
+const ORTHANC_DICOM_UID_PATTERN: &str =
+    r"1\.2\.276\.0\.7230010\.3\.1\.[2|3]\.2752122880\.24160\.(\d{10}\.\d{6})";
+const ANONYMIZED_PATIENT_ID_PATTERN: &str = r"([0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12})";
+const ANONYMIZED_PATIENT_NAME_PATTERN: &str = r"Anonymized(\d+)";
 const TRAILING_WHITESPACE_PATTERN: &str = r"([ ]+$)";
 const VERSION_PATTERN: &str = r"orthanc \d+\.\d+\.\d+$";
+const NEW_ENTITY_ID_PATTERN: &str = r"\s*New.*ID.*(([0-9a-f]{8}-){4}[0-9a-f]{8})";
 
 const SOP_INSTANCE_UID: &str = "1.3.46.670589.11.1.5.0.3724.2011072815265975004";
 const SOP_INSTANCE_UID_DELETE: &str = "1.3.46.670589.11.1.5.0.7080.2012100313435153441";
 const SERIES_INSTANCE_UID: &str = "1.3.46.670589.11.1.5.0.3724.2011072815265926000";
 const STUDY_INSTANCE_UID: &str = "1.3.46.670589.11.1.5.0.6560.2011072814060507000";
 const PATIENT_ID: &str = "patient_2";
+
+const ORTHANC_FAKE_ID: &str = "00000000-00000000-00000000-00000000-00000000";
+const ORTHANC_FAKE_DICOM_UID: &str = "0.00.000.0000.00000.000000";
+const ANONYMIZED_PATIENT_FAKE_ID: &str = "00000000-0000-0000-0000-000000000000";
+
+struct CommandResult {
+    exit_code: i32,
+    stdout: String,
+    stderr: String,
+}
+
+impl CommandResult {
+    fn new(exit_code: i32, stdout: String, stderr: String) -> Self {
+        Self {
+            exit_code,
+            stdout,
+            stderr,
+        }
+    }
+
+    fn new_entity_id(&self) -> String {
+        let new_entity_id_regex = Regex::new(NEW_ENTITY_ID_PATTERN).unwrap();
+        let caps = new_entity_id_regex.captures(&self.stdout).unwrap();
+        caps.get(1).unwrap().as_str().to_string()
+    }
+}
+
+impl PartialEq for CommandResult {
+    fn eq(&self, other: &Self) -> bool {
+        println!("EXIT_CODE\n{}", self.exit_code);
+        println!("STDOUT\n{}", self.stdout);
+        println!("STDERR\n{}", self.stderr);
+
+        if self.exit_code != other.exit_code {
+            return false;
+        };
+
+        let self_stdout = fixup_output(&self.stdout);
+        let other_stdout = fixup_output(&other.stdout);
+        if self_stdout != other_stdout {
+            let self_stdout = sort_output_lines(&self_stdout);
+            let other_stdout = sort_output_lines(&other_stdout);
+            if self_stdout != other_stdout {
+                return false;
+            }
+        }
+
+        let self_stderr = fixup_output(&self.stderr);
+        let other_stderr = fixup_output(&other.stderr);
+        if self_stderr != other_stderr {
+            let self_stderr = sort_output_lines(&self_stderr);
+            let other_stderr = sort_output_lines(&other_stderr);
+            if self_stderr != other_stderr {
+                return false;
+            }
+        }
+        return true;
+    }
+}
 
 fn client() -> Client {
     Client::new(env::var("ORC_ORTHANC_ADDRESS").unwrap()).auth(
@@ -66,8 +130,12 @@ fn find_patient_by_patient_id(patient_id: &str) -> Option<Patient> {
     return None;
 }
 
-fn fixup_output(text: &str) -> String {
-    let orthanc_id_regex = Regex::new(ORTHANC_ID_PATTERN).unwrap();
+fn fixup_output(output: &str) -> String {
+    // TODO: Try using https://crates.io/crates/nom here
+    let orthanc_id_regex = RegexBuilder::new(ORTHANC_ID_PATTERN)
+        .multi_line(true)
+        .build()
+        .unwrap();
     let trailing_whitespace_regex = RegexBuilder::new(TRAILING_WHITESPACE_PATTERN)
         .multi_line(true)
         .build()
@@ -76,16 +144,45 @@ fn fixup_output(text: &str) -> String {
         .multi_line(true)
         .build()
         .unwrap();
+    let anonymized_patient_id_regex = RegexBuilder::new(ANONYMIZED_PATIENT_ID_PATTERN)
+        .multi_line(true)
+        .build()
+        .unwrap();
+    let anonymized_patient_name_regex = RegexBuilder::new(ANONYMIZED_PATIENT_NAME_PATTERN)
+        .multi_line(true)
+        .build()
+        .unwrap();
+    let orthanc_dicom_uid_regex = RegexBuilder::new(ORTHANC_DICOM_UID_PATTERN)
+        .multi_line(true)
+        .build()
+        .unwrap();
 
     let no_orthanc_ids = orthanc_id_regex
-        .replace_all(text, ORTHANC_FAKE_ID)
+        .replace_all(output, ORTHANC_FAKE_ID)
         .to_string();
     let no_trailing_whitespace = trailing_whitespace_regex
         .replace_all(&no_orthanc_ids, "")
         .to_string();
-    version_regex
+    let no_version = version_regex
         .replace_all(&no_trailing_whitespace, "orthanc x.y.z")
-        .to_string()
+        .to_string();
+    let no_anonymized_patient_id = anonymized_patient_id_regex
+        .replace_all(&no_version, ANONYMIZED_PATIENT_FAKE_ID)
+        .to_string();
+
+    let no_anonymized_patient_name = anonymized_patient_name_regex
+        .replace_all(&no_anonymized_patient_id, "Anonymized000")
+        .to_string();
+    let no_orthanc_dicom_uid = orthanc_dicom_uid_regex
+        .replace_all(&no_anonymized_patient_name, ORTHANC_FAKE_DICOM_UID)
+        .to_string();
+    no_orthanc_dicom_uid
+}
+
+fn sort_output_lines(output: &str) -> String {
+    let mut output_lines = output.split("\n").collect::<Vec<&str>>();
+    output_lines.sort();
+    output_lines.join("\n")
 }
 
 fn executable_path() -> PathBuf {
@@ -97,80 +194,68 @@ fn executable_path() -> PathBuf {
     path.join("orthanc")
 }
 
-fn run_command(args: Vec<&str>) -> Output {
-    Command::new(executable_path())
+fn run_command(args: Vec<&str>) -> CommandResult {
+    let res = Command::new(executable_path())
         .args(&args)
         .output()
-        .unwrap()
+        .unwrap();
+    CommandResult::new(
+        res.status.code().unwrap(),
+        String::from_utf8(res.stdout).unwrap(),
+        String::from_utf8(res.stderr).unwrap(),
+    )
 }
 
-fn assert_result(
-    args: Vec<&str>,
-    expected_status: i32,
-    expected_stdout: &str,
-    expected_stderr: &str,
-) {
+fn assert_result(args: Vec<&str>, expected_result: CommandResult) {
     let res = run_command(args);
-    let stdout = str::from_utf8(&res.stdout).unwrap();
-    let stderr = str::from_utf8(&res.stderr).unwrap();
-
-    println!("STDOUT\n{:?}", &stdout);
-    println!("STDERR\n{:?}", &stderr);
-
-    assert_eq!(res.status.code().unwrap(), expected_status);
-    assert_eq!(fixup_output(&stdout), expected_stdout);
-    assert_eq!(fixup_output(stderr), expected_stderr);
-}
-
-fn assert_result_list(
-    args: Vec<&str>,
-    expected_status: i32,
-    expected_stdout: &str,
-    expected_stderr: &str,
-) {
-    let res = run_command(args);
-
-    let stderr = fixup_output(str::from_utf8(&res.stderr).unwrap());
-    let stdout = fixup_output(str::from_utf8(&res.stdout).unwrap());
-
-    let mut stdout_lines = stdout.split("\n").collect::<Vec<&str>>();
-    let mut expected_stdout_lines = expected_stdout.split("\n").collect::<Vec<&str>>();
-
-    stdout_lines.sort();
-    expected_stdout_lines.sort();
-
-    assert_eq!(res.status.code().unwrap(), expected_status);
-    assert_eq!(stderr, expected_stderr);
-    assert_eq!(stdout_lines, expected_stdout_lines);
+    assert!(res == expected_result);
 }
 
 #[test]
 fn test_help() {
-    assert_result(vec![], 2, "", include_str!("data/help.stderr"));
+    assert_result(
+        vec![],
+        CommandResult::new(
+            2,
+            "".to_string(),
+            include_str!("data/help.stderr").to_string(),
+        ),
+    );
 }
 
 #[test]
 fn test_help_patient() {
     assert_result(
         vec!["patient"],
-        2,
-        "",
-        include_str!("data/help_patient.stderr"),
+        CommandResult::new(
+            2,
+            "".to_string(),
+            include_str!("data/help_patient.stderr").to_string(),
+        ),
     );
 }
 
 #[test]
 fn test_help_study() {
-    assert_result(vec!["study"], 2, "", include_str!("data/help_study.stderr"));
+    assert_result(
+        vec!["study"],
+        CommandResult::new(
+            2,
+            "".to_string(),
+            include_str!("data/help_study.stderr").to_string(),
+        ),
+    );
 }
 
 #[test]
 fn test_help_series() {
     assert_result(
         vec!["series"],
-        2,
-        "",
-        include_str!("data/help_series.stderr"),
+        CommandResult::new(
+            2,
+            "".to_string(),
+            include_str!("data/help_series.stderr").to_string(),
+        ),
     );
 }
 
@@ -178,49 +263,59 @@ fn test_help_series() {
 fn test_help_instance() {
     assert_result(
         vec!["instance"],
-        2,
-        "",
-        include_str!("data/help_instance.stderr"),
+        CommandResult::new(
+            2,
+            "".to_string(),
+            include_str!("data/help_instance.stderr").to_string(),
+        ),
     );
 }
 
 #[test]
-fn test_list_patients() {
-    assert_result_list(
+fn _test_list_patients() {
+    assert_result(
         vec!["patient", "list"],
-        0,
-        include_str!("data/patient_list.stdout"),
-        "",
+        CommandResult::new(
+            0,
+            include_str!("data/patient_list.stdout").to_string(),
+            "".to_string(),
+        ),
     );
 }
 
 #[test]
-fn test_list_studies() {
-    assert_result_list(
+fn _test_list_studies() {
+    assert_result(
         vec!["study", "list"],
-        0,
-        include_str!("data/study_list.stdout"),
-        "",
+        CommandResult::new(
+            0,
+            include_str!("data/study_list.stdout").to_string(),
+            "".to_string(),
+        ),
     );
 }
 
 #[test]
-fn test_list_series() {
-    assert_result_list(
+fn _test_list_series() {
+    assert_result(
         vec!["series", "list"],
-        0,
-        include_str!("data/series_list.stdout"),
-        "",
+        CommandResult::new(
+            0,
+            include_str!("data/series_list.stdout").to_string(),
+            "".to_string(),
+        ),
     );
 }
 
 #[test]
-fn test_list_instances() {
-    assert_result_list(
+fn _test_list_instances() {
+    assert_result(
         vec!["instance", "list"],
-        0,
-        include_str!("data/instance_list.stdout"),
-        "",
+        CommandResult::new(
+            0,
+            include_str!("data/instance_list.stdout").to_string(),
+            "".to_string(),
+        ),
     );
 }
 
@@ -229,9 +324,11 @@ fn test_show_patient() {
     let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
     assert_result(
         vec!["patient", "show", &patient.id],
-        0,
-        include_str!("data/patient_show.stdout"),
-        "",
+        CommandResult::new(
+            0,
+            include_str!("data/patient_show.stdout").to_string(),
+            "".to_string(),
+        ),
     );
 }
 
@@ -240,9 +337,11 @@ fn test_show_study() {
     let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
     assert_result(
         vec!["study", "show", &study.id],
-        0,
-        include_str!("data/study_show.stdout"),
-        "",
+        CommandResult::new(
+            0,
+            include_str!("data/study_show.stdout").to_string(),
+            "".to_string(),
+        ),
     );
 }
 
@@ -251,9 +350,11 @@ fn test_show_series() {
     let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
     assert_result(
         vec!["series", "show", &series.id],
-        0,
-        include_str!("data/series_show.stdout"),
-        "",
+        CommandResult::new(
+            0,
+            include_str!("data/series_show.stdout").to_string(),
+            "".to_string(),
+        ),
     );
 }
 
@@ -262,9 +363,11 @@ fn test_show_instance() {
     let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
     assert_result(
         vec!["instance", "show", &instance.id],
-        0,
-        include_str!("data/instance_show.stdout"),
-        "",
+        CommandResult::new(
+            0,
+            include_str!("data/instance_show.stdout").to_string(),
+            "".to_string(),
+        ),
     );
 }
 
@@ -273,9 +376,7 @@ fn test_download_patient() {
     let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
     assert_result(
         vec!["patient", "download", &patient.id, "/tmp/patient.zip"],
-        0,
-        "",
-        "",
+        CommandResult::new(0, "".to_string(), "".to_string()),
     );
     let file = fs::File::open("/tmp/patient.zip").unwrap();
     let reader = BufReader::new(file);
@@ -297,9 +398,7 @@ fn test_download_study() {
     let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
     assert_result(
         vec!["study", "download", &study.id, "/tmp/study.zip"],
-        0,
-        "",
-        "",
+        CommandResult::new(0, "".to_string(), "".to_string()),
     );
     let file = fs::File::open("/tmp/study.zip").unwrap();
     let reader = BufReader::new(file);
@@ -321,9 +420,7 @@ fn test_download_series() {
     let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
     assert_result(
         vec!["series", "download", &series.id, "/tmp/series.zip"],
-        0,
-        "",
-        "",
+        CommandResult::new(0, "".to_string(), "".to_string()),
     );
     let file = fs::File::open("/tmp/series.zip").unwrap();
     let reader = BufReader::new(file);
@@ -342,11 +439,106 @@ fn test_download_instance() {
     let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
     assert_result(
         vec!["instance", "download", &instance.id, "/tmp/instance.dcm"],
-        0,
-        "",
-        "",
+        CommandResult::new(0, "".to_string(), "".to_string()),
     );
     assert!(Path::new("/tmp/instance.dcm").exists());
     // TODO: At least check that it is a DICOM file.
-    // Perhaps also check that it contains some DICOM tags.
+    // Perhaps also check that it contains some DICOM
+    // tags.
+}
+
+#[test]
+fn test_anonymize_patient_no_config() {
+    let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
+    let res = run_command(vec!["patient", "anonymize", &patient.id]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_patient.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_patient_id = res.new_entity_id();
+    assert_result(
+        vec!["patient", "show", &new_patient_id],
+        CommandResult::new(
+            0,
+            include_str!("data/patient_show_anonymized_no_config.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_study_no_config() {
+    let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
+    let res = run_command(vec!["study", "anonymize", &study.id]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_study.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_study_id = res.new_entity_id();
+    assert_result(
+        vec!["study", "show", &new_study_id],
+        CommandResult::new(
+            0,
+            include_str!("data/study_show_anonymized_no_config.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_series_no_config() {
+    let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
+    let res = run_command(vec!["series", "anonymize", &series.id]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_series.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_series_id = res.new_entity_id();
+    assert_result(
+        vec!["series", "show", &new_series_id],
+        CommandResult::new(
+            0,
+            include_str!("data/series_show_anonymized_no_config.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_patient_with_config() {
+    let mut file = fs::File::create("/tmp/patient_anon_config.yml").unwrap();
+    file.write_all(include_bytes!("data/patient_anonymization_config.yml"))
+        .unwrap();
+    let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
+    let res = run_command(vec![
+        "patient",
+        "anonymize",
+        &patient.id,
+        "/tmp/patient_anon_config.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_patient.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_patient_id = res.new_entity_id();
+    assert_result(
+        vec!["patient", "show", &new_patient_id],
+        CommandResult::new(
+            0,
+            include_str!("data/patient_show_anonymized_with_config.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
 }

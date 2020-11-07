@@ -1,5 +1,5 @@
 use comfy_table::{ColumnConstraint, ContentArrangement, Table};
-use orthanc::{Client, Error, Modification};
+use orthanc::{Anonymization, Client, Error, Modification};
 use serde_json::Value;
 use serde_yaml;
 use std::result;
@@ -199,7 +199,9 @@ impl Orthanc {
         let anonymization = match config_file {
             Some(c) => {
                 let yaml = fs::read(c).unwrap();
-                Some(serde_yaml::from_slice(&yaml).unwrap())
+                let mut a: Anonymization = serde_yaml::from_slice(&yaml).unwrap();
+                a.force = Some(true);
+                Some(a)
             }
             None => None,
         };

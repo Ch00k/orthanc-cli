@@ -757,9 +757,9 @@ dependencies = [
 
 [[package]]
 name = "orthanc"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aad12a9911b31b869a89dc766f43b2d5ac222c82a1fb15af7fb3ae8e160d5f8f"
+checksum = "c042b7e56a4c9d3ee24703b8dce5747931a685f76272294919da17ece04520ec"
 dependencies = [
  "bytes",
  "chrono",

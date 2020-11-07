@@ -1,0 +1,7 @@
+replace:
+  PatientID: gazorpazorp
+  PatientName: Morty Smith
+keep:
+  - PatientSex
+  - PatientBirthDate
+force: true
