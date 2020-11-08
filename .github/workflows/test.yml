@@ -32,7 +32,7 @@ jobs:
 
       - name: run tests
         run: |
-          cargo install cargo-tarpaulin && \
+          cargo install cargo-tarpaulin --git https://github.com/xd009642/tarpaulin --branch follow_spawned_processes && \
           ./scripts/populate_orthanc.sh && \
           cargo tarpaulin --test integration --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
 
