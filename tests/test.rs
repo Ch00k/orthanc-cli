@@ -541,3 +541,63 @@ fn test_anonymize_patient_with_config() {
         ),
     );
 }
+
+#[test]
+fn test_anonymize_study_with_config() {
+    let mut file = fs::File::create("/tmp/study_anon_config.yml").unwrap();
+    file.write_all(include_bytes!("data/study_anonymization_config.yml"))
+        .unwrap();
+    let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "study",
+        "anonymize",
+        &study.id,
+        "/tmp/study_anon_config.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_study.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_study_id = res.new_entity_id();
+    assert_result(
+        vec!["study", "show", &new_study_id],
+        CommandResult::new(
+            0,
+            include_str!("data/study_show_anonymized_with_config.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_series_with_config() {
+    let mut file = fs::File::create("/tmp/series_anon_config.yml").unwrap();
+    file.write_all(include_bytes!("data/series_anonymization_config.yml"))
+        .unwrap();
+    let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "series",
+        "anonymize",
+        &series.id,
+        "/tmp/series_anon_config.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_series.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_series_id = res.new_entity_id();
+    assert_result(
+        vec!["series", "show", &new_series_id],
+        CommandResult::new(
+            0,
+            include_str!("data/series_show_anonymized_with_config.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}

@@ -1,0 +1,6 @@
+replace:
+  StudyID: gazorpazorp
+  AccessionNumber: C137
+keep:
+  - StudyDate
+  - StudyTime

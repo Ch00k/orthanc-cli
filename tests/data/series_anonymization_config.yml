@@ -1,0 +1,5 @@
+replace:
+  SeriesNumber: 42
+  BodyPartExamined: PINKY
+keep:
+  - SeriesDescription
