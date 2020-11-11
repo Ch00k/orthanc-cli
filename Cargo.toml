@@ -20,6 +20,7 @@ serde_json = "1.0"
 serde_yaml = "0.8"
 
 [dev-dependencies]
+dicom-object = "0.3"
 regex = "1.4"
 zip = "0.5"
 

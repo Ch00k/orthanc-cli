@@ -1,3 +1,4 @@
+use dicom_object::open_file;
 use orthanc::*;
 use regex::{Regex, RegexBuilder};
 use std::env;
@@ -513,6 +514,32 @@ fn test_anonymize_series_no_config() {
 }
 
 #[test]
+fn test_anonymize_instance_no_config() {
+    let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "instance",
+        "anonymize",
+        &instance.id,
+        "/tmp/anonymized_instance.dcm",
+    ]);
+    assert!(res == CommandResult::new(0, "".to_string(), "".to_string()));
+    let obj = open_file("/tmp/anonymized_instance.dcm").unwrap();
+    assert!(obj
+        .element_by_name("PatientName")
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .starts_with("Anonymized"));
+
+    let anonymized_patient_id_regex = RegexBuilder::new(ANONYMIZED_PATIENT_ID_PATTERN)
+        .multi_line(true)
+        .build()
+        .unwrap();
+    let patient_id = obj.element_by_name("PatientID").unwrap().to_str().unwrap();
+    assert!(anonymized_patient_id_regex.is_match(&patient_id));
+}
+
+#[test]
 fn test_anonymize_patient_with_config() {
     let mut file = fs::File::create("/tmp/patient_anon_config.yml").unwrap();
     file.write_all(include_bytes!("data/patient_anonymization_config.yml"))
@@ -599,5 +626,33 @@ fn test_anonymize_series_with_config() {
             include_str!("data/series_show_anonymized_with_config.stdout").to_string(),
             "".to_string(),
         ),
+    );
+}
+
+#[test]
+fn test_anonymize_instance_with_config() {
+    let mut file = fs::File::create("/tmp/instance_anon_config.yml").unwrap();
+    file.write_all(include_bytes!("data/instance_anonymization_config.yml"))
+        .unwrap();
+    let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "instance",
+        "anonymize",
+        &instance.id,
+        "/tmp/anonymized_instance.dcm",
+        "/tmp/instance_anon_config.yml",
+    ]);
+    assert!(res == CommandResult::new(0, "".to_string(), "".to_string()));
+    let obj = open_file("/tmp/anonymized_instance.dcm").unwrap();
+    assert_eq!(
+        obj.element_by_name("PatientID").unwrap().to_str().unwrap(),
+        "C137"
+    );
+    assert_eq!(
+        obj.element_by_name("PatientName")
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        "Patient 2 " // TODO: Why is there a trailing space?
     );
 }
