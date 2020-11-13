@@ -1,0 +1,6 @@
+replace:
+  AccessionNumber: bazqux
+  StudyDescription: foobar
+remove:
+  - StudyDate
+  - StudyTime

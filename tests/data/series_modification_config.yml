@@ -1,0 +1,6 @@
+replace:
+  SeriesNumber: 137
+  SeriesDescription: foobar-bazqux
+remove:
+  - Modality
+  - BodyPartExamined

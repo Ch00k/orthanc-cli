@@ -1,0 +1,7 @@
+replace:
+  PatientID: wubalubadubdub
+  PatientName: Rick Sanchez
+remove:
+  - PatientSex
+  - PatientBirthDate
+force: true

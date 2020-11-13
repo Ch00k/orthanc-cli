@@ -320,7 +320,7 @@ fn _test_list_instances() {
 }
 
 #[test]
-fn test_show_patient() {
+fn _test_show_patient() {
     let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
     assert_result(
         vec!["patient", "show", &patient.id],
@@ -333,7 +333,7 @@ fn test_show_patient() {
 }
 
 #[test]
-fn test_show_study() {
+fn _test_show_study() {
     let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
     assert_result(
         vec!["study", "show", &study.id],
@@ -346,7 +346,7 @@ fn test_show_study() {
 }
 
 #[test]
-fn test_show_series() {
+fn _test_show_series() {
     let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
     assert_result(
         vec!["series", "show", &series.id],
@@ -359,7 +359,7 @@ fn test_show_series() {
 }
 
 #[test]
-fn test_show_instance() {
+fn _test_show_instance() {
     let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
     assert_result(
         vec!["instance", "show", &instance.id],
@@ -654,5 +654,126 @@ fn test_anonymize_instance_with_config() {
             .to_str()
             .unwrap(),
         "Patient 2 " // TODO: Why is there a trailing space?
+    );
+}
+
+#[test]
+fn test_modify_patient() {
+    let mut file = fs::File::create("/tmp/patient_mod_config.yml").unwrap();
+    file.write_all(include_bytes!("data/patient_modification_config.yml"))
+        .unwrap();
+    let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
+    let res = run_command(vec![
+        "patient",
+        "modify",
+        &patient.id,
+        "/tmp/patient_mod_config.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_patient.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_patient_id = res.new_entity_id();
+    assert_result(
+        vec!["patient", "show", &new_patient_id],
+        CommandResult::new(
+            0,
+            include_str!("data/patient_show_modified.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_study() {
+    let mut file = fs::File::create("/tmp/study_mod_config.yml").unwrap();
+    file.write_all(include_bytes!("data/study_modification_config.yml"))
+        .unwrap();
+    let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "study",
+        "modify",
+        &study.id,
+        "/tmp/study_mod_config.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_study.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_study_id = res.new_entity_id();
+    assert_result(
+        vec!["study", "show", &new_study_id],
+        CommandResult::new(
+            0,
+            include_str!("data/study_show_modified.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_series() {
+    let mut file = fs::File::create("/tmp/series_mod_config.yml").unwrap();
+    file.write_all(include_bytes!("data/series_modification_config.yml"))
+        .unwrap();
+    let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "series",
+        "modify",
+        &series.id,
+        "/tmp/series_mod_config.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_series.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_series_id = res.new_entity_id();
+    assert_result(
+        vec!["series", "show", &new_series_id],
+        CommandResult::new(
+            0,
+            include_str!("data/series_show_modified.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_instance() {
+    let mut file = fs::File::create("/tmp/instance_mod_config.yml").unwrap();
+    file.write_all(include_bytes!("data/instance_modification_config.yml"))
+        .unwrap();
+    let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "instance",
+        "modify",
+        &instance.id,
+        "/tmp/modified_instance.dcm",
+        "/tmp/instance_mod_config.yml",
+    ]);
+    assert!(res == CommandResult::new(0, "".to_string(), "".to_string()));
+    let obj = open_file("/tmp/modified_instance.dcm").unwrap();
+    assert_eq!(
+        obj.element_by_name("SpecificCharacterSet")
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        "ISO_IR 13 "
+    );
+    assert_eq!(
+        obj.element_by_name("OperatorsName")
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        "Summer Smith"
     );
 }

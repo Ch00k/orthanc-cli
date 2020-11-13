@@ -1,0 +1,6 @@
+replace:
+  SpecificCharacterSet: ISO_IR 13
+  OperatorsName: Summer Smith
+remove:
+  - InstanceCreationDate
+  - InstanceCreationTime
