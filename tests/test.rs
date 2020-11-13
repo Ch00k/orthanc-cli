@@ -16,7 +16,10 @@ const ANONYMIZED_PATIENT_ID_PATTERN: &str = r"([0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9
 const ANONYMIZED_PATIENT_NAME_PATTERN: &str = r"Anonymized(\d+)";
 const TRAILING_WHITESPACE_PATTERN: &str = r"([ ]+$)";
 const VERSION_PATTERN: &str = r"orthanc \d+\.\d+\.\d+$";
-const NEW_ENTITY_ID_PATTERN: &str = r"\s*New.*ID.*(([0-9a-f]{8}-){4}[0-9a-f]{8})";
+const NEW_ENTITY_ID_PATTERN: &str =
+    r"\s*New (?:patient|study|series) ID\s*(([0-9a-f]{8}-){4}[0-9a-f]{8})";
+const PARENT_ENTITY_ID_PATTERN: &str =
+    r"\s*(?:Patient|Study|Series) ID\s*(([0-9a-f]{8}-){4}[0-9a-f]{8})";
 
 const SOP_INSTANCE_UID: &str = "1.3.46.670589.11.1.5.0.3724.2011072815265975004";
 const SOP_INSTANCE_UID_DELETE: &str = "1.3.46.670589.11.1.5.0.7080.2012100313435153441";
@@ -28,6 +31,7 @@ const REPLACEMENT_ORTHANC_ID: &str = "00000000-00000000-00000000-00000000-000000
 const REPLACEMENT_ORTHANC_DICOM_UID: &str = "0.00.000.0000.00000.000000";
 const REPLACEMENT_ANONYMIZED_PATIENT_ID: &str = "00000000-0000-0000-0000-000000000000";
 
+#[derive(Debug)]
 struct CommandResult {
     exit_code: i32,
     stdout: String,
@@ -46,6 +50,12 @@ impl CommandResult {
     fn new_entity_id(&self) -> String {
         let new_entity_id_regex = Regex::new(NEW_ENTITY_ID_PATTERN).unwrap();
         let caps = new_entity_id_regex.captures(&self.stdout).unwrap();
+        caps.get(1).unwrap().as_str().to_string()
+    }
+
+    fn parent_entity_id(&self) -> String {
+        let parent_entity_id_regex = Regex::new(PARENT_ENTITY_ID_PATTERN).unwrap();
+        let caps = parent_entity_id_regex.captures(&self.stdout).unwrap();
         caps.get(1).unwrap().as_str().to_string()
     }
 }
@@ -775,5 +785,69 @@ fn test_modify_instance() {
             .to_str()
             .unwrap(),
         "Summer Smith"
+    );
+}
+
+#[test]
+fn test_delete() {
+    let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID_DELETE).unwrap();
+    let series = run_command(vec!["instance", "show", &instance.id]).parent_entity_id();
+    let study = run_command(vec!["series", "show", &series]).parent_entity_id();
+    let patient = run_command(vec!["study", "show", &study]).parent_entity_id();
+
+    // Instance
+    assert_result(
+        vec!["instance", "delete", &instance.id],
+        CommandResult::new(0, "".to_string(), "".to_string()),
+    );
+    assert_result(
+        vec!["instance", "show", &instance.id],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            " Error   API error: 404 Not Found \n".to_string(),
+        ),
+    );
+
+    // Series
+    assert_result(
+        vec!["series", "delete", &series],
+        CommandResult::new(0, "".to_string(), "".to_string()),
+    );
+    assert_result(
+        vec!["series", "show", &series],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            " Error   API error: 404 Not Found \n".to_string(),
+        ),
+    );
+
+    // Study
+    assert_result(
+        vec!["study", "delete", &study],
+        CommandResult::new(0, "".to_string(), "".to_string()),
+    );
+    assert_result(
+        vec!["study", "show", &study],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            " Error   API error: 404 Not Found \n".to_string(),
+        ),
+    );
+
+    // Patient
+    assert_result(
+        vec!["patient", "delete", &patient],
+        CommandResult::new(0, "".to_string(), "".to_string()),
+    );
+    assert_result(
+        vec!["patient", "show", &patient],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            " Error   API error: 404 Not Found \n".to_string(),
+        ),
     );
 }
