@@ -282,6 +282,63 @@ fn test_help_instance() {
 }
 
 #[test]
+fn test_server_option() {
+    assert_result(
+        vec!["--server", "http://localhost:8901", "patient", "list"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            " Error   error sending request for url (http://localhost:8901/patients?expand): error trying to connect: tcp connect error: Connection refused (os error 111)\n".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_username_option() {
+    assert_result(
+        vec!["--username", "foo", "patient", "list"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            " Error   API error: 401 Unauthorized \n".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_password_option() {
+    assert_result(
+        vec!["--password", "foo", "patient", "list"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            " Error   API error: 401 Unauthorized \n".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_server_username_password_options() {
+    assert_result(
+        vec![
+            "--server",
+            "http://localhost:8024",
+            "--username",
+            "orthanc",
+            "--password",
+            "orthanc",
+            "patient",
+            "list",
+        ],
+        CommandResult::new(
+            0,
+            include_str!("data/patient_list.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_list_patients() {
     assert_result(
         vec!["patient", "list"],
