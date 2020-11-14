@@ -69,7 +69,13 @@ fn main() {
                         .display_order(2)
                         .about("Anonymize patient")
                         .arg(Arg::new("id").about("Patient ID").required(true))
-                        .arg(Arg::new("config").about("Anonymization configuration file")),
+                        .arg(
+                            Arg::new("config")
+                                .about("Anonymization configuration file")
+                                .takes_value(true)
+                                .short('c')
+                                .long("config"),
+                        ),
                 )
                 .subcommand(
                     App::new("modify")
@@ -78,7 +84,10 @@ fn main() {
                         .arg(Arg::new("id").about("Patient ID").required(true))
                         .arg(
                             Arg::new("config")
-                                .about("Modifications configuration file")
+                                .about("Modification configuration file")
+                                .takes_value(true)
+                                .short('c')
+                                .long("config")
                                 .required(true),
                         ),
                 )
@@ -87,7 +96,14 @@ fn main() {
                         .display_order(4)
                         .about("Download patient")
                         .arg(Arg::new("id").about("Patient ID").required(true))
-                        .arg(Arg::new("output").about("Output file path").required(true)),
+                        .arg(
+                            Arg::new("output")
+                                .about("Output file path")
+                                .takes_value(true)
+                                .short('o')
+                                .long("output")
+                                .required(true),
+                        ),
                 )
                 .subcommand(
                     App::new("delete")
@@ -124,7 +140,13 @@ fn main() {
                         .display_order(2)
                         .about("Anonymize study")
                         .arg(Arg::new("id").about("Study ID").required(true))
-                        .arg(Arg::new("config").about("Anonymization configuration file")),
+                        .arg(
+                            Arg::new("config")
+                                .about("Anonymization configuration file")
+                                .takes_value(true)
+                                .short('c')
+                                .long("config"),
+                        ),
                 )
                 .subcommand(
                     App::new("modify")
@@ -134,6 +156,9 @@ fn main() {
                         .arg(
                             Arg::new("config")
                                 .about("Modification configuration file")
+                                .takes_value(true)
+                                .short('c')
+                                .long("config")
                                 .required(true),
                         ),
                 )
@@ -142,7 +167,14 @@ fn main() {
                         .display_order(4)
                         .about("Download study")
                         .arg(Arg::new("id").about("Study ID").required(true))
-                        .arg(Arg::new("output").about("Output file path").required(true)),
+                        .arg(
+                            Arg::new("output")
+                                .about("Output file path")
+                                .takes_value(true)
+                                .short('o')
+                                .long("output")
+                                .required(true),
+                        ),
                 )
                 .subcommand(
                     App::new("delete")
@@ -179,7 +211,13 @@ fn main() {
                         .display_order(2)
                         .about("Anonymize series")
                         .arg(Arg::new("id").about("Series ID").required(true))
-                        .arg(Arg::new("config").about("Anonymization configuration file")),
+                        .arg(
+                            Arg::new("config")
+                                .about("Anonymization configuration file")
+                                .takes_value(true)
+                                .short('c')
+                                .long("config"),
+                        ),
                 )
                 .subcommand(
                     App::new("modify")
@@ -189,6 +227,9 @@ fn main() {
                         .arg(
                             Arg::new("config")
                                 .about("Modification configuration file")
+                                .takes_value(true)
+                                .short('c')
+                                .long("config")
                                 .required(true),
                         ),
                 )
@@ -197,7 +238,14 @@ fn main() {
                         .display_order(4)
                         .about("Download series")
                         .arg(Arg::new("id").about("Series ID").required(true))
-                        .arg(Arg::new("output").about("Output file path").required(true)),
+                        .arg(
+                            Arg::new("output")
+                                .about("Output file path")
+                                .takes_value(true)
+                                .short('o')
+                                .long("output")
+                                .required(true),
+                        ),
                 )
                 .subcommand(
                     App::new("delete")
@@ -241,11 +289,20 @@ fn main() {
                         .about("Anonymize instance")
                         .arg(Arg::new("id").about("Instance ID").required(true))
                         .arg(
-                            Arg::new("output")
-                                .about("File path to save the new instance into")
-                                .required(true),
+                            Arg::new("config")
+                                .about("Anonymization configuration file")
+                                .takes_value(true)
+                                .short('c')
+                                .long("config"),
                         )
-                        .arg(Arg::new("config").about("Anonymization configuration file")),
+                        .arg(
+                            Arg::new("output")
+                                .about("Output file path")
+                                .takes_value(true)
+                                .short('o')
+                                .long("output")
+                                .required(true),
+                        ),
                 )
                 .subcommand(
                     App::new("modify")
@@ -253,13 +310,19 @@ fn main() {
                         .about("Modify instance")
                         .arg(Arg::new("id").about("Instance ID").required(true))
                         .arg(
-                            Arg::new("output")
-                                .about("File path to save the new instance into")
+                            Arg::new("config")
+                                .about("Modification configuration file")
+                                .takes_value(true)
+                                .short('c')
+                                .long("config")
                                 .required(true),
                         )
                         .arg(
-                            Arg::new("config")
-                                .about("Modification configuration file")
+                            Arg::new("output")
+                                .about("Output file path")
+                                .takes_value(true)
+                                .short('o')
+                                .long("output")
                                 .required(true),
                         ),
                 )
@@ -268,7 +331,14 @@ fn main() {
                         .display_order(4)
                         .about("Download instance")
                         .arg(Arg::new("id").about("Instance ID").required(true))
-                        .arg(Arg::new("output").about("Output file path").required(true)),
+                        .arg(
+                            Arg::new("output")
+                                .about("Output file path")
+                                .takes_value(true)
+                                .short('o')
+                                .long("output")
+                                .required(true),
+                        ),
                 )
                 .subcommand(
                     App::new("delete")
@@ -278,20 +348,45 @@ fn main() {
                 ),
         )
         .subcommand(
-            App::new("store")
+            App::new("modality")
                 .display_order(3)
-                .about("Send entities (patients, studies, series or instances) to a modality")
-                .arg(
-                    Arg::new("modality")
-                        .about("Modality ID (name)")
-                        .required(true),
+                .about("Modality-level commands")
+                .subcommand(
+                    App::new("list")
+                        .display_order(0)
+                        .about("List all modalities"),
                 )
-                .arg(
-                    Arg::new("ids")
-                        .about("Entity IDs")
-                        .required(true)
-                        .multiple_occurrences(true)
-                        .multiple_values(true),
+                .subcommand(
+                    App::new("echo")
+                        .display_order(1)
+                        .about("Send a C-ECHO request to a modality")
+                        .arg(
+                            Arg::new("modality")
+                                .about("Modality ID (name)")
+                                .required(true),
+                        ),
+                )
+                .subcommand(
+                    App::new("store")
+                        .display_order(2)
+                        .about(
+                            "Send entities (patients, studies, series or instances) to a modality",
+                        )
+                        .arg(
+                            Arg::new("modality")
+                                .about("Modality ID (name)")
+                                .required(true),
+                        )
+                        .arg(
+                            Arg::new("ids")
+                                .about("Entity IDs")
+                                .takes_value(true)
+                                .short('e')
+                                .long("entities")
+                                .required(true)
+                                .multiple_occurrences(true)
+                                .multiple_values(true),
+                        ),
                 ),
         )
         .get_matches();

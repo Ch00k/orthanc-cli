@@ -19,5 +19,5 @@ SUBCOMMANDS:
     study       Study-level commands
     series      Series-level commands
     instance    Instance-level commands
-    store       Send entities (patients, studies, series or instances) to a modality
+    modality    Modality-level commands
     help        Prints this message or the help of the given subcommand(s)

@@ -442,7 +442,7 @@ fn _test_show_instance() {
 fn test_download_patient() {
     let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
     assert_result(
-        vec!["patient", "download", &patient.id, "/tmp/patient.zip"],
+        vec!["patient", "download", &patient.id, "-o", "/tmp/patient.zip"],
         CommandResult::new(0, "".to_string(), "".to_string()),
     );
     let file = fs::File::open("/tmp/patient.zip").unwrap();
@@ -464,7 +464,7 @@ fn test_download_patient() {
 fn test_download_study() {
     let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
     assert_result(
-        vec!["study", "download", &study.id, "/tmp/study.zip"],
+        vec!["study", "download", &study.id, "-o", "/tmp/study.zip"],
         CommandResult::new(0, "".to_string(), "".to_string()),
     );
     let file = fs::File::open("/tmp/study.zip").unwrap();
@@ -486,7 +486,7 @@ fn test_download_study() {
 fn test_download_series() {
     let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
     assert_result(
-        vec!["series", "download", &series.id, "/tmp/series.zip"],
+        vec!["series", "download", &series.id, "-o", "/tmp/series.zip"],
         CommandResult::new(0, "".to_string(), "".to_string()),
     );
     let file = fs::File::open("/tmp/series.zip").unwrap();
@@ -505,7 +505,13 @@ fn test_download_series() {
 fn test_download_instance() {
     let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
     assert_result(
-        vec!["instance", "download", &instance.id, "/tmp/instance.dcm"],
+        vec![
+            "instance",
+            "download",
+            &instance.id,
+            "-o",
+            "/tmp/instance.dcm",
+        ],
         CommandResult::new(0, "".to_string(), "".to_string()),
     );
     assert!(Path::new("/tmp/instance.dcm").exists());
@@ -587,6 +593,7 @@ fn test_anonymize_instance_no_config() {
         "instance",
         "anonymize",
         &instance.id,
+        "-o",
         "/tmp/anonymized_instance.dcm",
     ]);
     assert!(res == CommandResult::new(0, "".to_string(), "".to_string()));
@@ -616,6 +623,7 @@ fn test_anonymize_patient_with_config() {
         "patient",
         "anonymize",
         &patient.id,
+        "-c",
         "/tmp/patient_anon_config.yml",
     ]);
     assert!(
@@ -646,6 +654,7 @@ fn test_anonymize_study_with_config() {
         "study",
         "anonymize",
         &study.id,
+        "-c",
         "/tmp/study_anon_config.yml",
     ]);
     assert!(
@@ -676,6 +685,7 @@ fn test_anonymize_series_with_config() {
         "series",
         "anonymize",
         &series.id,
+        "-c",
         "/tmp/series_anon_config.yml",
     ]);
     assert!(
@@ -706,8 +716,10 @@ fn test_anonymize_instance_with_config() {
         "instance",
         "anonymize",
         &instance.id,
-        "/tmp/anonymized_instance.dcm",
+        "-c",
         "/tmp/instance_anon_config.yml",
+        "-o",
+        "/tmp/anonymized_instance.dcm",
     ]);
     assert!(res == CommandResult::new(0, "".to_string(), "".to_string()));
     let obj = open_file("/tmp/anonymized_instance.dcm").unwrap();
@@ -734,6 +746,7 @@ fn test_modify_patient() {
         "patient",
         "modify",
         &patient.id,
+        "-c",
         "/tmp/patient_mod_config.yml",
     ]);
     assert!(
@@ -764,6 +777,7 @@ fn test_modify_study() {
         "study",
         "modify",
         &study.id,
+        "-c",
         "/tmp/study_mod_config.yml",
     ]);
     assert!(
@@ -794,6 +808,7 @@ fn test_modify_series() {
         "series",
         "modify",
         &series.id,
+        "-c",
         "/tmp/series_mod_config.yml",
     ]);
     assert!(
@@ -824,8 +839,10 @@ fn test_modify_instance() {
         "instance",
         "modify",
         &instance.id,
-        "/tmp/modified_instance.dcm",
+        "-c",
         "/tmp/instance_mod_config.yml",
+        "-o",
+        "/tmp/modified_instance.dcm",
     ]);
     assert!(res == CommandResult::new(0, "".to_string(), "".to_string()));
     let obj = open_file("/tmp/modified_instance.dcm").unwrap();
