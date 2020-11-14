@@ -551,13 +551,20 @@ fn main() {
             },
             _ => {}
         },
-        Some(("store", store)) => {
-            let ids: Vec<&str> = store.values_of("ids").unwrap().collect();
-            match o.do_store(store.value_of("modality").unwrap(), &ids) {
+        Some(("modality", modality)) => match modality.subcommand() {
+            Some(("list", _)) => match o.list_modalities() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_api_error(e),
+            },
+            Some(("store", store)) => {
+                let ids: Vec<&str> = store.values_of("ids").unwrap().collect();
+                match o.do_store(store.value_of("modality").unwrap(), &ids) {
+                    Ok(t) => print(t),
+                    Err(e) => exit_with_api_error(e),
+                }
             }
-        }
+            _ => {}
+        },
         _ => {}
     }
 }

@@ -86,6 +86,22 @@ const INSTANCE_DICOM_TAGS: [&str; 4] = [
     "InstanceCreationTime",
 ];
 
+const MODALITIES_LIST_HEADER: [&str; 13] = [
+    "Name",
+    "AET",
+    "Host",
+    "Port",
+    "Manufacturer",
+    "C-ECHO",
+    "C-FIND",
+    "C-GET",
+    "C-MOVE",
+    "C-STORE",
+    "N-ACTION",
+    "N-EVENT-REPORT",
+    "Transcoding",
+];
+
 type Result<T> = result::Result<T, Error>;
 type CliResult<T> = result::Result<T, OrthancError>;
 
@@ -561,6 +577,31 @@ impl Orthanc {
             }
             Err(e) => Err(e),
         }
+    }
+
+    pub fn list_modalities(&self) -> Result<Table> {
+        let modalities = self.client.modalities_expanded()?;
+
+        let mut table = create_table(Some(&MODALITIES_LIST_HEADER));
+        for (m_name, m_config) in modalities {
+            let row = vec![
+                m_name,
+                m_config.aet,
+                m_config.host,
+                format!("{}", m_config.port),
+                m_config.manufacturer,
+                format!("{}", m_config.allow_echo),
+                format!("{}", m_config.allow_find),
+                format!("{}", m_config.allow_get),
+                format!("{}", m_config.allow_move),
+                format!("{}", m_config.allow_store),
+                format!("{}", m_config.allow_n_action),
+                format!("{}", m_config.allow_event_report),
+                format!("{}", m_config.allow_transcoding),
+            ];
+            table.add_row(row.iter());
+        }
+        Ok(table)
     }
 }
 
