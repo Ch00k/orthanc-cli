@@ -1,0 +1,13 @@
+ Name             bar
+ AET              BAZ
+ Host             9.8.7.6
+ Port             1717
+ Manufacturer     Generic
+ Transcoding      true
+ C-ECHO           true
+ C-FIND           true
+ C-GET            true
+ C-MOVE           true
+ C-STORE          true
+ N-ACTION         true
+ N-EVENT-REPORT   true

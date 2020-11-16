@@ -1,5 +1,5 @@
 use comfy_table::{ColumnConstraint, ContentArrangement, Table};
-use orthanc::{Anonymization, Client, Error, Modification};
+use orthanc::{Anonymization, Client, Error, Modality, Modification};
 use serde_json::Value;
 use serde_yaml;
 use std::result;
@@ -86,40 +86,59 @@ const INSTANCE_DICOM_TAGS: [&str; 4] = [
     "InstanceCreationTime",
 ];
 
-const MODALITIES_LIST_HEADER: [&str; 13] = [
+const MODALITIES_LIST_HEADER: [&str; 5] = [
     "Name",
     "AET",
     "Host",
     "Port",
     "Manufacturer",
-    "C-ECHO",
-    "C-FIND",
-    "C-GET",
-    "C-MOVE",
-    "C-STORE",
-    "N-ACTION",
-    "N-EVENT-REPORT",
-    "Transcoding",
+    //"C-ECHO",
+    //"C-FIND",
+    //"C-GET",
+    //"C-MOVE",
+    //"C-STORE",
+    //"N-ACTION",
+    //"N-EVENT-REPORT",
+    //"Transcoding",
 ];
 
-type Result<T> = result::Result<T, Error>;
-type CliResult<T> = result::Result<T, OrthancError>;
+type Result<T> = result::Result<T, CliError>;
 
 pub struct Orthanc {
     pub client: Client,
 }
 
-pub struct OrthancError {
-    message: String,
+#[derive(Debug)]
+pub struct CliError {
+    error: String,
+    message: Option<String>,
     details: Option<String>,
 }
 
-impl OrthancError {
-    fn new(msg: &str, details: Option<&str>) -> OrthancError {
-        OrthancError {
-            message: msg.to_string(),
+impl CliError {
+    fn new(error: &str, message: Option<&str>, details: Option<&str>) -> CliError {
+        CliError {
+            error: error.to_string(),
+            message: message.map(String::from),
             details: details.map(String::from),
         }
+    }
+}
+
+impl From<Error> for CliError {
+    fn from(e: Error) -> Self {
+        let mut err = CliError::new(&e.message.to_string(), None, None);
+        match e.details {
+            Some(d) => {
+                err.message = Some(d.message);
+                match d.details {
+                    Some(d) => err.details = Some(d),
+                    None => (),
+                }
+            }
+            None => (),
+        };
+        err
     }
 }
 
@@ -128,14 +147,15 @@ impl Orthanc {
         server_address: Option<&str>,
         username: Option<&str>,
         password: Option<&str>,
-    ) -> CliResult<Orthanc> {
+    ) -> Result<Orthanc> {
         let server_address = match server_address {
             Some(s) => s.to_string(),
             None => match env::var("ORC_ORTHANC_ADDRESS") {
                 Ok(s) => s.to_string(),
                 Err(e) => {
-                    return Err(OrthancError::new(
-                        "Neither --server-address nor ORC_ORTHANC_ADDRESS are set",
+                    return Err(CliError::new(
+                        "Command error",
+                        Some("Neither --server-address nor ORC_ORTHANC_ADDRESS are set"),
                         Some(&format!("{}", e)),
                     ))
                 }
@@ -146,8 +166,9 @@ impl Orthanc {
             None => match env::var("ORC_ORTHANC_USERNAME") {
                 Ok(s) => s.to_string(),
                 Err(e) => {
-                    return Err(OrthancError::new(
-                        "Neither --username nor ORC_ORTHANC_USERNAME are set",
+                    return Err(CliError::new(
+                        "Command error",
+                        Some("Neither --username nor ORC_ORTHANC_USERNAME are set"),
                         Some(&format!("{}", e)),
                     ))
                 }
@@ -158,8 +179,9 @@ impl Orthanc {
             None => match env::var("ORC_ORTHANC_PASSWORD") {
                 Ok(s) => s.to_string(),
                 Err(e) => {
-                    return Err(OrthancError::new(
-                        "Neither --password nor ORC_ORTHANC_PASSWORD are set",
+                    return Err(CliError::new(
+                        "Command error",
+                        Some("Neither --password nor ORC_ORTHANC_PASSWORD are set"),
                         Some(&format!("{}", e)),
                     ))
                 }
@@ -227,7 +249,7 @@ impl Orthanc {
                 table.add_row(["New patient ID", &r.id].iter());
                 Ok(table)
             }
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
@@ -240,19 +262,21 @@ impl Orthanc {
                 table.add_row(["New patient ID", &r.id].iter());
                 Ok(table)
             }
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
     pub fn download_patient(&self, id: &str, output_file: &str) -> Result<()> {
         let mut file = fs::File::create(output_file).unwrap();
-        self.client.patient_dicom(id, &mut file)
+        self.client
+            .patient_dicom(id, &mut file)
+            .map_err(Into::<_>::into)
     }
 
     pub fn delete_patient(&self, id: &str) -> Result<()> {
         match self.client.delete_patient(id) {
             Ok(_) => Ok(()),
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
@@ -318,7 +342,7 @@ impl Orthanc {
                 table.add_row(["Patient ID", &r.patient_id].iter());
                 Ok(table)
             }
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
@@ -332,19 +356,21 @@ impl Orthanc {
                 table.add_row(["Patient ID", &r.patient_id].iter());
                 Ok(table)
             }
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
     pub fn download_study(&self, id: &str, output_file: &str) -> Result<()> {
         let mut file = fs::File::create(output_file).unwrap();
-        self.client.study_dicom(id, &mut file)
+        self.client
+            .study_dicom(id, &mut file)
+            .map_err(Into::<_>::into)
     }
 
     pub fn delete_study(&self, id: &str) -> Result<()> {
         match self.client.delete_study(id) {
             Ok(_) => Ok(()),
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
@@ -410,7 +436,7 @@ impl Orthanc {
                 table.add_row(["Patient ID", &r.patient_id].iter());
                 Ok(table)
             }
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
@@ -424,19 +450,21 @@ impl Orthanc {
                 table.add_row(["Patient ID", &r.patient_id].iter());
                 Ok(table)
             }
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
     pub fn download_series(&self, id: &str, output_file: &str) -> Result<()> {
         let mut file = fs::File::create(output_file).unwrap();
-        self.client.series_dicom(id, &mut file)
+        self.client
+            .series_dicom(id, &mut file)
+            .map_err(Into::<_>::into)
     }
 
     pub fn delete_series(&self, id: &str) -> Result<()> {
         match self.client.delete_series(id) {
             Ok(_) => Ok(()),
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
@@ -511,25 +539,31 @@ impl Orthanc {
             None => None,
         };
         let mut file = fs::File::create(path).unwrap();
-        self.client.anonymize_instance(id, anonymization, &mut file)
+        self.client
+            .anonymize_instance(id, anonymization, &mut file)
+            .map_err(Into::<_>::into)
     }
 
     pub fn modify_instance(&self, id: &str, config_file: &str, path: &str) -> Result<()> {
         let yaml = fs::read(config_file).unwrap();
         let modification: Modification = serde_yaml::from_slice(&yaml).unwrap();
         let mut file = fs::File::create(path).unwrap();
-        self.client.modify_instance(id, modification, &mut file)
+        self.client
+            .modify_instance(id, modification, &mut file)
+            .map_err(Into::<_>::into)
     }
 
     pub fn download_instance(&self, id: &str, output_file: &str) -> Result<()> {
         let mut file = fs::File::create(output_file).unwrap();
-        self.client.instance_dicom(id, &mut file)
+        self.client
+            .instance_dicom(id, &mut file)
+            .map_err(Into::<_>::into)
     }
 
     pub fn delete_instance(&self, id: &str) -> Result<()> {
         match self.client.delete_instance(id) {
             Ok(_) => Ok(()),
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
@@ -561,7 +595,7 @@ impl Orthanc {
                 }
                 Ok(table)
             }
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
@@ -575,7 +609,7 @@ impl Orthanc {
                     .add_row(["Instances failed", &format!("{}", r.failed_instances_count)].iter());
                 Ok(table)
             }
-            Err(e) => Err(e),
+            Err(e) => Err(e.into()),
         }
     }
 
@@ -589,19 +623,101 @@ impl Orthanc {
                 m_config.aet,
                 m_config.host,
                 format!("{}", m_config.port),
-                m_config.manufacturer,
-                format!("{}", m_config.allow_echo),
-                format!("{}", m_config.allow_find),
-                format!("{}", m_config.allow_get),
-                format!("{}", m_config.allow_move),
-                format!("{}", m_config.allow_store),
-                format!("{}", m_config.allow_n_action),
-                format!("{}", m_config.allow_event_report),
-                format!("{}", m_config.allow_transcoding),
+                m_config.manufacturer.unwrap(),
             ];
             table.add_row(row.iter());
         }
         Ok(table)
+    }
+
+    pub fn show_modality(&self, name: &str) -> Result<Table> {
+        for (m_name, m_config) in self.client.modalities_expanded()? {
+            if m_name == name {
+                let mut table = create_table(None);
+                table.add_row(vec!["Name", &m_name].iter());
+                table.add_row(vec!["AET", &m_config.aet].iter());
+                table.add_row(vec!["Host", &m_config.host].iter());
+                table.add_row(vec!["Port", &format!("{}", m_config.port)].iter());
+                table.add_row(vec!["Manufacturer", &m_config.manufacturer.unwrap()].iter());
+                table.add_row(
+                    vec![
+                        "Transcoding",
+                        &format!("{}", m_config.allow_transcoding.unwrap()),
+                    ]
+                    .iter(),
+                );
+                table
+                    .add_row(vec!["C-ECHO", &format!("{}", m_config.allow_c_echo.unwrap())].iter());
+                table
+                    .add_row(vec!["C-FIND", &format!("{}", m_config.allow_c_find.unwrap())].iter());
+                table.add_row(vec!["C-GET", &format!("{}", m_config.allow_c_get.unwrap())].iter());
+                table
+                    .add_row(vec!["C-MOVE", &format!("{}", m_config.allow_c_move.unwrap())].iter());
+                table.add_row(
+                    vec!["C-STORE", &format!("{}", m_config.allow_c_store.unwrap())].iter(),
+                );
+                table.add_row(
+                    vec!["N-ACTION", &format!("{}", m_config.allow_n_action.unwrap())].iter(),
+                );
+                table.add_row(
+                    vec![
+                        "N-EVENT-REPORT",
+                        &format!("{}", m_config.allow_n_event_report.unwrap()),
+                    ]
+                    .iter(),
+                );
+                return Ok(table);
+            }
+        }
+        return Err(CliError::new(
+            &format!("Modality {} not found", name),
+            None,
+            None,
+        ));
+    }
+
+    pub fn create_modality(&self, name: &str, aet: &str, host: &str, port: i32) -> Result<()> {
+        let config = Modality {
+            aet: aet.to_string(),
+            host: host.to_string(),
+            port,
+            manufacturer: None,
+            allow_transcoding: None,
+            allow_c_echo: None,
+            allow_c_find: None,
+            allow_c_get: None,
+            allow_c_move: None,
+            allow_c_store: None,
+            allow_n_action: None,
+            allow_n_event_report: None,
+        };
+        self.client
+            .create_modality(name, config)
+            .map_err(Into::<_>::into)
+    }
+
+    pub fn modify_modality(&self, name: &str, aet: &str, host: &str, port: i32) -> Result<()> {
+        let config = Modality {
+            aet: aet.to_string(),
+            host: host.to_string(),
+            port,
+            manufacturer: None,
+            allow_transcoding: None,
+            allow_c_echo: None,
+            allow_c_find: None,
+            allow_c_get: None,
+            allow_c_move: None,
+            allow_c_store: None,
+            allow_n_action: None,
+            allow_n_event_report: None,
+        };
+        self.client
+            .modify_modality(name, config)
+            .map_err(Into::<_>::into)
+    }
+
+    pub fn delete_modality(&self, name: &str) -> Result<()> {
+        self.client.delete_modality(name).map_err(Into::<_>::into)
     }
 }
 
@@ -616,28 +732,57 @@ fn create_table(header: Option<&[&str]>) -> Table {
     table
 }
 
-pub fn create_api_error_table(error: Error) -> Table {
+pub fn create_error_table(error: CliError) -> Table {
     let mut table = create_table(None);
-    table.add_row(["Error", &error.message].iter());
+    table.add_row(["Error", &error.error].iter());
+    match error.message {
+        Some(m) => {
+            table.add_row(["Message", &m].iter());
+        }
+        None => (),
+    };
     match error.details {
         Some(d) => {
-            table.add_row(["Message", &d.message].iter());
-            match d.details {
-                Some(d) => table.add_row(["Details", &d].iter()),
-                None => &table,
-            }
+            table.add_row(["Details", &d].iter());
         }
-        None => &table,
+        None => (),
     };
     table
 }
 
-pub fn create_cli_error_table(error: OrthancError) -> Table {
-    let mut table = create_table(None);
-    table.add_row(["Error", &error.message].iter());
-    match error.details {
-        Some(d) => table.add_row(["Details", &d].iter()),
-        None => &table,
-    };
-    table
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_create_error_table() {
+        assert_eq!(
+            format!(
+                "{}",
+                create_error_table(CliError::new("error", Some("message"), Some("details")))
+            ),
+            " Error     error   \n Message   message \n Details   details "
+        );
+        assert_eq!(
+            format!(
+                "{}",
+                create_error_table(CliError::new("error", None, Some("details")))
+            ),
+            " Error     error   \n Details   details "
+        );
+        assert_eq!(
+            format!(
+                "{}",
+                create_error_table(CliError::new("error", Some("message"), None))
+            ),
+            " Error     error   \n Message   message "
+        );
+        assert_eq!(
+            format!(
+                "{}",
+                create_error_table(CliError::new("error", None, None))
+            ),
+            " Error   error "
+        );
+    }
 }

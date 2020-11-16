@@ -925,3 +925,62 @@ fn test_delete() {
         ),
     );
 }
+
+#[test]
+fn test_modalities() {
+    // Create
+    assert_result(
+        vec![
+            "modality", "create", "foo", "--aet", "FOO", "--host", "4.3.2.1", "--port", "42",
+        ],
+        CommandResult::new(0, "".to_string(), "".to_string()),
+    );
+    assert_result(
+        vec![
+            "modality", "create", "bar", "--aet", "BAR", "--host", "1.2.3.4", "--port", "1717",
+        ],
+        CommandResult::new(0, "".to_string(), "".to_string()),
+    );
+
+    // List
+    assert_result(
+        vec!["modality", "list"],
+        CommandResult::new(
+            0,
+            include_str!("data/modality_list.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+
+    // Modify
+    assert_result(
+        vec![
+            "modality", "modify", "bar", "--aet", "BAZ", "--host", "9.8.7.6", "--port", "1717",
+        ],
+        CommandResult::new(0, "".to_string(), "".to_string()),
+    );
+
+    // Show
+    assert_result(
+        vec!["modality", "show", "bar"],
+        CommandResult::new(
+            0,
+            include_str!("data/modality_show_modified.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+
+    // Delete
+    assert_result(
+        vec!["modality", "delete", "bar"],
+        CommandResult::new(0, "".to_string(), "".to_string()),
+    );
+    assert_result(
+        vec!["modality", "show", "bar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            " Error   Modality bar not found \n".to_string(),
+        ),
+    );
+}

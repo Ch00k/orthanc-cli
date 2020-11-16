@@ -3,21 +3,14 @@ mod lib;
 use clap::{crate_authors, crate_description, crate_version, App, Arg};
 use comfy_table::Table;
 use lib::*;
-use orthanc::Error;
 use std::process;
 
 fn print(table: Table) {
     println!("{}", table);
 }
 
-pub fn exit_with_api_error(error: Error) {
-    let output = create_api_error_table(error);
-    eprintln!("{}", output);
-    process::exit(1);
-}
-
-pub fn exit_with_cli_error(error: OrthancError) {
-    let output = create_cli_error_table(error);
+pub fn exit_with_error(error: CliError) {
+    let output = create_error_table(error);
     eprintln!("{}", output);
     process::exit(1);
 }
@@ -357,8 +350,74 @@ fn main() {
                         .about("List all modalities"),
                 )
                 .subcommand(
-                    App::new("echo")
+                    App::new("show")
                         .display_order(1)
+                        .about("Show modality details")
+                        .arg(Arg::new("name").about("Modality name").required(true)),
+                )
+                .subcommand(
+                    App::new("create")
+                        .display_order(2)
+                        .about("Create a modality")
+                        .arg(Arg::new("name").about("Modality name").required(true))
+                        .arg(
+                            Arg::new("aet")
+                                .about("Modality AET")
+                                .takes_value(true)
+                                .short('a')
+                                .long("aet")
+                                .required(true),
+                        )
+                        .arg(
+                            Arg::new("host")
+                                .about("Modality host")
+                                .takes_value(true)
+                                .short('h')
+                                .long("host")
+                                .required(true),
+                        )
+                        .arg(
+                            Arg::new("port")
+                                .about("Modality port")
+                                .takes_value(true)
+                                .short('p')
+                                .long("port")
+                                .required(true),
+                        ),
+                )
+                .subcommand(
+                    App::new("modify")
+                        .display_order(2)
+                        .about("Modify a modality")
+                        .arg(Arg::new("name").about("Modality name").required(true))
+                        .arg(
+                            Arg::new("aet")
+                                .about("Modality AET")
+                                .takes_value(true)
+                                .short('a')
+                                .long("aet")
+                                .required(true),
+                        )
+                        .arg(
+                            Arg::new("host")
+                                .about("Modality host")
+                                .takes_value(true)
+                                .short('h')
+                                .long("host")
+                                .required(true),
+                        )
+                        .arg(
+                            Arg::new("port")
+                                .about("Modality port")
+                                .takes_value(true)
+                                .short('p')
+                                .long("port")
+                                .required(true),
+                        ),
+                )
+                .subcommand(
+                    App::new("echo")
+                        .display_order(3)
                         .about("Send a C-ECHO request to a modality")
                         .arg(
                             Arg::new("modality")
@@ -368,7 +427,7 @@ fn main() {
                 )
                 .subcommand(
                     App::new("store")
-                        .display_order(2)
+                        .display_order(4)
                         .about(
                             "Send entities (patients, studies, series or instances) to a modality",
                         )
@@ -387,6 +446,12 @@ fn main() {
                                 .multiple_occurrences(true)
                                 .multiple_values(true),
                         ),
+                )
+                .subcommand(
+                    App::new("delete")
+                        .display_order(5)
+                        .about("Delete modality")
+                        .arg(Arg::new("name").about("Modality name").required(true)),
                 ),
         )
         .get_matches();
@@ -397,126 +462,126 @@ fn main() {
         orthanc.value_of("password"),
     ) {
         Ok(o) => o,
-        Err(e) => return exit_with_cli_error(e),
+        Err(e) => return exit_with_error(e),
     };
 
     match orthanc.subcommand() {
         Some(("patient", patient)) => match patient.subcommand() {
             Some(("list", _)) => match o.list_patients() {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("show", show)) => match o.show_patient(show.value_of("id").unwrap()) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("anonymize", anonymize)) => match o.anonymize_patient(
                 anonymize.value_of("id").unwrap(),
                 anonymize.value_of("config"),
             ) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("modify", modify)) => match o.modify_patient(
                 modify.value_of("id").unwrap(),
                 modify.value_of("config").unwrap(),
             ) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("download", download)) => match o.download_patient(
                 download.value_of("id").unwrap(),
                 download.value_of("output").unwrap(),
             ) {
                 Ok(_) => (),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("delete", delete)) => match o.delete_patient(delete.value_of("id").unwrap()) {
                 Ok(_) => (),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             _ => {}
         },
         Some(("study", study)) => match study.subcommand() {
             Some(("list", list)) => match o.list_studies(list.value_of("patient_id")) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("show", show)) => match o.show_study(show.value_of("id").unwrap()) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("anonymize", anonymize)) => match o.anonymize_study(
                 anonymize.value_of("id").unwrap(),
                 anonymize.value_of("config"),
             ) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("modify", modify)) => match o.modify_study(
                 modify.value_of("id").unwrap(),
                 modify.value_of("config").unwrap(),
             ) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("download", download)) => match o.download_study(
                 download.value_of("id").unwrap(),
                 download.value_of("output").unwrap(),
             ) {
                 Ok(_) => (),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("delete", delete)) => match o.delete_study(delete.value_of("id").unwrap()) {
                 Ok(_) => (),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             _ => {}
         },
         Some(("series", series)) => match series.subcommand() {
             Some(("list", list)) => match o.list_series(list.value_of("study_id")) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("show", show)) => match o.show_series(show.value_of("id").unwrap()) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("anonymize", anonymize)) => match o.anonymize_series(
                 anonymize.value_of("id").unwrap(),
                 anonymize.value_of("config"),
             ) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("modify", modify)) => match o.modify_series(
                 modify.value_of("id").unwrap(),
                 modify.value_of("config").unwrap(),
             ) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("download", download)) => match o.download_series(
                 download.value_of("id").unwrap(),
                 download.value_of("output").unwrap(),
             ) {
                 Ok(_) => (),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("delete", delete)) => match o.delete_series(delete.value_of("id").unwrap()) {
                 Ok(_) => (),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             _ => {}
         },
         Some(("instance", instance)) => match instance.subcommand() {
             Some(("list", list)) => match o.list_instances(list.value_of("series_id")) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("show", show)) => match o.show_instance(show.value_of("id").unwrap()) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("anonymize", anonymize)) => match o.anonymize_instance(
                 anonymize.value_of("id").unwrap(),
@@ -524,7 +589,7 @@ fn main() {
                 anonymize.value_of("output").unwrap(),
             ) {
                 Ok(_) => (),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("modify", modify)) => match o.modify_instance(
                 modify.value_of("id").unwrap(),
@@ -532,37 +597,63 @@ fn main() {
                 modify.value_of("output").unwrap(),
             ) {
                 Ok(_) => (),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("tags", tags)) => match o.show_instance_tags(tags.value_of("id").unwrap()) {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("download", download)) => match o.download_instance(
                 download.value_of("id").unwrap(),
                 download.value_of("output").unwrap(),
             ) {
                 Ok(_) => (),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             Some(("delete", delete)) => match o.delete_instance(delete.value_of("id").unwrap()) {
                 Ok(_) => (),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
             },
             _ => {}
         },
         Some(("modality", modality)) => match modality.subcommand() {
             Some(("list", _)) => match o.list_modalities() {
                 Ok(t) => print(t),
-                Err(e) => exit_with_api_error(e),
+                Err(e) => exit_with_error(e),
+            },
+            Some(("show", show)) => match o.show_modality(show.value_of("name").unwrap()) {
+                Ok(t) => print(t),
+                Err(e) => exit_with_error(e),
+            },
+            Some(("create", create)) => match o.create_modality(
+                create.value_of("name").unwrap(),
+                create.value_of("aet").unwrap(),
+                create.value_of("host").unwrap(),
+                create.value_of("port").unwrap().parse::<i32>().unwrap(),
+            ) {
+                Ok(_) => (),
+                Err(e) => exit_with_error(e),
+            },
+            Some(("modify", modify)) => match o.modify_modality(
+                modify.value_of("name").unwrap(),
+                modify.value_of("aet").unwrap(),
+                modify.value_of("host").unwrap(),
+                modify.value_of("port").unwrap().parse::<i32>().unwrap(),
+            ) {
+                Ok(_) => (),
+                Err(e) => exit_with_error(e),
             },
             Some(("store", store)) => {
                 let ids: Vec<&str> = store.values_of("ids").unwrap().collect();
                 match o.do_store(store.value_of("modality").unwrap(), &ids) {
                     Ok(t) => print(t),
-                    Err(e) => exit_with_api_error(e),
+                    Err(e) => exit_with_error(e),
                 }
             }
+            Some(("delete", delete)) => match o.delete_modality(delete.value_of("name").unwrap()) {
+                Ok(_) => (),
+                Err(e) => exit_with_error(e),
+            },
             _ => {}
         },
         _ => {}
