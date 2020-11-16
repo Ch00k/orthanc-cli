@@ -3,16 +3,51 @@ mod lib;
 use clap::{crate_authors, crate_description, crate_version, App, Arg};
 use comfy_table::Table;
 use lib::*;
+use std::env;
 use std::process;
 
 fn print(table: Table) {
     println!("{}", table);
 }
 
-pub fn exit_with_error(error: CliError) {
+fn exit_with_error(error: CliError) {
     let output = create_error_table(error);
     eprintln!("{}", output);
     process::exit(1);
+}
+
+fn get_server_address(cmd_option: Option<&str>) -> Result<String, CliError> {
+    match cmd_option {
+        Some(s) => Ok(s.to_string()),
+        None => match env::var("ORC_ORTHANC_ADDRESS") {
+            Ok(s) => Ok(s),
+            Err(e) => Err(CliError::new(
+                "Command error",
+                Some("Neither --server-address nor ORC_ORTHANC_ADDRESS are set"),
+                Some(&format!("{}", e)),
+            )),
+        },
+    }
+}
+
+fn get_username(cmd_option: Option<&str>) -> Option<String> {
+    match cmd_option {
+        Some(s) => Some(s.to_string()),
+        None => match env::var("ORC_ORTHANC_USERNAME") {
+            Ok(s) => Some(s),
+            Err(_) => None, // TODO: This will hide the error
+        },
+    }
+}
+
+fn get_password(cmd_option: Option<&str>) -> Option<String> {
+    match cmd_option {
+        Some(s) => Some(s.to_string()),
+        None => match env::var("ORC_ORTHANC_PASSWORD") {
+            Ok(s) => Some(s),
+            Err(_) => None, // TODO: This will hide the error
+        },
+    }
 }
 
 fn main() {
@@ -456,10 +491,15 @@ fn main() {
         )
         .get_matches();
 
+    let mut server_address = "".to_string();
+    match get_server_address(orthanc.value_of("server")) {
+        Ok(s) => server_address = s,
+        Err(e) => exit_with_error(e),
+    };
     let o = match Orthanc::new(
-        orthanc.value_of("server"),
-        orthanc.value_of("username"),
-        orthanc.value_of("password"),
+        server_address,
+        get_username(orthanc.value_of("username")),
+        get_password(orthanc.value_of("password")),
     ) {
         Ok(o) => o,
         Err(e) => return exit_with_error(e),
@@ -657,5 +697,48 @@ fn main() {
             _ => {}
         },
         _ => {}
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::env::{remove_var, set_var};
+
+    #[test]
+    fn test_get_server() {
+        remove_var("ORC_ORTHANC_ADDRESS");
+        assert_eq!(get_server_address(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(
+            get_server_address(None).unwrap_err(),
+            CliError::new(
+                "Command error",
+                Some("Neither --server-address nor ORC_ORTHANC_ADDRESS are set"),
+                Some("environment variable not found"),
+            )
+        );
+        set_var("ORC_ORTHANC_ADDRESS", "bar");
+        assert_eq!(get_server_address(None).unwrap(), "bar".to_string());
+        assert_eq!(get_server_address(Some("baz")).unwrap(), "baz".to_string())
+    }
+
+    #[test]
+    fn test_get_username() {
+        remove_var("ORC_ORTHANC_USERNAME");
+        assert_eq!(get_username(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_username(None), None);
+        set_var("ORC_ORTHANC_USERNAME", "bar");
+        assert_eq!(get_username(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_username(None).unwrap(), "bar".to_string());
+    }
+
+    #[test]
+    fn test_get_password() {
+        remove_var("ORC_ORTHANC_PASSWORD");
+        assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_password(None), None);
+        set_var("ORC_ORTHANC_PASSWORD", "bar");
+        assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_password(None).unwrap(), "bar".to_string());
     }
 }

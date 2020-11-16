@@ -2,8 +2,8 @@ use comfy_table::{ColumnConstraint, ContentArrangement, Table};
 use orthanc::{Anonymization, Client, Error, Modality, Modification};
 use serde_json::Value;
 use serde_yaml;
+use std::fs;
 use std::result;
-use std::{env, fs};
 
 const TABLE_PRESET: &str = "     --            ";
 const ID_COLUMN_WIDTH: u16 = 46;
@@ -86,29 +86,16 @@ const INSTANCE_DICOM_TAGS: [&str; 4] = [
     "InstanceCreationTime",
 ];
 
-const MODALITIES_LIST_HEADER: [&str; 5] = [
-    "Name",
-    "AET",
-    "Host",
-    "Port",
-    "Manufacturer",
-    //"C-ECHO",
-    //"C-FIND",
-    //"C-GET",
-    //"C-MOVE",
-    //"C-STORE",
-    //"N-ACTION",
-    //"N-EVENT-REPORT",
-    //"Transcoding",
-];
+const MODALITIES_LIST_HEADER: [&str; 5] = ["Name", "AET", "Host", "Port", "Manufacturer"];
 
 type Result<T> = result::Result<T, CliError>;
 
+#[derive(Debug)]
 pub struct Orthanc {
     pub client: Client,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub struct CliError {
     error: String,
     message: Option<String>,
@@ -116,7 +103,7 @@ pub struct CliError {
 }
 
 impl CliError {
-    fn new(error: &str, message: Option<&str>, details: Option<&str>) -> CliError {
+    pub fn new(error: &str, message: Option<&str>, details: Option<&str>) -> CliError {
         CliError {
             error: error.to_string(),
             message: message.map(String::from),
@@ -144,50 +131,15 @@ impl From<Error> for CliError {
 
 impl Orthanc {
     pub fn new(
-        server_address: Option<&str>,
-        username: Option<&str>,
-        password: Option<&str>,
+        server_address: String,
+        username: Option<String>,
+        password: Option<String>,
     ) -> Result<Orthanc> {
-        let server_address = match server_address {
-            Some(s) => s.to_string(),
-            None => match env::var("ORC_ORTHANC_ADDRESS") {
-                Ok(s) => s.to_string(),
-                Err(e) => {
-                    return Err(CliError::new(
-                        "Command error",
-                        Some("Neither --server-address nor ORC_ORTHANC_ADDRESS are set"),
-                        Some(&format!("{}", e)),
-                    ))
-                }
-            },
+        let mut client = Client::new(server_address);
+        client = match (username, password) {
+            (Some(u), Some(p)) => client.auth(u, p),
+            _ => client,
         };
-        let username = match username {
-            Some(s) => s.to_string(),
-            None => match env::var("ORC_ORTHANC_USERNAME") {
-                Ok(s) => s.to_string(),
-                Err(e) => {
-                    return Err(CliError::new(
-                        "Command error",
-                        Some("Neither --username nor ORC_ORTHANC_USERNAME are set"),
-                        Some(&format!("{}", e)),
-                    ))
-                }
-            },
-        };
-        let password = match password {
-            Some(s) => s.to_string(),
-            None => match env::var("ORC_ORTHANC_PASSWORD") {
-                Ok(s) => s.to_string(),
-                Err(e) => {
-                    return Err(CliError::new(
-                        "Command error",
-                        Some("Neither --password nor ORC_ORTHANC_PASSWORD are set"),
-                        Some(&format!("{}", e)),
-                    ))
-                }
-            },
-        };
-        let client = Client::new(server_address).auth(username, password);
         Ok(Orthanc { client })
     }
 
@@ -778,10 +730,7 @@ mod tests {
             " Error     error   \n Message   message "
         );
         assert_eq!(
-            format!(
-                "{}",
-                create_error_table(CliError::new("error", None, None))
-            ),
+            format!("{}", create_error_table(CliError::new("error", None, None))),
             " Error   error "
         );
     }
