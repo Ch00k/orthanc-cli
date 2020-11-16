@@ -20,6 +20,9 @@ comment:
   require_changes: no
 
 flags:
+  unit_test:
+    paths:
+      - src/lib.rs
   integration_test:
     paths:
       - src/lib.rs
