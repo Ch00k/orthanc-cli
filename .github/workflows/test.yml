@@ -70,8 +70,10 @@ jobs:
   check_completion:
     runs-on: ubuntu-latest
     name: check_completion
+
     env:
       ORC_COMPLETION_OUTPUT_DIR: /tmp/completion
+
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -83,5 +85,6 @@ jobs:
 
       - name: run check
         run: |
+          mkdir $ORC_COMPLETION_OUTPUT_DIR
           cargo build
           diff ./completion $ORC_COMPLETION_OUTPUT_DIR
