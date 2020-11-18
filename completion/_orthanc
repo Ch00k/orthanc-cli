@@ -1,0 +1,782 @@
+#compdef orthanc
+
+autoload -U is-at-least
+
+_orthanc() {
+    typeset -A opt_args
+    typeset -a _arguments_options
+    local ret=1
+
+    if is-at-least 5.2; then
+        _arguments_options=(-s -S -C)
+    else
+        _arguments_options=(-s -C)
+    fi
+
+    local context curcontext="$curcontext" state line
+    _arguments "${_arguments_options[@]}" \
+'-s+[Orthanc server address]' \
+'--server=[Orthanc server address]' \
+'-u+[Orthanc username]' \
+'--username=[Orthanc username]' \
+'-p+[Orthanc password]' \
+'--password=[Orthanc password]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+":: :_orthanc_commands" \
+"*::: :->orthanc" \
+&& ret=0
+    case $state in
+    (orthanc)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:orthanc-command-$line[1]:"
+        case $line[1] in
+            (patient)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+":: :_orthanc__patient_commands" \
+"*::: :->patient" \
+&& ret=0
+case $state in
+    (patient)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:orthanc-patient-command-$line[1]:"
+        case $line[1] in
+            (list)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+&& ret=0
+;;
+(show)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Patient ID:' \
+&& ret=0
+;;
+(anonymize)
+_arguments "${_arguments_options[@]}" \
+'-c+[Anonymization configuration file]' \
+'--config=[Anonymization configuration file]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Patient ID:' \
+&& ret=0
+;;
+(modify)
+_arguments "${_arguments_options[@]}" \
+'-c+[Modification configuration file]' \
+'--config=[Modification configuration file]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Patient ID:' \
+&& ret=0
+;;
+(download)
+_arguments "${_arguments_options[@]}" \
+'-o+[Output file path]' \
+'--output=[Output file path]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Patient ID:' \
+&& ret=0
+;;
+(delete)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Patient ID:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(study)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+":: :_orthanc__study_commands" \
+"*::: :->study" \
+&& ret=0
+case $state in
+    (study)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:orthanc-study-command-$line[1]:"
+        case $line[1] in
+            (list)
+_arguments "${_arguments_options[@]}" \
+'-i+[Show only studies, belonging to specified patient]' \
+'--patient-id=[Show only studies, belonging to specified patient]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+&& ret=0
+;;
+(show)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Study ID:' \
+&& ret=0
+;;
+(anonymize)
+_arguments "${_arguments_options[@]}" \
+'-c+[Anonymization configuration file]' \
+'--config=[Anonymization configuration file]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Study ID:' \
+&& ret=0
+;;
+(modify)
+_arguments "${_arguments_options[@]}" \
+'-c+[Modification configuration file]' \
+'--config=[Modification configuration file]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Study ID:' \
+&& ret=0
+;;
+(download)
+_arguments "${_arguments_options[@]}" \
+'-o+[Output file path]' \
+'--output=[Output file path]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Study ID:' \
+&& ret=0
+;;
+(delete)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Study ID:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(series)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+":: :_orthanc__series_commands" \
+"*::: :->series" \
+&& ret=0
+case $state in
+    (series)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:orthanc-series-command-$line[1]:"
+        case $line[1] in
+            (list)
+_arguments "${_arguments_options[@]}" \
+'-i+[Show only series, belonging to specified study]' \
+'--study-id=[Show only series, belonging to specified study]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+&& ret=0
+;;
+(show)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Series ID:' \
+&& ret=0
+;;
+(anonymize)
+_arguments "${_arguments_options[@]}" \
+'-c+[Anonymization configuration file]' \
+'--config=[Anonymization configuration file]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Series ID:' \
+&& ret=0
+;;
+(modify)
+_arguments "${_arguments_options[@]}" \
+'-c+[Modification configuration file]' \
+'--config=[Modification configuration file]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Series ID:' \
+&& ret=0
+;;
+(download)
+_arguments "${_arguments_options[@]}" \
+'-o+[Output file path]' \
+'--output=[Output file path]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Series ID:' \
+&& ret=0
+;;
+(delete)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Series ID:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(instance)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+":: :_orthanc__instance_commands" \
+"*::: :->instance" \
+&& ret=0
+case $state in
+    (instance)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:orthanc-instance-command-$line[1]:"
+        case $line[1] in
+            (list)
+_arguments "${_arguments_options[@]}" \
+'-i+[Show only instances, belonging to specified series]' \
+'--series-id=[Show only instances, belonging to specified series]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+&& ret=0
+;;
+(show)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Instance ID:' \
+&& ret=0
+;;
+(tags)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Instance ID:' \
+&& ret=0
+;;
+(anonymize)
+_arguments "${_arguments_options[@]}" \
+'-c+[Anonymization configuration file]' \
+'--config=[Anonymization configuration file]' \
+'-o+[Output file path]' \
+'--output=[Output file path]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Instance ID:' \
+&& ret=0
+;;
+(modify)
+_arguments "${_arguments_options[@]}" \
+'-c+[Modification configuration file]' \
+'--config=[Modification configuration file]' \
+'-o+[Output file path]' \
+'--output=[Output file path]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Instance ID:' \
+&& ret=0
+;;
+(download)
+_arguments "${_arguments_options[@]}" \
+'-o+[Output file path]' \
+'--output=[Output file path]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Instance ID:' \
+&& ret=0
+;;
+(delete)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Instance ID:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(modality)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+":: :_orthanc__modality_commands" \
+"*::: :->modality" \
+&& ret=0
+case $state in
+    (modality)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:orthanc-modality-command-$line[1]:"
+        case $line[1] in
+            (list)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+&& ret=0
+;;
+(show)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':name -- Modality name:' \
+&& ret=0
+;;
+(create)
+_arguments "${_arguments_options[@]}" \
+'-a+[Modality AET]' \
+'--aet=[Modality AET]' \
+'-h+[Modality host]' \
+'--host=[Modality host]' \
+'-p+[Modality port]' \
+'--port=[Modality port]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':name -- Modality name:' \
+&& ret=0
+;;
+(modify)
+_arguments "${_arguments_options[@]}" \
+'-a+[Modality AET]' \
+'--aet=[Modality AET]' \
+'-h+[Modality host]' \
+'--host=[Modality host]' \
+'-p+[Modality port]' \
+'--port=[Modality port]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':name -- Modality name:' \
+&& ret=0
+;;
+(echo)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':modality -- Modality ID (name):' \
+&& ret=0
+;;
+(store)
+_arguments "${_arguments_options[@]}" \
+'*-e+[Entity IDs]' \
+'*--entities=[Entity IDs]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':modality -- Modality ID (name):' \
+&& ret=0
+;;
+(delete)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':name -- Modality name:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(help)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+}
+
+(( $+functions[_orthanc_commands] )) ||
+_orthanc_commands() {
+    local commands; commands=(
+        "patient:Patient-level commands" \
+"study:Study-level commands" \
+"series:Series-level commands" \
+"instance:Instance-level commands" \
+"modality:Modality-level commands" \
+"help:Prints this message or the help of the given subcommand(s)" \
+    )
+    _describe -t commands 'orthanc commands' commands "$@"
+}
+(( $+functions[_orthanc__instance__anonymize_commands] )) ||
+_orthanc__instance__anonymize_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc instance anonymize commands' commands "$@"
+}
+(( $+functions[_orthanc__patient__anonymize_commands] )) ||
+_orthanc__patient__anonymize_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc patient anonymize commands' commands "$@"
+}
+(( $+functions[_orthanc__series__anonymize_commands] )) ||
+_orthanc__series__anonymize_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc series anonymize commands' commands "$@"
+}
+(( $+functions[_orthanc__study__anonymize_commands] )) ||
+_orthanc__study__anonymize_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc study anonymize commands' commands "$@"
+}
+(( $+functions[_orthanc__modality__create_commands] )) ||
+_orthanc__modality__create_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc modality create commands' commands "$@"
+}
+(( $+functions[_orthanc__instance__delete_commands] )) ||
+_orthanc__instance__delete_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc instance delete commands' commands "$@"
+}
+(( $+functions[_orthanc__modality__delete_commands] )) ||
+_orthanc__modality__delete_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc modality delete commands' commands "$@"
+}
+(( $+functions[_orthanc__patient__delete_commands] )) ||
+_orthanc__patient__delete_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc patient delete commands' commands "$@"
+}
+(( $+functions[_orthanc__series__delete_commands] )) ||
+_orthanc__series__delete_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc series delete commands' commands "$@"
+}
+(( $+functions[_orthanc__study__delete_commands] )) ||
+_orthanc__study__delete_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc study delete commands' commands "$@"
+}
+(( $+functions[_orthanc__instance__download_commands] )) ||
+_orthanc__instance__download_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc instance download commands' commands "$@"
+}
+(( $+functions[_orthanc__patient__download_commands] )) ||
+_orthanc__patient__download_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc patient download commands' commands "$@"
+}
+(( $+functions[_orthanc__series__download_commands] )) ||
+_orthanc__series__download_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc series download commands' commands "$@"
+}
+(( $+functions[_orthanc__study__download_commands] )) ||
+_orthanc__study__download_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc study download commands' commands "$@"
+}
+(( $+functions[_orthanc__modality__echo_commands] )) ||
+_orthanc__modality__echo_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc modality echo commands' commands "$@"
+}
+(( $+functions[_orthanc__help_commands] )) ||
+_orthanc__help_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc help commands' commands "$@"
+}
+(( $+functions[_orthanc__instance_commands] )) ||
+_orthanc__instance_commands() {
+    local commands; commands=(
+        "list:List all instances" \
+"show:Show instance details" \
+"tags:Show instance tags" \
+"anonymize:Anonymize instance" \
+"modify:Modify instance" \
+"download:Download instance" \
+"delete:Delete instance" \
+    )
+    _describe -t commands 'orthanc instance commands' commands "$@"
+}
+(( $+functions[_orthanc__instance__list_commands] )) ||
+_orthanc__instance__list_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc instance list commands' commands "$@"
+}
+(( $+functions[_orthanc__modality__list_commands] )) ||
+_orthanc__modality__list_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc modality list commands' commands "$@"
+}
+(( $+functions[_orthanc__patient__list_commands] )) ||
+_orthanc__patient__list_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc patient list commands' commands "$@"
+}
+(( $+functions[_orthanc__series__list_commands] )) ||
+_orthanc__series__list_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc series list commands' commands "$@"
+}
+(( $+functions[_orthanc__study__list_commands] )) ||
+_orthanc__study__list_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc study list commands' commands "$@"
+}
+(( $+functions[_orthanc__modality_commands] )) ||
+_orthanc__modality_commands() {
+    local commands; commands=(
+        "list:List all modalities" \
+"show:Show modality details" \
+"create:Create a modality" \
+"modify:Modify a modality" \
+"echo:Send a C-ECHO request to a modality" \
+"store:Send entities (patients, studies, series or instances) to a modality" \
+"delete:Delete modality" \
+    )
+    _describe -t commands 'orthanc modality commands' commands "$@"
+}
+(( $+functions[_orthanc__instance__modify_commands] )) ||
+_orthanc__instance__modify_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc instance modify commands' commands "$@"
+}
+(( $+functions[_orthanc__modality__modify_commands] )) ||
+_orthanc__modality__modify_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc modality modify commands' commands "$@"
+}
+(( $+functions[_orthanc__patient__modify_commands] )) ||
+_orthanc__patient__modify_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc patient modify commands' commands "$@"
+}
+(( $+functions[_orthanc__series__modify_commands] )) ||
+_orthanc__series__modify_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc series modify commands' commands "$@"
+}
+(( $+functions[_orthanc__study__modify_commands] )) ||
+_orthanc__study__modify_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc study modify commands' commands "$@"
+}
+(( $+functions[_orthanc__patient_commands] )) ||
+_orthanc__patient_commands() {
+    local commands; commands=(
+        "list:List all patients" \
+"show:Show patient details" \
+"anonymize:Anonymize patient" \
+"modify:Modify patient" \
+"download:Download patient" \
+"delete:Delete patient" \
+    )
+    _describe -t commands 'orthanc patient commands' commands "$@"
+}
+(( $+functions[_orthanc__series_commands] )) ||
+_orthanc__series_commands() {
+    local commands; commands=(
+        "list:List all series" \
+"show:Show series details" \
+"anonymize:Anonymize series" \
+"modify:Modify series" \
+"download:Download series" \
+"delete:Delete series" \
+    )
+    _describe -t commands 'orthanc series commands' commands "$@"
+}
+(( $+functions[_orthanc__instance__show_commands] )) ||
+_orthanc__instance__show_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc instance show commands' commands "$@"
+}
+(( $+functions[_orthanc__modality__show_commands] )) ||
+_orthanc__modality__show_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc modality show commands' commands "$@"
+}
+(( $+functions[_orthanc__patient__show_commands] )) ||
+_orthanc__patient__show_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc patient show commands' commands "$@"
+}
+(( $+functions[_orthanc__series__show_commands] )) ||
+_orthanc__series__show_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc series show commands' commands "$@"
+}
+(( $+functions[_orthanc__study__show_commands] )) ||
+_orthanc__study__show_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc study show commands' commands "$@"
+}
+(( $+functions[_orthanc__modality__store_commands] )) ||
+_orthanc__modality__store_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc modality store commands' commands "$@"
+}
+(( $+functions[_orthanc__study_commands] )) ||
+_orthanc__study_commands() {
+    local commands; commands=(
+        "list:List all studies" \
+"show:Show study details" \
+"anonymize:Anonymize study" \
+"modify:Modify study" \
+"download:Download study" \
+"delete:Delete study" \
+    )
+    _describe -t commands 'orthanc study commands' commands "$@"
+}
+(( $+functions[_orthanc__instance__tags_commands] )) ||
+_orthanc__instance__tags_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc instance tags commands' commands "$@"
+}
+
+_orthanc "$@"
