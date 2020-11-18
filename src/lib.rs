@@ -551,6 +551,8 @@ impl Orthanc {
         }
     }
 
+    ////////// MODALITY //////////
+
     pub fn do_store(&self, modality: &str, ids: &Vec<&str>) -> Result<Table> {
         match self.client.store(modality, ids) {
             Ok(r) => {
