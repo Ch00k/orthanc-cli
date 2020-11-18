@@ -66,3 +66,25 @@ jobs:
         with:
           flags: integration_test
           fail_ci_if_error: true
+
+  check_completion:
+    runs-on: ubuntu-latest
+    name: check_completion
+
+    env:
+      ORC_COMPLETION_OUTPUT_DIR: /tmp/completion
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: prepare rust env
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: run check
+        run: |
+          mkdir $ORC_COMPLETION_OUTPUT_DIR
+          cargo build
+          diff ./completion $ORC_COMPLETION_OUTPUT_DIR
