@@ -433,18 +433,18 @@ _arguments "${_arguments_options[@]}" \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
 '--version[Prints version information]' \
-':modality -- Modality ID (name):' \
+':modality -- Modality name:' \
 && ret=0
 ;;
 (store)
 _arguments "${_arguments_options[@]}" \
 '*-e+[Entity IDs]' \
-'*--entities=[Entity IDs]' \
+'*--entity-ids=[Entity IDs]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
 '--version[Prints version information]' \
-':modality -- Modality ID (name):' \
+':name -- Modality name:' \
 && ret=0
 ;;
 (delete)
@@ -653,7 +653,7 @@ _orthanc__modality_commands() {
 "create:Create a modality" \
 "modify:Modify a modality" \
 "echo:Send a C-ECHO request to a modality" \
-"store:Send entities (patients, studies, series or instances) to a modality" \
+"store:Send a C-STORE request to a modality" \
 "delete:Delete modality" \
     )
     _describe -t commands 'orthanc modality commands' commands "$@"
