@@ -19,11 +19,11 @@ complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "download" -d
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "delete" -d 'Delete patient'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Patient ID'
+complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Patient ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Patient ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s c -l config -d 'Anonymization configuration file' -r
-complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Patient ID'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -s c -l config -d 'Modification configuration file' -r
@@ -34,7 +34,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from download" -s o -l output -d 
 complete -c orthanc -n "__fish_seen_subcommand_from download" -d 'Patient ID'
 complete -c orthanc -n "__fish_seen_subcommand_from download" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from download" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from delete" -d 'Patient ID'
+complete -c orthanc -n "__fish_seen_subcommand_from delete" -d 'Patient ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from delete" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from delete" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from study" -s h -l help -d 'Prints help information'
@@ -48,11 +48,11 @@ complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "delete" -d 'De
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s i -l patient-id -d 'Show only studies, belonging to specified patient' -r
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Study ID'
+complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Study ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Study ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s c -l config -d 'Anonymization configuration file' -r
-complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Study ID'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -s c -l config -d 'Modification configuration file' -r
@@ -63,7 +63,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from download" -s o -l output -d 
 complete -c orthanc -n "__fish_seen_subcommand_from download" -d 'Study ID'
 complete -c orthanc -n "__fish_seen_subcommand_from download" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from download" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from delete" -d 'Study ID'
+complete -c orthanc -n "__fish_seen_subcommand_from delete" -d 'Study ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from delete" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from delete" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from series" -s h -l help -d 'Prints help information'
@@ -77,7 +77,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "delete" -d 'D
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s i -l study-id -d 'Show only series, belonging to specified study' -r
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Series ID'
+complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Series ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s c -l config -d 'Anonymization configuration file' -r
@@ -92,7 +92,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from download" -s o -l output -d 
 complete -c orthanc -n "__fish_seen_subcommand_from download" -d 'Series ID'
 complete -c orthanc -n "__fish_seen_subcommand_from download" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from download" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from delete" -d 'Series ID'
+complete -c orthanc -n "__fish_seen_subcommand_from delete" -d 'Series ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from delete" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from delete" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -s h -l help -d 'Prints help information'
@@ -107,15 +107,15 @@ complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "delete" -d 
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s i -l series-id -d 'Show only instances, belonging to specified series' -r
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Instance ID'
+complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Instance ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from tags" -d 'Instance ID'
+complete -c orthanc -n "__fish_seen_subcommand_from tags" -d 'Instance ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from tags" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from tags" -s V -l version -d 'Prints version information'
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Instance ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s c -l config -d 'Anonymization configuration file' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s o -l output -d 'Output file path' -r
-complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Instance ID'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -s c -l config -d 'Modification configuration file' -r
@@ -127,7 +127,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from download" -s o -l output -d 
 complete -c orthanc -n "__fish_seen_subcommand_from download" -d 'Instance ID'
 complete -c orthanc -n "__fish_seen_subcommand_from download" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from download" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from delete" -d 'Instance ID'
+complete -c orthanc -n "__fish_seen_subcommand_from delete" -d 'Instance ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from delete" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from delete" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -s h -l help -d 'Prints help information'
@@ -137,17 +137,17 @@ complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "show" -d 'S
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "create" -d 'Create a modality'
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "modify" -d 'Modify a modality'
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "echo" -d 'Send a C-ECHO request to a modality'
-complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "store" -d 'Send entities (patients, studies, series or instances) to a modality'
+complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "store" -d 'Send a C-STORE request to a modality'
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "delete" -d 'Delete modality'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Modality name'
+complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Modality name' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
+complete -c orthanc -n "__fish_seen_subcommand_from create" -d 'Modality name' -r
 complete -c orthanc -n "__fish_seen_subcommand_from create" -s a -l aet -d 'Modality AET' -r
 complete -c orthanc -n "__fish_seen_subcommand_from create" -s h -l host -d 'Modality host' -r
 complete -c orthanc -n "__fish_seen_subcommand_from create" -s p -l port -d 'Modality port' -r
-complete -c orthanc -n "__fish_seen_subcommand_from create" -d 'Modality name'
 complete -c orthanc -n "__fish_seen_subcommand_from create" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from create" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -s a -l aet -d 'Modality AET' -r
@@ -156,14 +156,14 @@ complete -c orthanc -n "__fish_seen_subcommand_from modify" -s p -l port -d 'Mod
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -d 'Modality name'
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from echo" -d 'Modality ID (name)'
+complete -c orthanc -n "__fish_seen_subcommand_from echo" -d 'Modality name' -r
 complete -c orthanc -n "__fish_seen_subcommand_from echo" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from echo" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from store" -s e -l entities -d 'Entity IDs' -r
-complete -c orthanc -n "__fish_seen_subcommand_from store" -d 'Modality ID (name)'
+complete -c orthanc -n "__fish_seen_subcommand_from store" -d 'Modality name' -r
+complete -c orthanc -n "__fish_seen_subcommand_from store" -s e -l entity-ids -d 'Entity IDs' -r
 complete -c orthanc -n "__fish_seen_subcommand_from store" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from store" -s V -l version -d 'Prints version information'
-complete -c orthanc -n "__fish_seen_subcommand_from delete" -d 'Modality name'
+complete -c orthanc -n "__fish_seen_subcommand_from delete" -d 'Modality name' -r
 complete -c orthanc -n "__fish_seen_subcommand_from delete" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from delete" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from help" -s h -l help -d 'Prints help information'
