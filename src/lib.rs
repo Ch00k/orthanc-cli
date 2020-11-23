@@ -685,7 +685,7 @@ fn create_table(header: Option<&[&str]>) -> Table {
     table
 }
 
-pub fn create_error_table(error: CliError) -> Table {
+fn create_error_table(error: CliError) -> Table {
     let mut table = create_table(None);
     table.add_row(["Error", &error.error].iter());
     match error.message {

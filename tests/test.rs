@@ -222,66 +222,6 @@ fn assert_result(args: Vec<&str>, expected_result: CommandResult) {
 }
 
 #[test]
-fn test_help() {
-    assert_result(
-        vec![],
-        CommandResult::new(
-            2,
-            "".to_string(),
-            include_str!("data/help.stderr").to_string(),
-        ),
-    );
-}
-
-#[test]
-fn test_help_patient() {
-    assert_result(
-        vec!["patient"],
-        CommandResult::new(
-            2,
-            "".to_string(),
-            include_str!("data/help_patient.stderr").to_string(),
-        ),
-    );
-}
-
-#[test]
-fn test_help_study() {
-    assert_result(
-        vec!["study"],
-        CommandResult::new(
-            2,
-            "".to_string(),
-            include_str!("data/help_study.stderr").to_string(),
-        ),
-    );
-}
-
-#[test]
-fn test_help_series() {
-    assert_result(
-        vec!["series"],
-        CommandResult::new(
-            2,
-            "".to_string(),
-            include_str!("data/help_series.stderr").to_string(),
-        ),
-    );
-}
-
-#[test]
-fn test_help_instance() {
-    assert_result(
-        vec!["instance"],
-        CommandResult::new(
-            2,
-            "".to_string(),
-            include_str!("data/help_instance.stderr").to_string(),
-        ),
-    );
-}
-
-#[test]
 fn test_server_option() {
     assert_result(
         vec!["--server", "http://localhost:8901", "patient", "list"],

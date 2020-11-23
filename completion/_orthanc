@@ -433,7 +433,7 @@ _arguments "${_arguments_options[@]}" \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
 '--version[Prints version information]' \
-':modality -- Modality name:' \
+':name -- Modality name:' \
 && ret=0
 ;;
 (store)

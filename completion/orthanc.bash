@@ -184,7 +184,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__instance__download)
-            opts=" -o -h -V  --output --help --version  <id> "
+            opts=" -o -h -V  --output --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -230,7 +230,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__instance__modify)
-            opts=" -c -o -h -V  --config --output --help --version  <id> "
+            opts=" -c -o -h -V  --config --output --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -390,7 +390,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__modality__modify)
-            opts=" -a -h -p -V  --aet --host --port --help --version  <name> "
+            opts=" -a -h -p -V  --aet --host --port --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -520,7 +520,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__patient__download)
-            opts=" -o -h -V  --output --help --version  <id> "
+            opts=" -o -h -V  --output --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -558,7 +558,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__patient__modify)
-            opts=" -c -h -V  --config --help --version  <id> "
+            opts=" -c -h -V  --config --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -611,7 +611,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__series__anonymize)
-            opts=" -c -h -V  --config --help --version  <id> "
+            opts=" -c -h -V  --config --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -649,7 +649,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__series__download)
-            opts=" -o -h -V  --output --help --version  <id> "
+            opts=" -o -h -V  --output --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -695,7 +695,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__series__modify)
-            opts=" -c -h -V  --config --help --version  <id> "
+            opts=" -c -h -V  --config --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -832,7 +832,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__study__modify)
-            opts=" -c -h -V  --config --help --version  <id> "
+            opts=" -c -h -V  --config --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0

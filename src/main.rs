@@ -201,7 +201,7 @@ fn main() {
             },
             Some(("store", store)) => {
                 let ids: Vec<&str> = store.values_of("ids").unwrap().collect();
-                match o.do_store(store.value_of("modality").unwrap(), &ids) {
+                match o.do_store(store.value_of("name").unwrap(), &ids) {
                     Ok(t) => print(t),
                     Err(e) => exit_with_error(e),
                 }
