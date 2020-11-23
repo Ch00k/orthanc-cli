@@ -74,7 +74,12 @@ pub fn build_cli() -> App<'static> {
                     App::new("modify")
                         .display_order(3)
                         .about("Modify patient")
-                        .arg(Arg::new("id").about("Patient ID").required(true))
+                        .arg(
+                            Arg::new("id")
+                                .about("Patient ID")
+                                .required(true)
+                                .value_name("ID"),
+                        )
                         .arg(
                             Arg::new("config")
                                 .about("Modification configuration file")
@@ -89,7 +94,12 @@ pub fn build_cli() -> App<'static> {
                     App::new("download")
                         .display_order(4)
                         .about("Download patient")
-                        .arg(Arg::new("id").about("Patient ID").required(true))
+                        .arg(
+                            Arg::new("id")
+                                .about("Patient ID")
+                                .required(true)
+                                .value_name("ID"),
+                        )
                         .arg(
                             Arg::new("output")
                                 .about("Output file path")
@@ -102,7 +112,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Delete patient")
                         .arg(
                             Arg::new("id")
@@ -164,7 +174,12 @@ pub fn build_cli() -> App<'static> {
                     App::new("modify")
                         .display_order(3)
                         .about("Modify study")
-                        .arg(Arg::new("id").about("Study ID").required(true))
+                        .arg(
+                            Arg::new("id")
+                                .about("Study ID")
+                                .required(true)
+                                .value_name("ID"),
+                        )
                         .arg(
                             Arg::new("config")
                                 .about("Modification configuration file")
@@ -192,7 +207,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Delete study")
                         .arg(
                             Arg::new("id")
@@ -234,7 +249,12 @@ pub fn build_cli() -> App<'static> {
                     App::new("anonymize")
                         .display_order(2)
                         .about("Anonymize series")
-                        .arg(Arg::new("id").about("Series ID").required(true))
+                        .arg(
+                            Arg::new("id")
+                                .about("Series ID")
+                                .required(true)
+                                .value_name("ID"),
+                        )
                         .arg(
                             Arg::new("config")
                                 .about("Anonymization configuration file")
@@ -248,7 +268,12 @@ pub fn build_cli() -> App<'static> {
                     App::new("modify")
                         .display_order(3)
                         .about("Modify series")
-                        .arg(Arg::new("id").about("Series ID").required(true))
+                        .arg(
+                            Arg::new("id")
+                                .about("Series ID")
+                                .required(true)
+                                .value_name("ID"),
+                        )
                         .arg(
                             Arg::new("config")
                                 .about("Modification configuration file")
@@ -263,7 +288,12 @@ pub fn build_cli() -> App<'static> {
                     App::new("download")
                         .display_order(4)
                         .about("Download series")
-                        .arg(Arg::new("id").about("Series ID").required(true))
+                        .arg(
+                            Arg::new("id")
+                                .about("Series ID")
+                                .required(true)
+                                .value_name("ID"),
+                        )
                         .arg(
                             Arg::new("output")
                                 .about("Output file path")
@@ -276,7 +306,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Delete series")
                         .arg(
                             Arg::new("id")
@@ -316,7 +346,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("tags")
-                        .display_order(1)
+                        .display_order(2)
                         .about("Show instance tags")
                         .arg(
                             Arg::new("id")
@@ -327,7 +357,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("anonymize")
-                        .display_order(2)
+                        .display_order(3)
                         .about("Anonymize instance")
                         .arg(
                             Arg::new("id")
@@ -355,9 +385,14 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("modify")
-                        .display_order(3)
+                        .display_order(4)
                         .about("Modify instance")
-                        .arg(Arg::new("id").about("Instance ID").required(true))
+                        .arg(
+                            Arg::new("id")
+                                .about("Instance ID")
+                                .required(true)
+                                .value_name("ID"),
+                        )
                         .arg(
                             Arg::new("config")
                                 .about("Modification configuration file")
@@ -379,9 +414,14 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("download")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Download instance")
-                        .arg(Arg::new("id").about("Instance ID").required(true))
+                        .arg(
+                            Arg::new("id")
+                                .about("Instance ID")
+                                .required(true)
+                                .value_name("ID"),
+                        )
                         .arg(
                             Arg::new("output")
                                 .about("Output file path")
@@ -394,7 +434,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(4)
+                        .display_order(6)
                         .about("Delete instance")
                         .arg(
                             Arg::new("id")
@@ -464,9 +504,14 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("modify")
-                        .display_order(2)
+                        .display_order(3)
                         .about("Modify a modality")
-                        .arg(Arg::new("name").about("Modality name").required(true))
+                        .arg(
+                            Arg::new("name")
+                                .about("Modality name")
+                                .required(true)
+                                .value_name("ID"),
+                        )
                         .arg(
                             Arg::new("aet")
                                 .about("Modality AET")
@@ -497,7 +542,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("echo")
-                        .display_order(3)
+                        .display_order(4)
                         .about("Send a C-ECHO request to a modality")
                         .arg(
                             Arg::new("modality")
@@ -508,7 +553,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("store")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Send a C-STORE request to a modality")
                         .arg(
                             Arg::new("name")
@@ -530,7 +575,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(5)
+                        .display_order(6)
                         .about("Delete modality")
                         .arg(
                             Arg::new("name")
@@ -540,4 +585,67 @@ pub fn build_cli() -> App<'static> {
                         ),
                 ),
         )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use difference::{Changeset, Difference};
+    use regex::RegexBuilder;
+    use std::io::Write;
+
+    #[test]
+    fn test_help() {
+        let mut w = Vec::new();
+        let mut app = build_cli();
+
+        write!(&mut w, "========== {} ==========\n", app.get_name()).unwrap();
+        app.write_help(&mut w).unwrap();
+        write!(&mut w, "\n").unwrap();
+
+        for sc in app.get_subcommands_mut() {
+            write!(&mut w, "========== {} ==========\n", sc.get_name()).unwrap();
+            sc.write_help(&mut w).unwrap();
+            write!(&mut w, "\n").unwrap();
+
+            for nested_sc in sc.get_subcommands_mut() {
+                write!(&mut w, "========== {} ==========\n", nested_sc.get_name()).unwrap();
+                nested_sc.write_help(&mut w).unwrap();
+                write!(&mut w, "\n").unwrap();
+            }
+        }
+
+        let help_str = String::from_utf8(w).unwrap();
+        let no_trailing_whitespace = RegexBuilder::new(r"([ ]+$)")
+            .multi_line(true)
+            .build()
+            .unwrap()
+            .replace_all(&help_str, "");
+
+        let Changeset { diffs, .. } = Changeset::new(
+            &no_trailing_whitespace.trim(),
+            include_str!("../tests/data/all_help.stdout").trim(),
+            "\n",
+        );
+
+        let mut failed = false;
+
+        for i in 0..diffs.len() {
+            match diffs[i] {
+                Difference::Same(_) => {}
+                Difference::Add(ref x) => {
+                    println!("+{}", x);
+                    failed = true;
+                }
+                Difference::Rem(ref x) => {
+                    println!("-{}", x);
+                    failed = true;
+                }
+            }
+        }
+
+        if failed {
+            panic!("test failed");
+        }
+    }
 }

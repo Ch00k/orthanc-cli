@@ -1,0 +1,685 @@
+========== orthanc ==========
+orthanc 0.0.1
+Andrii Yurchuk <ay@mntw.re>
+Command-line interface for Orthanc, an open-source, lightweight DICOM server
+
+USAGE:
+    orthanc [OPTIONS] <SUBCOMMAND>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -s, --server <SERVER>        Orthanc server address
+    -u, --username <USERNAME>    Orthanc username
+    -p, --password <PASSWORD>    Orthanc password
+
+SUBCOMMANDS:
+    patient     Patient-level commands
+    study       Study-level commands
+    series      Series-level commands
+    instance    Instance-level commands
+    modality    Modality-level commands
+    help        Prints this message or the help of the given subcommand(s)
+
+========== patient ==========
+patient
+Patient-level commands
+
+USAGE:
+    patient <SUBCOMMAND>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    list         List all patients
+    show         Show patient details
+    anonymize    Anonymize patient
+    modify       Modify patient
+    download     Download patient
+    delete       Delete patient
+    help         Prints this message or the help of the given subcommand(s)
+
+========== list ==========
+list
+List all patients
+
+USAGE:
+    list
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== show ==========
+show
+Show patient details
+
+USAGE:
+    show <ID>
+
+ARGS:
+    <ID>    Patient ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== anonymize ==========
+anonymize
+Anonymize patient
+
+USAGE:
+    anonymize [OPTIONS] <ID>
+
+ARGS:
+    <ID>    Patient ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <CONFIG>    Anonymization configuration file
+
+========== modify ==========
+modify
+Modify patient
+
+USAGE:
+    modify <ID> --config <CONFIG>
+
+ARGS:
+    <ID>    Patient ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <CONFIG>    Modification configuration file
+
+========== download ==========
+download
+Download patient
+
+USAGE:
+    download <ID> --output <OUTPUT>
+
+ARGS:
+    <ID>    Patient ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -o, --output <OUTPUT>    Output file path
+
+========== delete ==========
+delete
+Delete patient
+
+USAGE:
+    delete <ID>
+
+ARGS:
+    <ID>    Patient ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== help ==========
+help
+Prints this message or the help of the given subcommand(s)
+
+USAGE:
+    help
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== study ==========
+study
+Study-level commands
+
+USAGE:
+    study <SUBCOMMAND>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    list         List all studies
+    show         Show study details
+    anonymize    Anonymize study
+    modify       Modify study
+    download     Download study
+    delete       Delete study
+    help         Prints this message or the help of the given subcommand(s)
+
+========== list ==========
+list
+List all studies
+
+USAGE:
+    list [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -i, --patient-id <ID>    Show only studies, belonging to specified patient
+
+========== show ==========
+show
+Show study details
+
+USAGE:
+    show <ID>
+
+ARGS:
+    <ID>    Study ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== anonymize ==========
+anonymize
+Anonymize study
+
+USAGE:
+    anonymize [OPTIONS] <ID>
+
+ARGS:
+    <ID>    Study ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <CONFIG>    Anonymization configuration file
+
+========== modify ==========
+modify
+Modify study
+
+USAGE:
+    modify <ID> --config <CONFIG>
+
+ARGS:
+    <ID>    Study ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <CONFIG>    Modification configuration file
+
+========== download ==========
+download
+Download study
+
+USAGE:
+    download <id> --output <OUTPUT>
+
+ARGS:
+    <id>    Study ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -o, --output <OUTPUT>    Output file path
+
+========== delete ==========
+delete
+Delete study
+
+USAGE:
+    delete <ID>
+
+ARGS:
+    <ID>    Study ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== help ==========
+help
+Prints this message or the help of the given subcommand(s)
+
+USAGE:
+    help
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== series ==========
+series
+Series-level commands
+
+USAGE:
+    series <SUBCOMMAND>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    list         List all series
+    show         Show series details
+    anonymize    Anonymize series
+    modify       Modify series
+    download     Download series
+    delete       Delete series
+    help         Prints this message or the help of the given subcommand(s)
+
+========== list ==========
+list
+List all series
+
+USAGE:
+    list [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -i, --study-id <study_id>    Show only series, belonging to specified study
+
+========== show ==========
+show
+Show series details
+
+USAGE:
+    show <ID>
+
+ARGS:
+    <ID>    Series ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== anonymize ==========
+anonymize
+Anonymize series
+
+USAGE:
+    anonymize [OPTIONS] <ID>
+
+ARGS:
+    <ID>    Series ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <CONFIG>    Anonymization configuration file
+
+========== modify ==========
+modify
+Modify series
+
+USAGE:
+    modify <ID> --config <CONFIG>
+
+ARGS:
+    <ID>    Series ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <CONFIG>    Modification configuration file
+
+========== download ==========
+download
+Download series
+
+USAGE:
+    download <ID> --output <OUTPUT>
+
+ARGS:
+    <ID>    Series ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -o, --output <OUTPUT>    Output file path
+
+========== delete ==========
+delete
+Delete series
+
+USAGE:
+    delete <ID>
+
+ARGS:
+    <ID>    Series ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== help ==========
+help
+Prints this message or the help of the given subcommand(s)
+
+USAGE:
+    help
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== instance ==========
+instance
+Instance-level commands
+
+USAGE:
+    instance <SUBCOMMAND>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    list         List all instances
+    show         Show instance details
+    tags         Show instance tags
+    anonymize    Anonymize instance
+    modify       Modify instance
+    download     Download instance
+    delete       Delete instance
+    help         Prints this message or the help of the given subcommand(s)
+
+========== list ==========
+list
+List all instances
+
+USAGE:
+    list [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -i, --series-id <series_id>    Show only instances, belonging to specified series
+
+========== show ==========
+show
+Show instance details
+
+USAGE:
+    show <ID>
+
+ARGS:
+    <ID>    Instance ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== tags ==========
+tags
+Show instance tags
+
+USAGE:
+    tags <ID>
+
+ARGS:
+    <ID>    Instance ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== anonymize ==========
+anonymize
+Anonymize instance
+
+USAGE:
+    anonymize [OPTIONS] <ID> --output <OUTPUT>
+
+ARGS:
+    <ID>    Instance ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <CONFIG>    Anonymization configuration file
+    -o, --output <OUTPUT>    Output file path
+
+========== modify ==========
+modify
+Modify instance
+
+USAGE:
+    modify <ID> --config <CONFIG> --output <OUTPUT>
+
+ARGS:
+    <ID>    Instance ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <CONFIG>    Modification configuration file
+    -o, --output <OUTPUT>    Output file path
+
+========== download ==========
+download
+Download instance
+
+USAGE:
+    download <ID> --output <OUTPUT>
+
+ARGS:
+    <ID>    Instance ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -o, --output <OUTPUT>    Output file path
+
+========== delete ==========
+delete
+Delete instance
+
+USAGE:
+    delete <ID>
+
+ARGS:
+    <ID>    Instance ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== help ==========
+help
+Prints this message or the help of the given subcommand(s)
+
+USAGE:
+    help
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== modality ==========
+modality
+Modality-level commands
+
+USAGE:
+    modality [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    list      List all modalities
+    show      Show modality details
+    create    Create a modality
+    modify    Modify a modality
+    echo      Send a C-ECHO request to a modality
+    store     Send a C-STORE request to a modality
+    delete    Delete modality
+    help      Prints this message or the help of the given subcommand(s)
+
+========== list ==========
+list
+List all modalities
+
+USAGE:
+    list
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== show ==========
+show
+Show modality details
+
+USAGE:
+    show <NAME>
+
+ARGS:
+    <NAME>    Modality name
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== create ==========
+create
+Create a modality
+
+USAGE:
+    create <NAME> --aet <AET> --host <HOST> --port <PORT>
+
+ARGS:
+    <NAME>    Modality name
+
+FLAGS:
+        --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -a, --aet <AET>      Modality AET
+    -h, --host <HOST>    Modality host
+    -p, --port <PORT>    Modality port
+
+========== modify ==========
+modify
+Modify a modality
+
+USAGE:
+    modify <ID> --aet <AET> --host <HOST> --port <PORT>
+
+ARGS:
+    <ID>    Modality name
+
+FLAGS:
+        --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -a, --aet <AET>      Modality AET
+    -h, --host <HOST>    Modality host
+    -p, --port <PORT>    Modality port
+
+========== echo ==========
+echo
+Send a C-ECHO request to a modality
+
+USAGE:
+    echo <NAME>
+
+ARGS:
+    <NAME>    Modality name
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== store ==========
+store
+Send a C-STORE request to a modality
+
+USAGE:
+    store <NAME> --entity-ids <IDS>...
+
+ARGS:
+    <NAME>    Modality name
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -e, --entity-ids <IDS>...    Entity IDs
+
+========== delete ==========
+delete
+Delete modality
+
+USAGE:
+    delete <NAME>
+
+ARGS:
+    <NAME>    Modality name
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== help ==========
+help
+Prints this message or the help of the given subcommand(s)
+
+USAGE:
+    help
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== help ==========
+help
+Prints this message or the help of the given subcommand(s)
+
+USAGE:
+    help
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
