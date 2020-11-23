@@ -590,7 +590,7 @@ pub fn build_cli() -> App<'static> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use difference::{Changeset, Difference};
+    use pretty_assertions::assert_eq;
     use regex::RegexBuilder;
     use std::io::Write;
 
@@ -622,30 +622,9 @@ mod tests {
             .unwrap()
             .replace_all(&help_str, "");
 
-        let Changeset { diffs, .. } = Changeset::new(
-            &no_trailing_whitespace.trim(),
+        assert_eq!(
+            no_trailing_whitespace.trim(),
             include_str!("../tests/data/all_help.stdout").trim(),
-            "\n",
         );
-
-        let mut failed = false;
-
-        for i in 0..diffs.len() {
-            match diffs[i] {
-                Difference::Same(_) => {}
-                Difference::Add(ref x) => {
-                    println!("+{}", x);
-                    failed = true;
-                }
-                Difference::Rem(ref x) => {
-                    println!("-{}", x);
-                    failed = true;
-                }
-            }
-        }
-
-        if failed {
-            panic!("test failed");
-        }
     }
 }
