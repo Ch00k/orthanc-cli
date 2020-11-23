@@ -10,9 +10,9 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-    -s, --server <server>        Orthanc server address
-    -u, --username <username>    Orthanc username
-    -p, --password <password>    Orthanc password
+    -s, --server <SERVER>        Orthanc server address
+    -u, --username <USERNAME>    Orthanc username
+    -p, --password <PASSWORD>    Orthanc password
 
 SUBCOMMANDS:
     patient     Patient-level commands
