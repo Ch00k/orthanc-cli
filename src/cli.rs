@@ -545,7 +545,7 @@ pub fn build_cli() -> App<'static> {
                         .display_order(4)
                         .about("Send a C-ECHO request to a modality")
                         .arg(
-                            Arg::new("modality")
+                            Arg::new("name")
                                 .about("Modality name")
                                 .required(true)
                                 .value_name("NAME"),
