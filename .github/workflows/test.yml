@@ -2,7 +2,7 @@ name: tests
 
 on:
   push:
-    branches: [ master ]
+  #  branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -26,7 +26,7 @@ jobs:
       - name: run tests
         run: |
           # Pinning to 0.16.0 until https://github.com/xd009642/tarpaulin/issues/618 is fixed
-          cargo install --version 0.16.0 cargo-tarpaulin && \
+          cargo install --git https://github.com/xd009642/tarpaulin.git --branch develop cargo-tarpaulin && \
           cargo tarpaulin --bins --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml
 
       - name: upload coverage
@@ -61,9 +61,9 @@ jobs:
       - name: run tests
         run: |
           # Pinning to 0.16.0 until https://github.com/xd009642/tarpaulin/issues/618 is fixed
-          cargo install --version 0.16.0 cargo-tarpaulin && \
+          cargo install --git https://github.com/xd009642/tarpaulin.git --branch develop cargo-tarpaulin && \
           ./scripts/populate_orthanc.sh && \
-          cargo tarpaulin --test integration --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
+          cargo tarpaulin --test integration --follow-exec --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
 
       - name: upload coverage
         uses: codecov/codecov-action@v1
