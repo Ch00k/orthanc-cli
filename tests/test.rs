@@ -262,7 +262,7 @@ fn _test_server_username_password_options() {
     assert_result(
         vec![
             "--server",
-            "http://localhost:8024",
+            "http://localhost:8028",
             "--username",
             "orthanc",
             "--password",

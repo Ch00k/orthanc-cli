@@ -2,6 +2,11 @@
 
 set -e
 
+if ! hash jq 2>/dev/null; then
+    echo "jq not found, cannot continue"
+    exit 1
+fi
+
 cleanup() {
     curl_command="curl"
     if [ -n $ORC_ORTHANC_USERNAME ] && [ -n $ORC_ORTHANC_PASSWORD ]; then
