@@ -40,11 +40,11 @@ jobs:
     name: integration_test
     services:
       orthanc:
-        image: jodogne/orthanc:1.7.1
+        image: ch00k/orthanc-nginx
         ports:
-          - 8024:8042
+          - 8028:80
     env:
-      ORC_ORTHANC_ADDRESS: http://localhost:8024
+      ORC_ORTHANC_ADDRESS: http://localhost:8028
       ORC_ORTHANC_USERNAME: orthanc
       ORC_ORTHANC_PASSWORD: orthanc
       ORC_DATAFILES_PATH: /tmp/orc_test_data
