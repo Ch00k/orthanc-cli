@@ -592,13 +592,15 @@ impl Orthanc {
                 table.add_row(vec!["Host", &m_config.host].iter());
                 table.add_row(vec!["Port", &format!("{}", m_config.port)].iter());
                 table.add_row(vec!["Manufacturer", &m_config.manufacturer.unwrap()].iter());
-                table.add_row(
-                    vec![
-                        "Transcoding",
-                        &format!("{}", m_config.allow_transcoding.unwrap()),
-                    ]
-                    .iter(),
-                );
+                if let Some(_) = m_config.allow_transcoding {
+                    table.add_row(
+                        vec![
+                            "Transcoding",
+                            &format!("{}", m_config.allow_transcoding.unwrap()),
+                        ]
+                        .iter(),
+                    );
+                };
                 table
                     .add_row(vec!["C-ECHO", &format!("{}", m_config.allow_c_echo.unwrap())].iter());
                 table

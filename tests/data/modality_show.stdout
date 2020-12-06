@@ -1,6 +1,6 @@
  Name             bar
- AET              BAR
- Host             1.2.3.4
+ AET              BAZ
+ Host             9.8.7.6
  Port             1717
  Manufacturer     Generic
  Transcoding      true
