@@ -33,7 +33,9 @@
     "RegisteredUsers": {
         "orthanc": "orthanc"
     },
-    "DicomModalities": {},
+    "DicomModalities": {
+        "dino": [ "DINO", "dino", 5252 ]
+    },
     "DicomModalitiesInDatabase": false,
     "DicomAlwaysAllowEcho": true,
     "DicomAlwaysAllowStore": true,

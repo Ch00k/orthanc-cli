@@ -38,11 +38,16 @@ jobs:
   integration_test:
     runs-on: ubuntu-latest
     name: integration_test
+    strategy:
+      matrix:
+        orthanc: [1.6.1, 1.7.4, 1.8.0]
     services:
       orthanc:
-        image: ch00k/orthanc-nginx
+        image: ch00k/orthanc-nginx:${{matrix.orthanc}}
         ports:
           - 8028:80
+        volumes:
+          - orthanc:/etc/orthanc
     env:
       ORC_ORTHANC_ADDRESS: http://localhost:8028
       ORC_ORTHANC_USERNAME: orthanc

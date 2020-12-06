@@ -868,6 +868,9 @@ fn test_delete() {
 
 #[test]
 fn test_modalities() {
+    // Get system info
+    let sysinfo = client().system().unwrap();
+
     // Create
     assert_result(
         vec![
@@ -901,14 +904,25 @@ fn test_modalities() {
     );
 
     // Show
-    assert_result(
-        vec!["modality", "show", "bar"],
-        CommandResult::new(
-            0,
-            include_str!("data/modality_show_modified.stdout").to_string(),
-            "".to_string(),
-        ),
-    );
+    if sysinfo.api_version > 6 {
+        assert_result(
+            vec!["modality", "show", "bar"],
+            CommandResult::new(
+                0,
+                include_str!("data/modality_show.stdout").to_string(),
+                "".to_string(),
+            ),
+        );
+    } else {
+        assert_result(
+            vec!["modality", "show", "bar"],
+            CommandResult::new(
+                0,
+                include_str!("data/modality_show_1.6.stdout").to_string(),
+                "".to_string(),
+            ),
+        );
+    };
 
     // Delete
     assert_result(
