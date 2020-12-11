@@ -27,7 +27,7 @@ integration_test: reset_orthanc
 	cargo test --test integration -- --test-threads=1 --show-output
 
 integration_test_coverage: install_tarpaulin_HEAD reset_orthanc
-	cargo tarpaulin --test integration --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
+	cargo tarpaulin --test integration --follow-exec --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
 
 install_tarpaulin:
 	cargo install --version 0.16.0 cargo-tarpaulin
