@@ -51,10 +51,9 @@ stop_services:
 	docker-compose down
 
 check_completion:
-	export ORC_COMPLETION_OUTPUT_DIR=/tmp/orc_completion
-	mkdir -p ${ORC_COMPLETION_OUTPUT_DIR}
-	cargo build
-	diff ./completion ${ORC_COMPLETION_OUTPUT_DIR}
+	mkdir -p /tmp/orc_completion
+	ORC_COMPLETION_OUTPUT_DIR=/tmp/orc_completion cargo build
+	diff ./completion /tmp/orc_completion
 
 release:
 	cargo-release
