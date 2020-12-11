@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  orthanc:
+    image: ch00k/orthanc-nginx
+    ports:
+      - 8028:80
+    volumes:
+      - ./orthanc:/etc/orthanc
+      - orthanc:/var/lib/orthanc/db
+
+  dino:
+    image: ch00k/dino
+    environment:
+      DINO_SCP_HOST: ${DINO_SCP_HOST:-0.0.0.0}
+      DINO_SCP_PORT: ${DINO_SCP_PORT:-5252}
+      DINO_SCP_AET: ${DINO_SCP_AET:-DINO}
+    ports:
+      - 5252:5252
+
+volumes:
+  orthanc:
