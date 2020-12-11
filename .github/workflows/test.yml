@@ -24,10 +24,7 @@ jobs:
           toolchain: stable
 
       - name: run tests
-        run: |
-          # Pinning to 0.16.0 until https://github.com/xd009642/tarpaulin/issues/618 is fixed
-          cargo install --git https://github.com/xd009642/tarpaulin.git --branch develop cargo-tarpaulin && \
-          cargo tarpaulin --bins --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml
+        run: make unit_test_coverage
 
       - name: upload coverage
         uses: codecov/codecov-action@v1
@@ -65,10 +62,8 @@ jobs:
 
       - name: run tests
         run: |
-          # Pinning to 0.16.0 until https://github.com/xd009642/tarpaulin/issues/618 is fixed
-          cargo install --git https://github.com/xd009642/tarpaulin.git --branch develop cargo-tarpaulin && \
-          ./scripts/populate_orthanc.sh && \
-          cargo tarpaulin --test integration --follow-exec --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
+          make populate_orthanc
+          make integration_test_coverage
 
       - name: upload coverage
         uses: codecov/codecov-action@v1
@@ -80,9 +75,6 @@ jobs:
     runs-on: ubuntu-latest
     name: check_completion
 
-    env:
-      ORC_COMPLETION_OUTPUT_DIR: /tmp/orc_completion
-
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -93,7 +85,4 @@ jobs:
           toolchain: stable
 
       - name: run check
-        run: |
-          mkdir $ORC_COMPLETION_OUTPUT_DIR
-          cargo build
-          diff ./completion $ORC_COMPLETION_OUTPUT_DIR
+        run: make check_completion
