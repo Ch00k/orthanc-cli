@@ -61,9 +61,7 @@ jobs:
           toolchain: stable
 
       - name: run tests
-        run: |
-          make populate_orthanc
-          make integration_test_coverage
+        run: make integration_test_coverage
 
       - name: upload coverage
         uses: codecov/codecov-action@v1
