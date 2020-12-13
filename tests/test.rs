@@ -938,3 +938,23 @@ fn test_modalities() {
         ),
     );
 }
+
+#[test]
+fn test_modality_store() {
+    assert_result(
+        vec![
+            "modality",
+            "store",
+            "dino",
+            "-e",
+            &find_study_by_study_instance_uid(STUDY_INSTANCE_UID)
+                .unwrap()
+                .id,
+        ],
+        CommandResult::new(
+            0,
+            include_str!("data/modality_store.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
