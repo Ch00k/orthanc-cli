@@ -981,3 +981,21 @@ fn test_modality_store() {
         ),
     );
 }
+
+#[test]
+fn test_instance_tags() {
+    assert_result(
+        vec![
+            "instance",
+            "tags",
+            &find_instance_by_sop_instance_uid(SOP_INSTANCE_UID)
+                .unwrap()
+                .id,
+        ],
+        CommandResult::new(
+            0,
+            include_str!("data/instance_tags.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
