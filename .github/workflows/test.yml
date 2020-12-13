@@ -45,6 +45,7 @@ jobs:
           - 8028:80
         volumes:
           - ${{github.workspace}}/orthanc:/etc/orthanc
+          - orthanc:/var/lib/orthanc/db
       dino:
         image: ch00k/dino
         env:
@@ -84,6 +85,7 @@ jobs:
           - 8028:80
         volumes:
           - ${{github.workspace}}/orthanc:/etc/orthanc
+          - orthanc:/var/lib/orthanc/db
       dino:
         image: ch00k/dino
         env:
