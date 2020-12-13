@@ -5,9 +5,6 @@ services:
     image: ch00k/orthanc-nginx
     ports:
       - 8028:80
-    volumes:
-      - ./orthanc:/etc/orthanc
-      - orthanc:/var/lib/orthanc/db
 
   dino:
     image: ch00k/dino
@@ -17,6 +14,3 @@ services:
       DINO_SCP_AET: ${DINO_SCP_AET:-DINO}
     ports:
       - 5252:5252
-
-volumes:
-  orthanc:
