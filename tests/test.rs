@@ -98,7 +98,7 @@ impl PartialEq for CommandResult {
 }
 
 fn client() -> Client {
-    Client::new(env::var("ORC_ORTHANC_ADDRESS").unwrap()).auth(
+    Client::new(env::var("ORC_ORTHANC_SERVER").unwrap()).auth(
         env::var("ORC_ORTHANC_USERNAME").unwrap(),
         env::var("ORC_ORTHANC_PASSWORD").unwrap(),
     )

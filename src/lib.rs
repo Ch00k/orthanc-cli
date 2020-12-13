@@ -693,11 +693,11 @@ fn create_error_table(error: CliError) -> Table {
 pub fn get_server_address(cmd_option: Option<&str>) -> result::Result<String, CliError> {
     match cmd_option {
         Some(s) => Ok(s.to_string()),
-        None => match env::var("ORC_ORTHANC_ADDRESS") {
+        None => match env::var("ORC_ORTHANC_SERVER") {
             Ok(s) => Ok(s),
             Err(e) => Err(CliError::new(
                 "Command error",
-                Some("Neither --server-address nor ORC_ORTHANC_ADDRESS are set"),
+                Some("Neither --server nor ORC_ORTHANC_SERVER are set"),
                 Some(&format!("{}", e)),
             )),
         },
@@ -769,17 +769,17 @@ mod tests {
     }
     #[test]
     fn test_get_server() {
-        remove_var("ORC_ORTHANC_ADDRESS");
+        remove_var("ORC_ORTHANC_SERVER");
         assert_eq!(get_server_address(Some("foo")).unwrap(), "foo".to_string());
         assert_eq!(
             get_server_address(None).unwrap_err(),
             CliError::new(
                 "Command error",
-                Some("Neither --server-address nor ORC_ORTHANC_ADDRESS are set"),
+                Some("Neither --server nor ORC_ORTHANC_SERVER are set"),
                 Some("environment variable not found"),
             )
         );
-        set_var("ORC_ORTHANC_ADDRESS", "bar");
+        set_var("ORC_ORTHANC_SERVER", "bar");
         assert_eq!(get_server_address(None).unwrap(), "bar".to_string());
         assert_eq!(get_server_address(Some("baz")).unwrap(), "baz".to_string())
     }

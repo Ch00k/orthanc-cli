@@ -13,7 +13,7 @@ if [ -n $ORC_ORTHANC_USERNAME ] && [ -n $ORC_ORTHANC_PASSWORD ]; then
     curl_command="$curl_command --user $ORC_ORTHANC_USERNAME:$ORC_ORTHANC_PASSWORD"
 fi
 
-curl_command="$curl_command $ORC_ORTHANC_ADDRESS/instances"
+curl_command="$curl_command $ORC_ORTHANC_SERVER/instances"
 
 for f in $(find $ORC_DATAFILES_PATH/initial -type f); do
     cmd="$curl_command --data-binary @$f"

@@ -13,7 +13,7 @@ cleanup() {
         curl_command="$curl_command --user $ORC_ORTHANC_USERNAME:$ORC_ORTHANC_PASSWORD"
     fi
 
-    patients_curl_command="$curl_command $ORC_ORTHANC_ADDRESS/patients"
+    patients_curl_command="$curl_command $ORC_ORTHANC_SERVER/patients"
     patients=($($patients_curl_command | jq -c '.[]' | tr -d '"'))
 
     for patient in "${patients[@]}"; do
@@ -22,7 +22,7 @@ cleanup() {
         $delete_curl_command
     done
 
-    modalities_curl_command="$curl_command $ORC_ORTHANC_ADDRESS/modalities"
+    modalities_curl_command="$curl_command $ORC_ORTHANC_SERVER/modalities"
     modalities=($($modalities_curl_command | jq -c '.[]' | tr -d '"'))
 
     for modality in "${modalities[@]}"; do

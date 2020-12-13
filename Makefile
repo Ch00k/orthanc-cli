@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 
-export ORC_ORTHANC_ADDRESS ?= http://localhost:8028
+export ORC_ORTHANC_SERVER ?= http://localhost:8028
 export ORC_ORTHANC_USERNAME ?= orthanc
 export ORC_ORTHANC_PASSWORD ?= orthanc
 export ORC_DATAFILES_PATH ?= ./tests/data/dicom
