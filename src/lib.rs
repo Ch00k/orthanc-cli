@@ -233,13 +233,8 @@ impl Orthanc {
 
     ////////// STUDY //////////
 
-    pub fn list_studies(&self, patient_id: Option<&str>) -> Result<Table> {
-        let mut studies = self.client.studies_expanded()?;
-        match patient_id {
-            Some(p) => studies.retain(|s| s.parent_patient == p),
-            None => (),
-        }
-
+    pub fn list_studies(&self) -> Result<Table> {
+        let studies = self.client.studies_expanded()?;
         let mut table = create_table(Some(&STUDIES_LIST_HEADER));
         for s in studies {
             let mut row: Vec<&str> = vec![&s.id];
@@ -327,13 +322,8 @@ impl Orthanc {
 
     ////////// SERIES //////////
 
-    pub fn list_series(&self, study_id: Option<&str>) -> Result<Table> {
-        let mut series = self.client.series_expanded()?;
-        match study_id {
-            Some(p) => series.retain(|s| s.parent_study == p),
-            None => (),
-        }
-
+    pub fn list_series(&self) -> Result<Table> {
+        let series = self.client.series_expanded()?;
         let mut table = create_table(Some(&SERIES_LIST_HEADER));
         for s in series {
             let mut row: Vec<&str> = vec![&s.id];
@@ -421,13 +411,8 @@ impl Orthanc {
 
     ////////// INSTANCE //////////
 
-    pub fn list_instances(&self, study_id: Option<&str>) -> Result<Table> {
-        let mut instance = self.client.instances_expanded()?;
-        match study_id {
-            Some(p) => instance.retain(|s| s.parent_series == p),
-            None => (),
-        }
-
+    pub fn list_instances(&self) -> Result<Table> {
+        let instance = self.client.instances_expanded()?;
         let mut table = create_table(Some(&INSTANCES_LIST_HEADER));
         for s in instance {
             let mut row: Vec<&str> = vec![&s.id];

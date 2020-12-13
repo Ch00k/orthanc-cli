@@ -127,19 +127,7 @@ pub fn build_cli() -> App<'static> {
                 .setting(clap::AppSettings::SubcommandRequiredElseHelp)
                 .display_order(1)
                 .about("Study-level commands")
-                .subcommand(
-                    App::new("list")
-                        .display_order(0)
-                        .about("List all studies")
-                        .arg(
-                            Arg::new("patient_id")
-                                .takes_value(true)
-                                .short('i')
-                                .long("patient-id")
-                                .about("Show only studies, belonging to specified patient")
-                                .value_name("ID"),
-                        ),
-                )
+                .subcommand(App::new("list").display_order(0).about("List all studies"))
                 .subcommand(
                     App::new("show")
                         .display_order(1)
@@ -222,18 +210,7 @@ pub fn build_cli() -> App<'static> {
                 .setting(clap::AppSettings::SubcommandRequiredElseHelp)
                 .display_order(2)
                 .about("Series-level commands")
-                .subcommand(
-                    App::new("list")
-                        .display_order(0)
-                        .about("List all series")
-                        .arg(
-                            Arg::new("study_id")
-                                .takes_value(true)
-                                .short('i')
-                                .long("study-id")
-                                .about("Show only series, belonging to specified study"),
-                        ),
-                )
+                .subcommand(App::new("list").display_order(0).about("List all series"))
                 .subcommand(
                     App::new("show")
                         .display_order(1)
@@ -324,14 +301,7 @@ pub fn build_cli() -> App<'static> {
                 .subcommand(
                     App::new("list")
                         .display_order(0)
-                        .about("List all instances")
-                        .arg(
-                            Arg::new("series_id")
-                                .takes_value(true)
-                                .short('i')
-                                .long("series-id")
-                                .about("Show only instances, belonging to specified series"),
-                        ),
+                        .about("List all instances"),
                 )
                 .subcommand(
                     App::new("show")

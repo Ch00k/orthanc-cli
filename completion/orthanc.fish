@@ -45,7 +45,6 @@ complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "anonymize" -d 
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "modify" -d 'Modify study'
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "download" -d 'Download study'
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "delete" -d 'Delete study'
-complete -c orthanc -n "__fish_seen_subcommand_from list" -s i -l patient-id -d 'Show only studies, belonging to specified patient' -r
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Study ID' -r
@@ -74,7 +73,6 @@ complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "anonymize" -d
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "modify" -d 'Modify series'
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "download" -d 'Download series'
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "delete" -d 'Delete series'
-complete -c orthanc -n "__fish_seen_subcommand_from list" -s i -l study-id -d 'Show only series, belonging to specified study' -r
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Series ID' -r
@@ -104,7 +102,6 @@ complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "anonymize" 
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "modify" -d 'Modify instance'
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "download" -d 'Download instance'
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "delete" -d 'Delete instance'
-complete -c orthanc -n "__fish_seen_subcommand_from list" -s i -l series-id -d 'Show only instances, belonging to specified series' -r
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Instance ID' -r

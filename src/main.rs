@@ -59,7 +59,7 @@ fn main() {
             _ => {}
         },
         Some(("study", study)) => match study.subcommand() {
-            Some(("list", list)) => match o.list_studies(list.value_of("patient_id")) {
+            Some(("list", _)) => match o.list_studies() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
             },
@@ -95,7 +95,7 @@ fn main() {
             _ => {}
         },
         Some(("series", series)) => match series.subcommand() {
-            Some(("list", list)) => match o.list_series(list.value_of("study_id")) {
+            Some(("list", _)) => match o.list_series() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
             },
@@ -131,7 +131,7 @@ fn main() {
             _ => {}
         },
         Some(("instance", instance)) => match instance.subcommand() {
-            Some(("list", list)) => match o.list_instances(list.value_of("series_id")) {
+            Some(("list", _)) => match o.list_instances() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
             },

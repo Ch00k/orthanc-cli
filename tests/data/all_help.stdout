@@ -175,9 +175,6 @@ FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
 
-OPTIONS:
-    -i, --patient-id <ID>    Show only studies, belonging to specified patient
-
 ========== show ==========
 show
 Show study details
@@ -298,9 +295,6 @@ USAGE:
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
-
-OPTIONS:
-    -i, --study-id <study_id>    Show only series, belonging to specified study
 
 ========== show ==========
 show
@@ -423,9 +417,6 @@ USAGE:
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
-
-OPTIONS:
-    -i, --series-id <series_id>    Show only instances, belonging to specified series
 
 ========== show ==========
 show

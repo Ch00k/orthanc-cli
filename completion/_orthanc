@@ -129,8 +129,6 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
-'-i+[Show only studies, belonging to specified patient]' \
-'--patient-id=[Show only studies, belonging to specified patient]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -209,8 +207,6 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
-'-i+[Show only series, belonging to specified study]' \
-'--study-id=[Show only series, belonging to specified study]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -289,8 +285,6 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
-'-i+[Show only instances, belonging to specified series]' \
-'--series-id=[Show only instances, belonging to specified series]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
