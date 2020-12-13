@@ -44,7 +44,7 @@ jobs:
         ports:
           - 8028:80
         volumes:
-          - ./orthanc:/etc/orthanc
+          - ${{github.workspace}}/orthanc:/etc/orthanc
       dino:
         image: ch00k/dino
         env:
@@ -83,7 +83,7 @@ jobs:
         ports:
           - 8028:80
         volumes:
-          - ./orthanc:/etc/orthanc
+          - ${{github.workspace}}/orthanc:/etc/orthanc
       dino:
         image: ch00k/dino
         env:
