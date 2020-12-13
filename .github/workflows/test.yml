@@ -43,13 +43,22 @@ jobs:
         image: ch00k/orthanc-nginx:${{matrix.orthanc}}
         ports:
           - 8028:80
-        volumes:
-          - orthanc:/etc/orthanc
+      dino:
+        image: ch00k/dino
+        env:
+          DINO_SCP_HOST: ${{env.DINO_SCP_HOST}}
+          DINO_SCP_PORT: ${{env.DINO_SCP_PORT}}
+          DINO_SCP_AET: ${{env.DINO_SCP_AET}}
+        ports:
+          - 5252:5252
     env:
       ORC_ORTHANC_ADDRESS: http://localhost:8028
       ORC_ORTHANC_USERNAME: orthanc
       ORC_ORTHANC_PASSWORD: orthanc
       ORC_DATAFILES_PATH: /tmp/orc_test_data
+      DINO_SCP_HOST: 0.0.0.0
+      DINO_SCP_PORT: 5252
+      DINO_SCP_AET: DINO
 
     steps:
       - name: checkout
@@ -71,13 +80,22 @@ jobs:
         image: ch00k/orthanc-nginx:1.8.0
         ports:
           - 8028:80
-        volumes:
-          - orthanc:/etc/orthanc
+      dino:
+        image: ch00k/dino
+        env:
+          DINO_SCP_HOST: ${{env.DINO_SCP_HOST}}
+          DINO_SCP_PORT: ${{env.DINO_SCP_PORT}}
+          DINO_SCP_AET: ${{env.DINO_SCP_AET}}
+        ports:
+          - 5252:5252
     env:
       ORC_ORTHANC_ADDRESS: http://localhost:8028
       ORC_ORTHANC_USERNAME: orthanc
       ORC_ORTHANC_PASSWORD: orthanc
       ORC_DATAFILES_PATH: /tmp/orc_test_data
+      DINO_SCP_HOST: 0.0.0.0
+      DINO_SCP_PORT: 5252
+      DINO_SCP_AET: DINO
 
     steps:
       - name: checkout

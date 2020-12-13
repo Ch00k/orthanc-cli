@@ -10,6 +10,10 @@ use std::process::Command;
 use std::str;
 use zip;
 
+const DEFAULT_DINO_HOST: &str = "dino"; // docker-compose
+const DEFAULT_DINO_PORT: &str = "5252";
+const DEFAULT_DINO_AET: &str = "DINO";
+
 const ORTHANC_ID_PATTERN: &str = r"(([0-9a-f]{8}-){4}[0-9a-f]{8})";
 const ORTHANC_DICOM_UID_PATTERN: &str = r"1\.2\.276\.0\.7230010\.3\.1\.[2|3]\.([\d|\.]+)";
 const ANONYMIZED_PATIENT_ID_PATTERN: &str = r"([0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12})";
@@ -935,6 +939,45 @@ fn test_modalities() {
             1,
             "".to_string(),
             " Error   Modality bar not found \n".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modality_store() {
+    let modality = Modality {
+        aet: env::var("DINO_SCP_AET").unwrap_or(DEFAULT_DINO_AET.to_string()),
+        host: DEFAULT_DINO_HOST.to_string(),
+        port: env::var("DINO_SCP_PORT")
+            .unwrap_or(DEFAULT_DINO_PORT.to_string())
+            .parse::<i32>()
+            .unwrap(),
+        manufacturer: None,
+        allow_c_echo: None,
+        allow_c_find: None,
+        allow_c_get: None,
+        allow_c_move: None,
+        allow_c_store: None,
+        allow_n_action: None,
+        allow_n_event_report: None,
+        allow_transcoding: None,
+    };
+    client().create_modality("dino", modality).unwrap();
+
+    assert_result(
+        vec![
+            "modality",
+            "store",
+            "dino",
+            "-e",
+            &find_study_by_study_instance_uid(STUDY_INSTANCE_UID)
+                .unwrap()
+                .id,
+        ],
+        CommandResult::new(
+            0,
+            include_str!("data/modality_store.stdout").to_string(),
+            "".to_string(),
         ),
     );
 }
