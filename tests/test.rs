@@ -295,6 +295,18 @@ fn _test_list_patients() {
 }
 
 #[test]
+fn _test_list_patients_error() {
+    assert_result(
+        vec!["-s", "http://example.com", "patient", "list"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/json_parse_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_list_studies() {
     assert_result(
         vec!["study", "list"],
@@ -302,6 +314,18 @@ fn _test_list_studies() {
             0,
             include_str!("data/study_list.stdout").to_string(),
             "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_studies_error() {
+    assert_result(
+        vec!["-s", "http://example.com", "study", "list"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/json_parse_error.stderr").to_string(),
         ),
     );
 }
@@ -319,6 +343,18 @@ fn _test_list_series() {
 }
 
 #[test]
+fn _test_list_series_error() {
+    assert_result(
+        vec!["-s", "http://example.com", "series", "list"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/json_parse_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_list_instances() {
     assert_result(
         vec!["instance", "list"],
@@ -326,6 +362,18 @@ fn _test_list_instances() {
             0,
             include_str!("data/instance_list.stdout").to_string(),
             "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_instances_error() {
+    assert_result(
+        vec!["-s", "http://example.com", "instance", "list"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/json_parse_error.stderr").to_string(),
         ),
     );
 }
@@ -344,6 +392,18 @@ fn _test_show_patient() {
 }
 
 #[test]
+fn _test_show_patient_error() {
+    assert_result(
+        vec!["patient", "show", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_show_study() {
     let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
     assert_result(
@@ -352,6 +412,18 @@ fn _test_show_study() {
             0,
             include_str!("data/study_show.stdout").to_string(),
             "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_show_study_error() {
+    assert_result(
+        vec!["study", "show", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
         ),
     );
 }
@@ -370,6 +442,18 @@ fn _test_show_series() {
 }
 
 #[test]
+fn _test_show_series_error() {
+    assert_result(
+        vec!["series", "show", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_show_instance() {
     let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
     assert_result(
@@ -378,6 +462,18 @@ fn _test_show_instance() {
             0,
             include_str!("data/instance_show.stdout").to_string(),
             "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_show_instance_error() {
+    assert_result(
+        vec!["instance", "show", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
         ),
     );
 }
@@ -405,6 +501,18 @@ fn test_download_patient() {
 }
 
 #[test]
+fn test_download_patient_error() {
+    assert_result(
+        vec!["patient", "download", "foobar", "-o", "/tmp/patient.zip"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_download_study() {
     let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
     assert_result(
@@ -423,6 +531,18 @@ fn test_download_study() {
             "patient_2 Patient 2/REMOVED Study 1/MR Series 1/MR000000.dcm",
             "patient_2 Patient 2/REMOVED Study 1/PR/PR000000.dcm",
         ]
+    );
+}
+
+#[test]
+fn test_download_study_error() {
+    assert_result(
+        vec!["study", "download", "foobar", "-o", "/tmp/study.zip"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
     );
 }
 
@@ -446,6 +566,18 @@ fn test_download_series() {
 }
 
 #[test]
+fn test_download_series_error() {
+    assert_result(
+        vec!["series", "download", "foobar", "-o", "/tmp/series.zip"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_download_instance() {
     let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
     assert_result(
@@ -462,6 +594,18 @@ fn test_download_instance() {
     // TODO: At least check that it is a DICOM file.
     // Perhaps also check that it contains some DICOM
     // tags.
+}
+
+#[test]
+fn test_download_instance_error() {
+    assert_result(
+        vec!["instance", "download", "foobar", "-o", "/tmp/instance.zip"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
 }
 
 #[test]
@@ -681,6 +825,54 @@ fn test_anonymize_instance_with_config() {
 }
 
 #[test]
+fn test_anonymize_patient_error() {
+    assert_result(
+        vec!["patient", "anonymize", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_study_error() {
+    assert_result(
+        vec!["study", "anonymize", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_series_error() {
+    assert_result(
+        vec!["series", "anonymize", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_instance_error() {
+    assert_result(
+        vec!["instance", "anonymize", "foobar", "-o", "/tmp/instance.dcm"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_modify_patient() {
     let mut file = fs::File::create("/tmp/patient_mod_config.yml").unwrap();
     file.write_all(include_bytes!("data/patient_modification_config.yml"))
@@ -807,6 +999,70 @@ fn test_modify_instance() {
 }
 
 #[test]
+fn test_modify_patient_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"remove:\nreplace:").unwrap();
+    assert_result(
+        vec!["patient", "modify", "foobar", "-c", "/tmp/mod_config.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_study_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"remove:\nreplace:").unwrap();
+    assert_result(
+        vec!["study", "modify", "foobar", "-c", "/tmp/mod_config.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_series_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"remove:\nreplace:").unwrap();
+    assert_result(
+        vec!["series", "modify", "foobar", "-c", "/tmp/mod_config.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_instance_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"remove:\nreplace:").unwrap();
+    assert_result(
+        vec![
+            "instance",
+            "modify",
+            "foobar",
+            "-o",
+            "/tmp/instance.dcm",
+            "-c",
+            "/tmp/mod_config.yml",
+        ],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_delete() {
     let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID_DELETE).unwrap();
     let series = run_command(vec!["instance", "show", &instance.id]).parent_entity_id();
@@ -866,6 +1122,54 @@ fn test_delete() {
             1,
             "".to_string(),
             " Error   API error: 404 Not Found \n".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_delete_patient_error() {
+    assert_result(
+        vec!["patient", "delete", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_delete_study_error() {
+    assert_result(
+        vec!["study", "delete", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_delete_series_error() {
+    assert_result(
+        vec!["series", "delete", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_delete_instance_error() {
+    assert_result(
+        vec!["instance", "delete", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
         ),
     );
 }
@@ -944,6 +1248,91 @@ fn test_modalities() {
 }
 
 #[test]
+fn modality_create_error() {
+    assert_result(
+        vec![
+            "-s",
+            "http://example.com",
+            "modality",
+            "create",
+            "foo",
+            "--aet",
+            "FOO",
+            "--host",
+            "4.3.2.1",
+            "--port",
+            "42",
+        ],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/json_parse_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modality_list_error() {
+    assert_result(
+        vec!["-s", "http://example.com", "modality", "list"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/json_parse_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modality_show_error() {
+    assert_result(
+        vec!["modality", "show", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/modality_not_found_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn modality_modify_error() {
+    assert_result(
+        vec![
+            "-s",
+            "http://example.com",
+            "modality",
+            "modify",
+            "foo",
+            "--aet",
+            "FOO",
+            "--host",
+            "4.3.2.1",
+            "--port",
+            "42",
+        ],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/json_parse_error.stderr").to_string(),
+        ),
+    );
+}
+
+// Orthanc always returns a 200 even if the modality does not exist
+//#[test]
+//fn test_modality_delete_error() {
+//    assert_result(
+//        vec!["modality", "delete", "garble"],
+//        CommandResult::new(
+//            1,
+//            "".to_string(),
+//            include_str!("data/modality_not_found_error.stderr").to_string(),
+//        ),
+//    );
+//}
+
+#[test]
 fn test_modality_store() {
     let modality = Modality {
         aet: env::var("DINO_SCP_AET").unwrap_or(DEFAULT_DINO_AET.to_string()),
@@ -983,6 +1372,26 @@ fn test_modality_store() {
 }
 
 #[test]
+fn test_modality_store_error() {
+    assert_result(
+        vec![
+            "modality",
+            "store",
+            "garble",
+            "-e",
+            &find_study_by_study_instance_uid(STUDY_INSTANCE_UID)
+                .unwrap()
+                .id,
+        ],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/modality_delete_not_found_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_instance_tags() {
     assert_result(
         vec![
@@ -996,6 +1405,18 @@ fn test_instance_tags() {
             0,
             include_str!("data/instance_tags.stdout").to_string(),
             "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_instance_tags_error() {
+    assert_result(
+        vec!["instance", "tags", "foobar"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_with_message_error.stderr").to_string(),
         ),
     );
 }
