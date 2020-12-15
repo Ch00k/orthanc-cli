@@ -2,7 +2,7 @@ use comfy_table::{ColumnConstraint, ContentArrangement, Table};
 use orthanc::{Anonymization, Client, Error, Modality, Modification};
 use serde_json::Value;
 use serde_yaml;
-use std::{env, fs, process, result};
+use std::{env, fs, io, process, result};
 
 const TABLE_PRESET: &str = "     --            ";
 const ID_COLUMN_WIDTH: u16 = 46;
@@ -128,6 +128,18 @@ impl From<Error> for CliError {
     }
 }
 
+impl From<serde_yaml::Error> for CliError {
+    fn from(e: serde_yaml::Error) -> Self {
+        CliError::new(&e.to_string(), None, None)
+    }
+}
+
+impl From<io::Error> for CliError {
+    fn from(e: io::Error) -> Self {
+        CliError::new(&e.to_string(), None, None)
+    }
+}
+
 impl Orthanc {
     pub fn new(
         server_address: String,
@@ -187,8 +199,8 @@ impl Orthanc {
     pub fn anonymize_patient(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
         let anonymization = match config_file {
             Some(c) => {
-                let yaml = fs::read(c).unwrap();
-                let mut a: Anonymization = serde_yaml::from_slice(&yaml).unwrap();
+                let yaml = fs::read(c)?;
+                let mut a: Anonymization = serde_yaml::from_slice(&yaml)?;
                 a.force = Some(true);
                 Some(a)
             }
@@ -205,8 +217,8 @@ impl Orthanc {
     }
 
     pub fn modify_patient(&self, id: &str, config_file: &str) -> Result<Table> {
-        let yaml = fs::read(config_file).unwrap();
-        let modification: Modification = serde_yaml::from_slice(&yaml).unwrap();
+        let yaml = fs::read(config_file)?;
+        let modification: Modification = serde_yaml::from_slice(&yaml)?;
         match self.client.modify_patient(id, modification) {
             Ok(r) => {
                 let mut table = create_table(None);
@@ -218,7 +230,7 @@ impl Orthanc {
     }
 
     pub fn download_patient(&self, id: &str, output_file: &str) -> Result<()> {
-        let mut file = fs::File::create(output_file).unwrap();
+        let mut file = fs::File::create(output_file)?;
         self.client
             .patient_dicom(id, &mut file)
             .map_err(Into::<_>::into)
@@ -276,8 +288,8 @@ impl Orthanc {
     pub fn anonymize_study(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
         let anonymization = match config_file {
             Some(c) => {
-                let yaml = fs::read(c).unwrap();
-                Some(serde_yaml::from_slice(&yaml).unwrap())
+                let yaml = fs::read(c)?;
+                Some(serde_yaml::from_slice(&yaml)?)
             }
             None => None,
         };
@@ -293,8 +305,8 @@ impl Orthanc {
     }
 
     pub fn modify_study(&self, id: &str, config_file: &str) -> Result<Table> {
-        let yaml = fs::read(config_file).unwrap();
-        let modification: Modification = serde_yaml::from_slice(&yaml).unwrap();
+        let yaml = fs::read(config_file)?;
+        let modification: Modification = serde_yaml::from_slice(&yaml)?;
         match self.client.modify_study(id, modification) {
             Ok(r) => {
                 let mut table = create_table(None);
@@ -307,7 +319,7 @@ impl Orthanc {
     }
 
     pub fn download_study(&self, id: &str, output_file: &str) -> Result<()> {
-        let mut file = fs::File::create(output_file).unwrap();
+        let mut file = fs::File::create(output_file)?;
         self.client
             .study_dicom(id, &mut file)
             .map_err(Into::<_>::into)
@@ -365,8 +377,8 @@ impl Orthanc {
     pub fn anonymize_series(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
         let anonymization = match config_file {
             Some(c) => {
-                let yaml = fs::read(c).unwrap();
-                Some(serde_yaml::from_slice(&yaml).unwrap())
+                let yaml = fs::read(c)?;
+                Some(serde_yaml::from_slice(&yaml)?)
             }
             None => None,
         };
@@ -382,8 +394,8 @@ impl Orthanc {
     }
 
     pub fn modify_series(&self, id: &str, config_file: &str) -> Result<Table> {
-        let yaml = fs::read(config_file).unwrap();
-        let modification: Modification = serde_yaml::from_slice(&yaml).unwrap();
+        let yaml = fs::read(config_file)?;
+        let modification: Modification = serde_yaml::from_slice(&yaml)?;
         match self.client.modify_series(id, modification) {
             Ok(r) => {
                 let mut table = create_table(None);
@@ -396,7 +408,7 @@ impl Orthanc {
     }
 
     pub fn download_series(&self, id: &str, output_file: &str) -> Result<()> {
-        let mut file = fs::File::create(output_file).unwrap();
+        let mut file = fs::File::create(output_file)?;
         self.client
             .series_dicom(id, &mut file)
             .map_err(Into::<_>::into)
@@ -469,28 +481,28 @@ impl Orthanc {
     ) -> Result<()> {
         let anonymization = match config_file {
             Some(c) => {
-                let yaml = fs::read(c).unwrap();
-                Some(serde_yaml::from_slice(&yaml).unwrap())
+                let yaml = fs::read(c)?;
+                Some(serde_yaml::from_slice(&yaml)?)
             }
             None => None,
         };
-        let mut file = fs::File::create(path).unwrap();
+        let mut file = fs::File::create(path)?;
         self.client
             .anonymize_instance(id, anonymization, &mut file)
             .map_err(Into::<_>::into)
     }
 
     pub fn modify_instance(&self, id: &str, config_file: &str, path: &str) -> Result<()> {
-        let yaml = fs::read(config_file).unwrap();
-        let modification: Modification = serde_yaml::from_slice(&yaml).unwrap();
-        let mut file = fs::File::create(path).unwrap();
+        let yaml = fs::read(config_file)?;
+        let modification: Modification = serde_yaml::from_slice(&yaml)?;
+        let mut file = fs::File::create(path)?;
         self.client
             .modify_instance(id, modification, &mut file)
             .map_err(Into::<_>::into)
     }
 
     pub fn download_instance(&self, id: &str, output_file: &str) -> Result<()> {
-        let mut file = fs::File::create(output_file).unwrap();
+        let mut file = fs::File::create(output_file)?;
         self.client
             .instance_dicom(id, &mut file)
             .map_err(Into::<_>::into)
