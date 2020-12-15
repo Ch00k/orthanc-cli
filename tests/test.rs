@@ -837,6 +837,38 @@ fn test_anonymize_patient_error() {
 }
 
 #[test]
+fn test_anonymize_patient_config_file_not_found() {
+    assert_result(
+        vec!["patient", "anonymize", "foobar", "-c", "/tmp/foo.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/no_such_file_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_patient_yaml_parse_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"garble").unwrap();
+    assert_result(
+        vec![
+            "patient",
+            "anonymize",
+            "foobar",
+            "-c",
+            "/tmp/mod_config.yml",
+        ],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/yaml_parse_error_anonymization.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_anonymize_study_error() {
     assert_result(
         vec!["study", "anonymize", "foobar"],
@@ -844,6 +876,32 @@ fn test_anonymize_study_error() {
             1,
             "".to_string(),
             include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_study_config_file_not_found() {
+    assert_result(
+        vec!["study", "anonymize", "foobar", "-c", "/tmp/foo.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/no_such_file_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_study_yaml_parse_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"garble").unwrap();
+    assert_result(
+        vec!["study", "anonymize", "foobar", "-c", "/tmp/mod_config.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/yaml_parse_error_anonymization.stderr").to_string(),
         ),
     );
 }
@@ -861,6 +919,32 @@ fn test_anonymize_series_error() {
 }
 
 #[test]
+fn test_anonymize_series_config_file_not_found() {
+    assert_result(
+        vec!["series", "anonymize", "foobar", "-c", "/tmp/foo.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/no_such_file_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_series_yaml_parse_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"garble").unwrap();
+    assert_result(
+        vec!["series", "anonymize", "foobar", "-c", "/tmp/mod_config.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/yaml_parse_error_anonymization.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_anonymize_instance_error() {
     assert_result(
         vec!["instance", "anonymize", "foobar", "-o", "/tmp/instance.dcm"],
@@ -868,6 +952,48 @@ fn test_anonymize_instance_error() {
             1,
             "".to_string(),
             include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_instance_config_file_not_found() {
+    assert_result(
+        vec![
+            "instance",
+            "anonymize",
+            "foobar",
+            "-c",
+            "/tmp/foo.yml",
+            "-o",
+            "/tmp/instance.dcm",
+        ],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/no_such_file_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_instance_yaml_parse_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"garble").unwrap();
+    assert_result(
+        vec![
+            "instance",
+            "anonymize",
+            "foobar",
+            "-c",
+            "/tmp/mod_config.yml",
+            "-o",
+            "/tmp/instance.dcm",
+        ],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/yaml_parse_error_anonymization.stderr").to_string(),
         ),
     );
 }
@@ -1013,6 +1139,32 @@ fn test_modify_patient_error() {
 }
 
 #[test]
+fn test_modify_patient_config_file_not_found() {
+    assert_result(
+        vec!["patient", "modify", "foobar", "-c", "/tmp/foo.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/no_such_file_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_patient_yaml_parse_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"garble").unwrap();
+    assert_result(
+        vec!["patient", "modify", "foobar", "-c", "/tmp/mod_config.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/yaml_parse_error_modification.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_modify_study_error() {
     let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
     file.write(b"remove:\nreplace:").unwrap();
@@ -1027,6 +1179,32 @@ fn test_modify_study_error() {
 }
 
 #[test]
+fn test_modify_study_config_file_not_found() {
+    assert_result(
+        vec!["study", "modify", "foobar", "-c", "/tmp/foo.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/no_such_file_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_study_yaml_parse_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"garble").unwrap();
+    assert_result(
+        vec!["study", "modify", "foobar", "-c", "/tmp/mod_config.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/yaml_parse_error_modification.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_modify_series_error() {
     let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
     file.write(b"remove:\nreplace:").unwrap();
@@ -1036,6 +1214,32 @@ fn test_modify_series_error() {
             1,
             "".to_string(),
             include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_series_config_file_not_found() {
+    assert_result(
+        vec!["series", "modify", "foobar", "-c", "/tmp/foo.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/no_such_file_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_series_yaml_parse_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"garble").unwrap();
+    assert_result(
+        vec!["series", "modify", "foobar", "-c", "/tmp/mod_config.yml"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/yaml_parse_error_modification.stderr").to_string(),
         ),
     );
 }
@@ -1058,6 +1262,48 @@ fn test_modify_instance_error() {
             1,
             "".to_string(),
             include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_instance_config_file_not_found() {
+    assert_result(
+        vec![
+            "instance",
+            "modify",
+            "foobar",
+            "-c",
+            "/tmp/foo.yml",
+            "-o",
+            "/tmp/instance.dcm",
+        ],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/no_such_file_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_instance_yaml_parse_error() {
+    let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+    file.write(b"garble").unwrap();
+    assert_result(
+        vec![
+            "instance",
+            "modify",
+            "foobar",
+            "-c",
+            "/tmp/mod_config.yml",
+            "-o",
+            "/tmp/instance.dcm",
+        ],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/yaml_parse_error_modification.stderr").to_string(),
         ),
     );
 }
