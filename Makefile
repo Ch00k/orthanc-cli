@@ -18,7 +18,7 @@ clean: cleanup_orthanc stop_services
 	cargo clean
 
 unit_test:
-	cargo test --lib
+	cargo test --lib ${TEST}
 
 unit_test_coverage: install_tarpaulin
 	cargo tarpaulin --lib --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml

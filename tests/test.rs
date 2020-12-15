@@ -21,7 +21,7 @@ const ANONYMIZED_PATIENT_NAME_PATTERN: &str = r"Anonymized(\d+)";
 const TRAILING_WHITESPACE_PATTERN: &str = r"([ ]+$)";
 const VERSION_PATTERN: &str = r"orthanc \d+\.\d+\.\d+$";
 const NEW_ENTITY_ID_PATTERN: &str =
-    r"\s*New (?:patient|study|series) ID\s*(([0-9a-f]{8}-){4}[0-9a-f]{8})";
+    r"\s*New (?:Patient|Study|Series) ID\s*(([0-9a-f]{8}-){4}[0-9a-f]{8})";
 const PARENT_ENTITY_ID_PATTERN: &str =
     r"\s*(?:Patient|Study|Series) ID\s*(([0-9a-f]{8}-){4}[0-9a-f]{8})";
 

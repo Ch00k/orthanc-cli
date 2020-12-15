@@ -1,5 +1,5 @@
 use comfy_table::{ColumnConstraint, ContentArrangement, Table};
-use orthanc::{Anonymization, Client, Error, Modality, Modification};
+use orthanc::{Anonymization, Client, Entity, Error, Modality, Modification, ModificationResult};
 use serde_json::Value;
 use serde_yaml;
 use std::{env, fs, io, process, result};
@@ -198,33 +198,21 @@ impl Orthanc {
 
     pub fn anonymize_patient(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
         let anonymization = match config_file {
-            Some(c) => {
-                let yaml = fs::read(c)?;
-                let mut a: Anonymization = serde_yaml::from_slice(&yaml)?;
-                a.force = Some(true);
-                Some(a)
-            }
+            Some(c) => Some(get_anonymization_config(c)?),
             None => None,
         };
         match self.client.anonymize_patient(id, anonymization) {
-            Ok(r) => {
-                let mut table = create_table(None);
-                table.add_row(["New patient ID", &r.id].iter());
-                Ok(table)
-            }
+            Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
         }
     }
 
     pub fn modify_patient(&self, id: &str, config_file: &str) -> Result<Table> {
-        let yaml = fs::read(config_file)?;
-        let modification: Modification = serde_yaml::from_slice(&yaml)?;
-        match self.client.modify_patient(id, modification) {
-            Ok(r) => {
-                let mut table = create_table(None);
-                table.add_row(["New patient ID", &r.id].iter());
-                Ok(table)
-            }
+        match self
+            .client
+            .modify_patient(id, get_modification_config(config_file)?)
+        {
+            Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
         }
     }
@@ -287,33 +275,21 @@ impl Orthanc {
 
     pub fn anonymize_study(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
         let anonymization = match config_file {
-            Some(c) => {
-                let yaml = fs::read(c)?;
-                Some(serde_yaml::from_slice(&yaml)?)
-            }
+            Some(c) => Some(get_anonymization_config(c)?),
             None => None,
         };
         match self.client.anonymize_study(id, anonymization) {
-            Ok(r) => {
-                let mut table = create_table(None);
-                table.add_row(["New study ID", &r.id].iter());
-                table.add_row(["Patient ID", &r.patient_id].iter());
-                Ok(table)
-            }
+            Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
         }
     }
 
     pub fn modify_study(&self, id: &str, config_file: &str) -> Result<Table> {
-        let yaml = fs::read(config_file)?;
-        let modification: Modification = serde_yaml::from_slice(&yaml)?;
-        match self.client.modify_study(id, modification) {
-            Ok(r) => {
-                let mut table = create_table(None);
-                table.add_row(["New study ID", &r.id].iter());
-                table.add_row(["Patient ID", &r.patient_id].iter());
-                Ok(table)
-            }
+        match self
+            .client
+            .modify_study(id, get_modification_config(config_file)?)
+        {
+            Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
         }
     }
@@ -376,33 +352,21 @@ impl Orthanc {
 
     pub fn anonymize_series(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
         let anonymization = match config_file {
-            Some(c) => {
-                let yaml = fs::read(c)?;
-                Some(serde_yaml::from_slice(&yaml)?)
-            }
+            Some(c) => Some(get_anonymization_config(c)?),
             None => None,
         };
         match self.client.anonymize_series(id, anonymization) {
-            Ok(r) => {
-                let mut table = create_table(None);
-                table.add_row(["New series ID", &r.id].iter());
-                table.add_row(["Patient ID", &r.patient_id].iter());
-                Ok(table)
-            }
+            Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
         }
     }
 
     pub fn modify_series(&self, id: &str, config_file: &str) -> Result<Table> {
-        let yaml = fs::read(config_file)?;
-        let modification: Modification = serde_yaml::from_slice(&yaml)?;
-        match self.client.modify_series(id, modification) {
-            Ok(r) => {
-                let mut table = create_table(None);
-                table.add_row(["New series ID", &r.id].iter());
-                table.add_row(["Patient ID", &r.patient_id].iter());
-                Ok(table)
-            }
+        match self
+            .client
+            .modify_series(id, get_modification_config(config_file)?)
+        {
+            Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
         }
     }
@@ -480,10 +444,7 @@ impl Orthanc {
         path: &str,
     ) -> Result<()> {
         let anonymization = match config_file {
-            Some(c) => {
-                let yaml = fs::read(c)?;
-                Some(serde_yaml::from_slice(&yaml)?)
-            }
+            Some(c) => Some(get_anonymization_config(c)?),
             None => None,
         };
         let mut file = fs::File::create(path)?;
@@ -493,11 +454,9 @@ impl Orthanc {
     }
 
     pub fn modify_instance(&self, id: &str, config_file: &str, path: &str) -> Result<()> {
-        let yaml = fs::read(config_file)?;
-        let modification: Modification = serde_yaml::from_slice(&yaml)?;
         let mut file = fs::File::create(path)?;
         self.client
-            .modify_instance(id, modification, &mut file)
+            .modify_instance(id, get_modification_config(config_file)?, &mut file)
             .map_err(Into::<_>::into)
     }
 
@@ -673,6 +632,29 @@ impl Orthanc {
     }
 }
 
+fn get_anonymization_config(config_file: &str) -> Result<Anonymization> {
+    let yaml = fs::read(config_file)?;
+    let mut a: Anonymization = serde_yaml::from_slice(&yaml)?;
+    a.force = Some(true);
+    Ok(a)
+}
+
+fn get_modification_config(config_file: &str) -> Result<Modification> {
+    let yaml = fs::read(config_file)?;
+    let modification: Modification = serde_yaml::from_slice(&yaml)?;
+    Ok(modification)
+}
+
+fn create_new_entity_table(result: ModificationResult) -> Table {
+    let mut table = create_table(None);
+    table.add_row([format!("New {:?} ID", result.entity), result.id].iter());
+    match result.entity {
+        Entity::Patient => &table,
+        _ => table.add_row(["Patient ID", &result.patient_id].iter()),
+    };
+    table
+}
+
 fn create_table(header: Option<&[&str]>) -> Table {
     let mut table = Table::new();
     table.set_content_arrangement(ContentArrangement::Dynamic);
@@ -750,6 +732,8 @@ pub fn exit_with_error(error: CliError) {
 mod tests {
     use super::*;
     use std::env::{remove_var, set_var};
+    use std::io::Write;
+    use tempfile::NamedTempFile;
 
     #[test]
     fn test_create_error_table() {
@@ -814,5 +798,111 @@ mod tests {
         set_var("ORC_ORTHANC_PASSWORD", "bar");
         assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
         assert_eq!(get_password(None).unwrap(), "bar".to_string());
+    }
+
+    #[test]
+    fn test_get_anonymization_config() {
+        let mut file = fs::File::create("/tmp/anon_config.yml").unwrap();
+        file.write(b"{}").unwrap();
+        assert_eq!(
+            get_anonymization_config("/tmp/anon_config.yml").unwrap(),
+            Anonymization {
+                replace: None,
+                keep: None,
+                keep_private_tags: None,
+                force: Some(true),
+                dicom_version: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_anonymization_config_file_not_found() {
+        assert_eq!(
+            get_anonymization_config("/tmp/anon_garble.yml").unwrap_err(),
+            CliError {
+                error: "No such file or directory (os error 2)".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_anonymization_config_yaml_parse_error() {
+        let mut file = NamedTempFile::new().unwrap();
+        writeln!(file, "garble").unwrap();
+        assert_eq!(
+            get_anonymization_config(file.path().to_str().unwrap()).unwrap_err(),
+            CliError {
+                error: "invalid type: string \"garble\", expected struct Anonymization at line 1 column 1".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config() {
+        let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+        file.write(b"{}").unwrap();
+        assert_eq!(
+            get_modification_config("/tmp/mod_config.yml").unwrap(),
+            Modification {
+                replace: None,
+                remove: None,
+                force: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_file_not_found() {
+        assert_eq!(
+            get_modification_config("/tmp/anon_garble.yml").unwrap_err(),
+            CliError {
+                error: "No such file or directory (os error 2)".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_yaml_parse_error() {
+        let mut file = NamedTempFile::new().unwrap();
+        writeln!(file, "garble").unwrap();
+        assert_eq!(
+            get_modification_config(file.path().to_str().unwrap()).unwrap_err(),
+            CliError {
+                error: "invalid type: string \"garble\", expected struct Modification at line 1 column 1".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_create_new_entity_table() {
+        let res = ModificationResult {
+            id: "foobar".to_string(),
+            patient_id: "bazqux".to_string(),
+            path: "long_and_rocky".to_string(),
+            entity: Entity::Study,
+        };
+        let expected_table = " New Study ID   foobar \n Patient ID     bazqux ";
+        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
+    }
+
+    #[test]
+    fn test_create_new_entity_table_patient() {
+        let res = ModificationResult {
+            id: "foobar".to_string(),
+            patient_id: "bazqux".to_string(),
+            path: "long_and_rocky".to_string(),
+            entity: Entity::Patient,
+        };
+        let expected_table = " New Patient ID   foobar ";
+        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
     }
 }
