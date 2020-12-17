@@ -1,8 +1,6 @@
-mod cli;
-mod lib;
-
 use cli::*;
-use lib::*;
+use orthanc_cli::*;
+use utils::*;
 
 fn main() {
     let matches = build_cli().get_matches();

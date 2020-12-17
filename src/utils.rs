@@ -1,0 +1,366 @@
+use crate::constants::*;
+use crate::{CliError, Result};
+use comfy_table::{ColumnConstraint, ContentArrangement, Table};
+use orthanc::{Anonymization, Entity, EntityKind, Modification, ModificationResult};
+use serde_yaml;
+use std::{env, fs, process, result};
+
+pub fn create_list_table<T: Entity>(
+    entities: Vec<T>,
+    header: &[&str],
+    dicom_tags: &[&str],
+) -> Table {
+    let mut table = create_table(Some(header));
+    for entity in entities {
+        let mut row: Vec<&str> = vec![entity.id()];
+        for t in dicom_tags.iter() {
+            let val = entity
+                .main_dicom_tag(t)
+                .unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER);
+            row.push(val);
+        }
+        match entity.kind() {
+            EntityKind::Instance => {
+                let index_in_series = match entity.index() {
+                    Some(i) => format!("{}", i),
+                    None => "".to_string(),
+                };
+                let file_size = format!("{}", entity.size());
+                row.push(&index_in_series);
+                row.push(&file_size);
+                table.add_row(row.iter());
+            }
+            _ => {
+                let num_children = format!("{}", entity.children_len());
+                row.push(&num_children);
+                table.add_row(row.iter());
+            }
+        }
+    }
+    let id_column = table.get_column_mut(0).unwrap();
+    id_column.set_constraint(ColumnConstraint::MinWidth(ID_COLUMN_WIDTH));
+    table
+}
+
+pub fn create_show_table<T: Entity>(entity: T, dicom_tags: &[&str]) -> Table {
+    let mut table = create_table(None);
+    table.add_row(["ID", entity.id()].iter());
+    if entity.kind() != EntityKind::Patient {
+        table.add_row(
+            [
+                &format!("{} ID", entity.parent_kind_name().unwrap()),
+                entity.parent_id().unwrap(),
+            ]
+            .iter(),
+        );
+    }
+
+    for t in dicom_tags.iter() {
+        table.add_row(
+            [
+                t,
+                entity
+                    .main_dicom_tag(t)
+                    .unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER),
+            ]
+            .iter(),
+        );
+    }
+    match entity.kind() {
+        EntityKind::Instance => {
+            let index_in_series = match entity.index() {
+                Some(i) => format!("{}", i),
+                None => "".to_string(),
+            };
+            let file_size = format!("{}", entity.size());
+            table.add_row(["Index in series", &index_in_series].iter());
+            table.add_row(["File size", &file_size].iter());
+        }
+        _ => {
+            let num_children = format!("{}", entity.children_len());
+            table.add_row(
+                [
+                    &format!("Number of {}", entity.children_kind_name().unwrap()),
+                    &num_children,
+                ]
+                .iter(),
+            );
+        }
+    }
+    table
+}
+
+pub fn get_anonymization_config(config_file: &str) -> Result<Anonymization> {
+    let yaml = fs::read(config_file)?;
+    let mut a: Anonymization = serde_yaml::from_slice(&yaml)?;
+    a.force = Some(true);
+    Ok(a)
+}
+
+pub fn get_modification_config(config_file: &str) -> Result<Modification> {
+    let yaml = fs::read(config_file)?;
+    let modification: Modification = serde_yaml::from_slice(&yaml)?;
+    Ok(modification)
+}
+
+pub fn create_new_entity_table(result: ModificationResult) -> Table {
+    let mut table = create_table(None);
+    table.add_row([format!("New {:?} ID", result.entity), result.id].iter());
+    match result.entity {
+        EntityKind::Patient => &table,
+        _ => table.add_row(["Patient ID", &result.patient_id].iter()),
+    };
+    table
+}
+
+pub fn create_table(header: Option<&[&str]>) -> Table {
+    let mut table = Table::new();
+    table.set_content_arrangement(ContentArrangement::Dynamic);
+    table.load_preset(TABLE_PRESET);
+    match header {
+        Some(h) => table.set_header(h.iter()),
+        None => &table,
+    };
+    table
+}
+
+pub fn create_error_table(error: CliError) -> Table {
+    let mut table = create_table(None);
+    table.add_row(["Error", &error.error].iter());
+    match error.message {
+        Some(m) => {
+            table.add_row(["Message", &m].iter());
+        }
+        None => (),
+    };
+    match error.details {
+        Some(d) => {
+            table.add_row(["Details", &d].iter());
+        }
+        None => (),
+    };
+    table
+}
+
+pub fn get_server_address(cmd_option: Option<&str>) -> result::Result<String, CliError> {
+    match cmd_option {
+        Some(s) => Ok(s.to_string()),
+        None => match env::var("ORC_ORTHANC_SERVER") {
+            Ok(s) => Ok(s),
+            Err(e) => Err(CliError::new(
+                "Command error",
+                Some("Neither --server nor ORC_ORTHANC_SERVER are set"),
+                Some(&format!("{}", e)),
+            )),
+        },
+    }
+}
+
+pub fn get_username(cmd_option: Option<&str>) -> Option<String> {
+    match cmd_option {
+        Some(s) => Some(s.to_string()),
+        None => match env::var("ORC_ORTHANC_USERNAME") {
+            Ok(s) => Some(s),
+            Err(_) => None, // TODO: This will hide the error
+        },
+    }
+}
+
+pub fn get_password(cmd_option: Option<&str>) -> Option<String> {
+    match cmd_option {
+        Some(s) => Some(s.to_string()),
+        None => match env::var("ORC_ORTHANC_PASSWORD") {
+            Ok(s) => Some(s),
+            Err(_) => None, // TODO: This will hide the error
+        },
+    }
+}
+
+pub fn print(table: Table) {
+    println!("{}", table);
+}
+
+pub fn exit_with_error(error: CliError) {
+    let output = create_error_table(error);
+    eprintln!("{}", output);
+    process::exit(1);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::env::{remove_var, set_var};
+    use std::io::Write;
+    use tempfile::NamedTempFile;
+
+    #[test]
+    fn test_create_error_table() {
+        assert_eq!(
+            format!(
+                "{}",
+                create_error_table(CliError::new("error", Some("message"), Some("details")))
+            ),
+            " Error     error   \n Message   message \n Details   details "
+        );
+        assert_eq!(
+            format!(
+                "{}",
+                create_error_table(CliError::new("error", None, Some("details")))
+            ),
+            " Error     error   \n Details   details "
+        );
+        assert_eq!(
+            format!(
+                "{}",
+                create_error_table(CliError::new("error", Some("message"), None))
+            ),
+            " Error     error   \n Message   message "
+        );
+        assert_eq!(
+            format!("{}", create_error_table(CliError::new("error", None, None))),
+            " Error   error "
+        );
+    }
+    #[test]
+    fn test_get_server() {
+        remove_var("ORC_ORTHANC_SERVER");
+        assert_eq!(get_server_address(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(
+            get_server_address(None).unwrap_err(),
+            CliError::new(
+                "Command error",
+                Some("Neither --server nor ORC_ORTHANC_SERVER are set"),
+                Some("environment variable not found"),
+            )
+        );
+        set_var("ORC_ORTHANC_SERVER", "bar");
+        assert_eq!(get_server_address(None).unwrap(), "bar".to_string());
+        assert_eq!(get_server_address(Some("baz")).unwrap(), "baz".to_string())
+    }
+
+    #[test]
+    fn test_get_username() {
+        remove_var("ORC_ORTHANC_USERNAME");
+        assert_eq!(get_username(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_username(None), None);
+        set_var("ORC_ORTHANC_USERNAME", "bar");
+        assert_eq!(get_username(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_username(None).unwrap(), "bar".to_string());
+    }
+
+    #[test]
+    fn test_get_password() {
+        remove_var("ORC_ORTHANC_PASSWORD");
+        assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_password(None), None);
+        set_var("ORC_ORTHANC_PASSWORD", "bar");
+        assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_password(None).unwrap(), "bar".to_string());
+    }
+
+    #[test]
+    fn test_get_anonymization_config() {
+        let mut file = fs::File::create("/tmp/anon_config.yml").unwrap();
+        file.write(b"{}").unwrap();
+        assert_eq!(
+            get_anonymization_config("/tmp/anon_config.yml").unwrap(),
+            Anonymization {
+                replace: None,
+                keep: None,
+                keep_private_tags: None,
+                force: Some(true),
+                dicom_version: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_anonymization_config_file_not_found() {
+        assert_eq!(
+            get_anonymization_config("/tmp/anon_garble.yml").unwrap_err(),
+            CliError {
+                error: "No such file or directory (os error 2)".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_anonymization_config_yaml_parse_error() {
+        let mut file = NamedTempFile::new().unwrap();
+        writeln!(file, "garble").unwrap();
+        assert_eq!(
+            get_anonymization_config(file.path().to_str().unwrap()).unwrap_err(),
+            CliError {
+                error: "invalid type: string \"garble\", expected struct Anonymization at line 1 column 1".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config() {
+        let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+        file.write(b"{}").unwrap();
+        assert_eq!(
+            get_modification_config("/tmp/mod_config.yml").unwrap(),
+            Modification {
+                replace: None,
+                remove: None,
+                force: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_file_not_found() {
+        assert_eq!(
+            get_modification_config("/tmp/anon_garble.yml").unwrap_err(),
+            CliError {
+                error: "No such file or directory (os error 2)".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_yaml_parse_error() {
+        let mut file = NamedTempFile::new().unwrap();
+        writeln!(file, "garble").unwrap();
+        assert_eq!(
+            get_modification_config(file.path().to_str().unwrap()).unwrap_err(),
+            CliError {
+                error: "invalid type: string \"garble\", expected struct Modification at line 1 column 1".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_create_new_entity_table() {
+        let res = ModificationResult {
+            id: "foobar".to_string(),
+            patient_id: "bazqux".to_string(),
+            path: "long_and_rocky".to_string(),
+            entity: EntityKind::Study,
+        };
+        let expected_table = " New Study ID   foobar \n Patient ID     bazqux ";
+        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
+    }
+
+    #[test]
+    fn test_create_new_entity_table_patient() {
+        let res = ModificationResult {
+            id: "foobar".to_string(),
+            patient_id: "bazqux".to_string(),
+            path: "long_and_rocky".to_string(),
+            entity: EntityKind::Patient,
+        };
+        let expected_table = " New Patient ID   foobar ";
+        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
+    }
+}

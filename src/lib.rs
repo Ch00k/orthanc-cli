@@ -1,93 +1,16 @@
-use comfy_table::{ColumnConstraint, ContentArrangement, Table};
-use orthanc::{Anonymization, Client, Entity, Error, Modality, Modification, ModificationResult};
+use comfy_table::Table;
+use constants::*;
+use orthanc::{Client, Error, Modality};
 use serde_json::Value;
 use serde_yaml;
-use std::{env, fs, io, process, result};
+use std::{fs, io, result};
+use utils::*;
 
-const TABLE_PRESET: &str = "     --            ";
-const ID_COLUMN_WIDTH: u16 = 46;
-const ABSENT_DICOM_TAG_PLACEHOLDER: &str = "undefined";
+pub mod cli;
+mod constants;
+pub mod utils;
 
-const PATIENTS_LIST_HEADER: [&str; 4] = ["ID", "PatientID", "PatientName", "Number of studies"];
-const PATIENTS_LIST_DICOM_TAGS: [&str; 2] = ["PatientID", "PatientName"];
-const PATIENT_DICOM_TAGS: [&str; 4] =
-    ["PatientID", "PatientName", "PatientSex", "PatientBirthDate"];
-
-const STUDIES_LIST_HEADER: [&str; 8] = [
-    "ID",
-    "PatientID",
-    "AccessionNumber",
-    "StudyInstanceUID",
-    "StudyDescription",
-    "StudyDate",
-    "StudyTime",
-    "Number of series",
-];
-const STUDIES_LIST_DICOM_TAGS: [&str; 6] = [
-    "PatientID",
-    "AccessionNumber",
-    "StudyInstanceUID",
-    "StudyDescription",
-    "StudyDate",
-    "StudyTime",
-];
-const STUDY_DICOM_TAGS: [&str; 7] = [
-    "PatientID",
-    "StudyID",
-    "AccessionNumber",
-    "StudyInstanceUID",
-    "StudyDescription",
-    "StudyDate",
-    "StudyTime",
-];
-
-const SERIES_LIST_HEADER: [&str; 6] = [
-    "ID",
-    "SeriesInstanceUID",
-    "SeriesDescription",
-    "Modality",
-    "BodyPartExamined",
-    "Number of instances",
-];
-const SERIES_LIST_DICOM_TAGS: [&str; 4] = [
-    "SeriesInstanceUID",
-    "SeriesDescription",
-    "Modality",
-    "BodyPartExamined",
-];
-const SERIES_DICOM_TAGS: [&str; 5] = [
-    "SeriesInstanceUID",
-    "SeriesNumber",
-    "SeriesDescription",
-    "Modality",
-    "BodyPartExamined",
-];
-
-const INSTANCES_LIST_HEADER: [&str; 7] = [
-    "ID",
-    "SOPInstanceUID",
-    "InstanceNumber",
-    "InstanceCreationDate",
-    "InstanceCreationTime",
-    "Index in series",
-    "File size",
-];
-const INSTANCES_LIST_DICOM_TAGS: [&str; 4] = [
-    "SOPInstanceUID",
-    "InstanceNumber",
-    "InstanceCreationDate",
-    "InstanceCreationTime",
-];
-const INSTANCE_DICOM_TAGS: [&str; 4] = [
-    "SOPInstanceUID",
-    "InstanceNumber",
-    "InstanceCreationDate",
-    "InstanceCreationTime",
-];
-
-const MODALITIES_LIST_HEADER: [&str; 5] = ["Name", "AET", "Host", "Port", "Manufacturer"];
-
-type Result<T> = result::Result<T, CliError>;
+pub type Result<T> = result::Result<T, CliError>;
 
 #[derive(Debug)]
 pub struct Orthanc {
@@ -157,43 +80,18 @@ impl Orthanc {
     ////////// PATIENT //////////
 
     pub fn list_patients(&self) -> Result<Table> {
-        let patients = self.client.patients_expanded()?;
-
-        let mut table = create_table(Some(&PATIENTS_LIST_HEADER));
-        for p in patients {
-            let mut row: Vec<&str> = vec![&p.id];
-            for t in PATIENTS_LIST_DICOM_TAGS.iter() {
-                let val = p.main_dicom_tag(t).unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER);
-                row.push(val);
-            }
-            let num_studies = format!("{}", p.studies.len());
-            row.push(&num_studies);
-            table.add_row(row.iter());
-        }
-        let id_column = table.get_column_mut(0).unwrap();
-        id_column.set_constraint(ColumnConstraint::MinWidth(ID_COLUMN_WIDTH));
-        Ok(table)
+        Ok(utils::create_list_table(
+            self.client.patients_expanded()?,
+            &PATIENTS_LIST_HEADER,
+            &PATIENTS_LIST_DICOM_TAGS,
+        ))
     }
 
     pub fn show_patient(&self, patient_id: &str) -> Result<Table> {
-        let patient = self.client.patient(patient_id)?;
-        let mut table = create_table(None);
-        table.add_row(["ID", &patient.id].iter());
-
-        for t in PATIENT_DICOM_TAGS.iter() {
-            table.add_row(
-                [
-                    t,
-                    &patient
-                        .main_dicom_tag(t)
-                        .unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER),
-                ]
-                .iter(),
-            );
-        }
-        let num_studies = format!("{}", patient.studies.len());
-        table.add_row(["Number of studies", &num_studies].iter());
-        Ok(table)
+        Ok(create_show_table(
+            self.client.patient(patient_id)?,
+            &PATIENT_DICOM_TAGS,
+        ))
     }
 
     pub fn anonymize_patient(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
@@ -234,43 +132,18 @@ impl Orthanc {
     ////////// STUDY //////////
 
     pub fn list_studies(&self) -> Result<Table> {
-        let studies = self.client.studies_expanded()?;
-        let mut table = create_table(Some(&STUDIES_LIST_HEADER));
-        for s in studies {
-            let mut row: Vec<&str> = vec![&s.id];
-            for t in STUDIES_LIST_DICOM_TAGS.iter() {
-                let val = s.main_dicom_tag(t).unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER);
-                row.push(val);
-            }
-            let num_series = format!("{}", s.series.len());
-            row.push(&num_series);
-            table.add_row(row.iter());
-        }
-        let id_column = table.get_column_mut(0).unwrap();
-        id_column.set_constraint(ColumnConstraint::MinWidth(ID_COLUMN_WIDTH));
-        Ok(table)
+        Ok(create_list_table(
+            self.client.studies_expanded()?,
+            &STUDIES_LIST_HEADER,
+            &STUDIES_LIST_DICOM_TAGS,
+        ))
     }
 
     pub fn show_study(&self, study_id: &str) -> Result<Table> {
-        let study = self.client.study(study_id)?;
-        let mut table = create_table(None);
-        table.add_row(["ID", &study.id].iter());
-        table.add_row(["Patient ID", &study.parent_patient].iter());
-
-        for t in STUDY_DICOM_TAGS.iter() {
-            table.add_row(
-                [
-                    t,
-                    &study
-                        .main_dicom_tag(t)
-                        .unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER),
-                ]
-                .iter(),
-            );
-        }
-        let num_series = format!("{}", study.series.len());
-        table.add_row(["Number of series", &num_series].iter());
-        Ok(table)
+        Ok(create_show_table(
+            self.client.study(study_id)?,
+            &STUDY_DICOM_TAGS,
+        ))
     }
 
     pub fn anonymize_study(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
@@ -311,43 +184,18 @@ impl Orthanc {
     ////////// SERIES //////////
 
     pub fn list_series(&self) -> Result<Table> {
-        let series = self.client.series_expanded()?;
-        let mut table = create_table(Some(&SERIES_LIST_HEADER));
-        for s in series {
-            let mut row: Vec<&str> = vec![&s.id];
-            for t in SERIES_LIST_DICOM_TAGS.iter() {
-                let val = s.main_dicom_tag(t).unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER);
-                row.push(val);
-            }
-            let num_instances = format!("{}", s.instances.len());
-            row.push(&num_instances);
-            table.add_row(row.iter());
-        }
-        let id_column = table.get_column_mut(0).unwrap();
-        id_column.set_constraint(ColumnConstraint::MinWidth(ID_COLUMN_WIDTH));
-        Ok(table)
+        Ok(create_list_table(
+            self.client.series_expanded()?,
+            &SERIES_LIST_HEADER,
+            &SERIES_LIST_DICOM_TAGS,
+        ))
     }
 
     pub fn show_series(&self, series_id: &str) -> Result<Table> {
-        let series = self.client.series(series_id)?;
-        let mut table = create_table(None);
-        table.add_row(["ID", &series.id].iter());
-        table.add_row(["Study ID", &series.parent_study].iter());
-
-        for t in SERIES_DICOM_TAGS.iter() {
-            table.add_row(
-                [
-                    t,
-                    &series
-                        .main_dicom_tag(t)
-                        .unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER),
-                ]
-                .iter(),
-            );
-        }
-        let num_instances = format!("{}", series.instances.len());
-        table.add_row(["Number of instances", &num_instances].iter());
-        Ok(table)
+        Ok(create_show_table(
+            self.client.series(series_id)?,
+            &SERIES_DICOM_TAGS,
+        ))
     }
 
     pub fn anonymize_series(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
@@ -388,53 +236,18 @@ impl Orthanc {
     ////////// INSTANCE //////////
 
     pub fn list_instances(&self) -> Result<Table> {
-        let instance = self.client.instances_expanded()?;
-        let mut table = create_table(Some(&INSTANCES_LIST_HEADER));
-        for s in instance {
-            let mut row: Vec<&str> = vec![&s.id];
-            for t in INSTANCES_LIST_DICOM_TAGS.iter() {
-                let val = s.main_dicom_tag(t).unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER);
-                row.push(val);
-            }
-            let index_in_series = match s.index_in_series {
-                Some(i) => format!("{}", i),
-                None => "".to_string(),
-            };
-            let file_size = &format!("{}", s.file_size);
-            row.push(&index_in_series);
-            row.push(&file_size);
-            table.add_row(row.iter());
-        }
-        let id_column = table.get_column_mut(0).unwrap();
-        id_column.set_constraint(ColumnConstraint::MinWidth(ID_COLUMN_WIDTH));
-        Ok(table)
+        Ok(create_list_table(
+            self.client.instances_expanded()?,
+            &INSTANCES_LIST_HEADER,
+            &INSTANCES_LIST_DICOM_TAGS,
+        ))
     }
 
     pub fn show_instance(&self, instance_id: &str) -> Result<Table> {
-        let instance = self.client.instance(instance_id)?;
-        let mut table = create_table(None);
-        table.add_row(["ID", &instance.id].iter());
-        table.add_row(["Series ID", &instance.parent_series].iter());
-
-        for t in INSTANCE_DICOM_TAGS.iter() {
-            table.add_row(
-                [
-                    t,
-                    &instance
-                        .main_dicom_tag(t)
-                        .unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER),
-                ]
-                .iter(),
-            );
-        }
-        let index_in_series = match instance.index_in_series {
-            Some(i) => format!("{}", i),
-            None => "".to_string(),
-        };
-        let file_size = &format!("{}", instance.file_size);
-        table.add_row(["Index in series", &index_in_series].iter());
-        table.add_row(["File size", file_size].iter());
-        Ok(table)
+        Ok(create_show_table(
+            self.client.instance(instance_id)?,
+            &INSTANCE_DICOM_TAGS,
+        ))
     }
 
     pub fn anonymize_instance(
@@ -629,280 +442,5 @@ impl Orthanc {
 
     pub fn delete_modality(&self, name: &str) -> Result<()> {
         self.client.delete_modality(name).map_err(Into::<_>::into)
-    }
-}
-
-fn get_anonymization_config(config_file: &str) -> Result<Anonymization> {
-    let yaml = fs::read(config_file)?;
-    let mut a: Anonymization = serde_yaml::from_slice(&yaml)?;
-    a.force = Some(true);
-    Ok(a)
-}
-
-fn get_modification_config(config_file: &str) -> Result<Modification> {
-    let yaml = fs::read(config_file)?;
-    let modification: Modification = serde_yaml::from_slice(&yaml)?;
-    Ok(modification)
-}
-
-fn create_new_entity_table(result: ModificationResult) -> Table {
-    let mut table = create_table(None);
-    table.add_row([format!("New {:?} ID", result.entity), result.id].iter());
-    match result.entity {
-        Entity::Patient => &table,
-        _ => table.add_row(["Patient ID", &result.patient_id].iter()),
-    };
-    table
-}
-
-fn create_table(header: Option<&[&str]>) -> Table {
-    let mut table = Table::new();
-    table.set_content_arrangement(ContentArrangement::Dynamic);
-    table.load_preset(TABLE_PRESET);
-    match header {
-        Some(h) => table.set_header(h.iter()),
-        None => &table,
-    };
-    table
-}
-
-fn create_error_table(error: CliError) -> Table {
-    let mut table = create_table(None);
-    table.add_row(["Error", &error.error].iter());
-    match error.message {
-        Some(m) => {
-            table.add_row(["Message", &m].iter());
-        }
-        None => (),
-    };
-    match error.details {
-        Some(d) => {
-            table.add_row(["Details", &d].iter());
-        }
-        None => (),
-    };
-    table
-}
-
-pub fn get_server_address(cmd_option: Option<&str>) -> result::Result<String, CliError> {
-    match cmd_option {
-        Some(s) => Ok(s.to_string()),
-        None => match env::var("ORC_ORTHANC_SERVER") {
-            Ok(s) => Ok(s),
-            Err(e) => Err(CliError::new(
-                "Command error",
-                Some("Neither --server nor ORC_ORTHANC_SERVER are set"),
-                Some(&format!("{}", e)),
-            )),
-        },
-    }
-}
-
-pub fn get_username(cmd_option: Option<&str>) -> Option<String> {
-    match cmd_option {
-        Some(s) => Some(s.to_string()),
-        None => match env::var("ORC_ORTHANC_USERNAME") {
-            Ok(s) => Some(s),
-            Err(_) => None, // TODO: This will hide the error
-        },
-    }
-}
-
-pub fn get_password(cmd_option: Option<&str>) -> Option<String> {
-    match cmd_option {
-        Some(s) => Some(s.to_string()),
-        None => match env::var("ORC_ORTHANC_PASSWORD") {
-            Ok(s) => Some(s),
-            Err(_) => None, // TODO: This will hide the error
-        },
-    }
-}
-
-pub fn print(table: Table) {
-    println!("{}", table);
-}
-
-pub fn exit_with_error(error: CliError) {
-    let output = create_error_table(error);
-    eprintln!("{}", output);
-    process::exit(1);
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::env::{remove_var, set_var};
-    use std::io::Write;
-    use tempfile::NamedTempFile;
-
-    #[test]
-    fn test_create_error_table() {
-        assert_eq!(
-            format!(
-                "{}",
-                create_error_table(CliError::new("error", Some("message"), Some("details")))
-            ),
-            " Error     error   \n Message   message \n Details   details "
-        );
-        assert_eq!(
-            format!(
-                "{}",
-                create_error_table(CliError::new("error", None, Some("details")))
-            ),
-            " Error     error   \n Details   details "
-        );
-        assert_eq!(
-            format!(
-                "{}",
-                create_error_table(CliError::new("error", Some("message"), None))
-            ),
-            " Error     error   \n Message   message "
-        );
-        assert_eq!(
-            format!("{}", create_error_table(CliError::new("error", None, None))),
-            " Error   error "
-        );
-    }
-    #[test]
-    fn test_get_server() {
-        remove_var("ORC_ORTHANC_SERVER");
-        assert_eq!(get_server_address(Some("foo")).unwrap(), "foo".to_string());
-        assert_eq!(
-            get_server_address(None).unwrap_err(),
-            CliError::new(
-                "Command error",
-                Some("Neither --server nor ORC_ORTHANC_SERVER are set"),
-                Some("environment variable not found"),
-            )
-        );
-        set_var("ORC_ORTHANC_SERVER", "bar");
-        assert_eq!(get_server_address(None).unwrap(), "bar".to_string());
-        assert_eq!(get_server_address(Some("baz")).unwrap(), "baz".to_string())
-    }
-
-    #[test]
-    fn test_get_username() {
-        remove_var("ORC_ORTHANC_USERNAME");
-        assert_eq!(get_username(Some("foo")).unwrap(), "foo".to_string());
-        assert_eq!(get_username(None), None);
-        set_var("ORC_ORTHANC_USERNAME", "bar");
-        assert_eq!(get_username(Some("foo")).unwrap(), "foo".to_string());
-        assert_eq!(get_username(None).unwrap(), "bar".to_string());
-    }
-
-    #[test]
-    fn test_get_password() {
-        remove_var("ORC_ORTHANC_PASSWORD");
-        assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
-        assert_eq!(get_password(None), None);
-        set_var("ORC_ORTHANC_PASSWORD", "bar");
-        assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
-        assert_eq!(get_password(None).unwrap(), "bar".to_string());
-    }
-
-    #[test]
-    fn test_get_anonymization_config() {
-        let mut file = fs::File::create("/tmp/anon_config.yml").unwrap();
-        file.write(b"{}").unwrap();
-        assert_eq!(
-            get_anonymization_config("/tmp/anon_config.yml").unwrap(),
-            Anonymization {
-                replace: None,
-                keep: None,
-                keep_private_tags: None,
-                force: Some(true),
-                dicom_version: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_get_anonymization_config_file_not_found() {
-        assert_eq!(
-            get_anonymization_config("/tmp/anon_garble.yml").unwrap_err(),
-            CliError {
-                error: "No such file or directory (os error 2)".to_string(),
-                message: None,
-                details: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_get_anonymization_config_yaml_parse_error() {
-        let mut file = NamedTempFile::new().unwrap();
-        writeln!(file, "garble").unwrap();
-        assert_eq!(
-            get_anonymization_config(file.path().to_str().unwrap()).unwrap_err(),
-            CliError {
-                error: "invalid type: string \"garble\", expected struct Anonymization at line 1 column 1".to_string(),
-                message: None,
-                details: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_get_modification_config() {
-        let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
-        file.write(b"{}").unwrap();
-        assert_eq!(
-            get_modification_config("/tmp/mod_config.yml").unwrap(),
-            Modification {
-                replace: None,
-                remove: None,
-                force: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_get_modification_config_file_not_found() {
-        assert_eq!(
-            get_modification_config("/tmp/anon_garble.yml").unwrap_err(),
-            CliError {
-                error: "No such file or directory (os error 2)".to_string(),
-                message: None,
-                details: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_get_modification_config_yaml_parse_error() {
-        let mut file = NamedTempFile::new().unwrap();
-        writeln!(file, "garble").unwrap();
-        assert_eq!(
-            get_modification_config(file.path().to_str().unwrap()).unwrap_err(),
-            CliError {
-                error: "invalid type: string \"garble\", expected struct Modification at line 1 column 1".to_string(),
-                message: None,
-                details: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_create_new_entity_table() {
-        let res = ModificationResult {
-            id: "foobar".to_string(),
-            patient_id: "bazqux".to_string(),
-            path: "long_and_rocky".to_string(),
-            entity: Entity::Study,
-        };
-        let expected_table = " New Study ID   foobar \n Patient ID     bazqux ";
-        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
-    }
-
-    #[test]
-    fn test_create_new_entity_table_patient() {
-        let res = ModificationResult {
-            id: "foobar".to_string(),
-            patient_id: "bazqux".to_string(),
-            path: "long_and_rocky".to_string(),
-            entity: Entity::Patient,
-        };
-        let expected_table = " New Patient ID   foobar ";
-        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
     }
 }
