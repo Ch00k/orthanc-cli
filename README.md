@@ -7,8 +7,8 @@
 # orthanc-cli
 
 **orthanc-cli** is a command-line interface for
-[Orthanc](https://book.orthanc-server.com/users/rest.html), an open-source, lightweight
-DICOM server.
+[Orthanc](https://www.orthanc-server.com), an open-source, lightweight [DICOM](https://en.wikipedia.org/wiki/DICOM)
+server.
 
 <!--toc-start-->
 * [Compatibility](#compatibility)
@@ -26,9 +26,8 @@ DICOM server.
 
 ## Compatibility
 
-orthanc-cli usually supports the same Orthanc versions as its underlying
-[orthanc-rs](https://crates.io/crates/orthanc) crate. See
-[Compatibility](https://github.com/Ch00k/orthanc-rs#compatibility) for details.
+orthanc-cli usually supports the same Orthanc versions as its underlying [orthanc-rs](https://crates.io/crates/orthanc)
+crate. See [Compatibility](https://github.com/Ch00k/orthanc-rs#compatibility) for details.
 
 ## Installation
 
@@ -40,20 +39,18 @@ There are multuple different ways to install orthanc-cli.
   $ cargo install orthanc-cli
   ```
 
-* manually downloading a release package from Github Releases
-  [page](https://github.com/Ch00k/orthanc-cli/releases)
+* manually downloading a release package from Github Releases [page](https://github.com/Ch00k/orthanc-cli/releases)
 
 ## Configuration
 
-orthanc-cli needs several settings configured in order to communicate with an Orthanc
-server: Orthanc server address, and (optionally) username and password.
+orthanc-cli needs several settings configured in order to communicate with an Orthanc server: Orthanc server address,
+and username and password (in case the server requires authentication).
 
 ### Orthanc server address
 
-Orthanc server address can be set with `-s/--server` command-line option. The value of the
-option is a HTTP(S) URL, e.g. `http://127.0.0.1:8042`. Alternatively, if you prefer to not
-type the option every time you call a command, you can set an environment variable
-`ORC_ORTHANC_SERVER`
+Orthanc server address can be set with `-s/--server` command-line option. The value of the option is an HTTP(S) URL,
+e.g. `http://127.0.0.1:8042`. Alternatively, if you prefer to not type the option every time you call a command, you can
+set an environment variable `ORC_ORTHANC_SERVER`
 
 ```
 $ export ORC_ORTHANC_SERVER=http://127.0.0.1:8042
@@ -61,10 +58,9 @@ $ export ORC_ORTHANC_SERVER=http://127.0.0.1:8042
 
 ### Orthanc server authentication
 
-If the Orthanc server you are working with requires authentication, you can provide it
-with command-line options `-u/--username` and `-p/--password`. Similar to the server
-address these can also be set as environment variables `ORC_ORTHANC_USERNAME` and
-`ORC_ORTHANC_PASSWORD`:
+If the Orthanc server you are working with requires authentication, you can provide it with command-line options
+`-u/--username` and `-p/--password`. Similar to the server address these can also be set as environment variables
+`ORC_ORTHANC_USERNAME` and `ORC_ORTHANC_PASSWORD`:
 
 ```
 $ export ORC_ORTHANC_USERNAME=orthanc
@@ -75,11 +71,10 @@ $ export ORC_ORTHANC_PASSWORD=orthanc
 
 ### Help
 
-To get a general idea of the usage run `orthanc help`. This will present the list of
-options, flags, and subcommands:
+To get a general idea of the usage run `orthanc --help`. This will present the list of options, flags, and subcommands:
 
 ```
-$ orthanc help
+$ orthanc --help
 orthanc 0.1.0
 Andrii Yurchuk <ay@mntw.re>
 Command-line interface for Orthanc, an open-source, lightweight DICOM server
@@ -129,20 +124,24 @@ SUBCOMMANDS:
     help         Prints this message or the help of the given subcommand(s)
 ```
 
-Subcommands might have nested subcommands, which also respond to `--help`, and so on. If
-unsure, append `--help` to the command to see how to use it.
+Subcommands might have nested subcommands, which also respond to `--help`. If unsure, append `--help` to the command to
+see how to use it.
 
-### Entities and identifiers
+### Entities and their IDs
 
-orthanc-cli makes a convention of calling patients, studies, series and instances
-_entities_ (not to be confused with
-[Application Entities](http://otpedia.com/entryDetails.cfm?id=137)). You might come across
-this naming in documentation or names command-line options or flags.
+orthanc-cli makes a convention of calling Patients, Studies, Series and Instances _Entities_ (not to be confused with
+[Application Entities](http://otpedia.com/entryDetails.cfm?id=137)). You might come across this naming in documentation
+or names of command-line options or flags.
 
-Similarly to Orthanc web interface orthanc-cli operates mainly with unique identifiers
-when it comes to referring to entities (patients, studies, series etc.). Each entity is
-assigned a unique identifier by the Orthanc server. In the list of entities (e.g. studies)
-the identifiers are in the first column (ID):
+Similarly to Orthanc web interface orthanc-cli operates mainly with unique identifiers (IDs) when it comes to referring
+to _Entities_ (Patients, Studies, Series etc.). Each Entity is assigned a unique identifier (ID) by the Orthanc server,
+that looks similar to this:
+
+```
+22c54cb6-28302a69-3ff454a3-676b98f4-b84cd80a
+```
+
+In the list of Studies for example the identifiers are in the first column (ID):
 
 ```
 $ orthanc study list
@@ -153,8 +152,7 @@ $ orthanc study list
  8c69229f-eba0eccb-2aa35808-e26bf10a-69375f79   patient_1   REMOVED           1.3.46.670589.11.3540642177   Study 2            20110101    084707      2
 ```
 
-When you need to refer to an entity in any of the orthanc-cli commands use its Orthanc
-unique identifier:
+When you need to refer to an Entity in any of the orthanc-cli commands use its Orthanc ID:
 
 ```
 $ orthanc study show cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6
@@ -170,20 +168,19 @@ $ orthanc study show cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6
  Number of Series   2
 ```
 
-### Anonymizing and modifying entities
+### Anonymizing and modifying Entities
 
-orthanc-cli allows modification and anonymization of entities. Both actions require
-creating a configuration file describing how exactly the entity should be anonymized or
-modified. The format of the configuration file is explained in the next sections.
+orthanc-cli allows modification and anonymization of Entities. Anonymization allows, and modification requires, the use
+of a configuration file describing how exactly the entity should be anonymized or modified. The format of the
+configuration file is explained in the next sections.
 
-Note that both anonymization and modification create a copy of the entity that is being
-anonymized/modified instead of changing the entity in-place.
+Note that both anonymization and modification create a copy of the entity that is being anonymized/modified instead of
+changing the entity in-place.
 
 #### Anonymization
 
-Anonymization of an entity can be done with or without configuration. If done without
-configuration, anonymization deletes or erases DICOM tags according to [Application Level
-Confidentiality Profile
+Anonymization of an entity can be done with or without configuration. If done without configuration, anonymization
+deletes or erases DICOM tags according to [Application Level Confidentiality Profile
 Attributes](http://dicom.nema.org/medical/dicom/2017c/output/html/part15.html#table_E.1-1):
 
 ```
@@ -192,14 +189,12 @@ $ orthanc study anonymize cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6
  Patient ID     6cf95a77-4112b9d3-905c17f0-d48ee8e1-b9e6d482
 ```
 
-The configuration file must be in [YAML](https://yaml.org) format and may contain the
-following fields:
+The configuration file must be in [YAML](https://yaml.org) format and may contain the following fields:
 
 * `replace` - the values of specified DICOM tags will be replaced with those specified
-* `keep` - the values of the specified DICOM will be left intact even if it they are
-  specified as to be removed in the table mentioned above
-* `keep_private_tags` - whether or not to keep the values of private DICOM tags (defaults
-  to `false` if omitted)
+* `keep` - the values of the specified DICOM tags will be left intact even if they are specified as to be removed in the
+  table mentioned above
+* `keep_private_tags` - whether or not to keep the values of private DICOM tags (defaults to `false` if omitted)
 
 Example:
 
@@ -223,8 +218,8 @@ $ orthanc study anonymize cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6 -c /tmp/a
 
 #### Modification
 
-A configuration file is required for modification. The configuration file must be in
-[YAML](https://yaml.org) format and may contain the following fields:
+A configuration file is required for modification. The configuration file must be in [YAML](https://yaml.org) format and
+may contain the following fields:
 
 * `replace` - the values of specified DICOM tags will be replaced with those specified
 * `remove` - the specified DICOM tags will be removed
