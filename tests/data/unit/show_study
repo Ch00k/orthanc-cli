@@ -1,0 +1,10 @@
+ ID                 foo
+ Patient ID         patient_foo
+ PatientID          undefined
+ StudyID            undefined
+ AccessionNumber    foo_an
+ StudyInstanceUID   foo_suid
+ StudyDescription   foo_sd
+ StudyDate          undefined
+ StudyTime          undefined
+ Number of Series   2

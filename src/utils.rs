@@ -295,6 +295,54 @@ mod tests {
     }
 
     #[test]
+    fn test_create_show_table_study() {
+        let study = Study {
+            id: "foo".to_string(),
+            is_stable: true,
+            last_update: NaiveDate::from_ymd(2020, 8, 30).and_hms(19, 11, 09),
+            main_dicom_tags: hashmap! {
+                "AccessionNumber".to_string() => "foo_an".to_string(),
+                "StudyInstanceUID".to_string() => "foo_suid".to_string(),
+                "StudyDescription".to_string() => "foo_sd".to_string(),
+            },
+            parent_patient: "patient_foo".to_string(),
+            patient_main_dicom_tags: hashmap! {
+                "PatientName".to_string() => "Rick Sanchez".to_string(),
+            },
+            series: ["foo_series_1".to_string(), "foo_series_2".to_string()].to_vec(),
+            entity: EntityKind::Study,
+            anonymized_from: None,
+        };
+
+        assert_eq!(
+            format_table(create_show_table(study, &STUDY_DICOM_TAGS)),
+            include_str!("../tests/data/unit/show_study").trim_end()
+        );
+    }
+
+    #[test]
+    fn test_create_show_table_instance() {
+        let instance = Instance {
+            id: "foo".to_string(),
+            main_dicom_tags: hashmap! {
+                "SOPInstanceUID".to_string() => "suid_1".to_string(),
+                "InstanceNumber".to_string() => "in_1".to_string(),
+            },
+            parent_series: "foo_series".to_string(),
+            index_in_series: Some(13),
+            file_uuid: "file_uuid".to_string(),
+            file_size: 139402,
+            modified_from: None,
+            entity: EntityKind::Instance,
+            anonymized_from: None,
+        };
+        assert_eq!(
+            format_table(create_show_table(instance, &INSTANCE_DICOM_TAGS)),
+            include_str!("../tests/data/unit/show_instance").trim_end()
+        );
+    }
+
+    #[test]
     fn test_create_error_table() {
         assert_eq!(
             format!(
