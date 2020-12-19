@@ -2,7 +2,7 @@ pub const TABLE_PRESET: &str = "     --            ";
 pub const ID_COLUMN_WIDTH: u16 = 46;
 pub const ABSENT_DICOM_TAG_PLACEHOLDER: &str = "undefined";
 
-pub const PATIENTS_LIST_HEADER: [&str; 4] = ["ID", "PatientID", "PatientName", "Number of studies"];
+pub const PATIENTS_LIST_HEADER: [&str; 4] = ["ID", "PatientID", "PatientName", "Number of Studies"];
 pub const PATIENTS_LIST_DICOM_TAGS: [&str; 2] = ["PatientID", "PatientName"];
 pub const PATIENT_DICOM_TAGS: [&str; 4] =
     ["PatientID", "PatientName", "PatientSex", "PatientBirthDate"];
@@ -15,7 +15,7 @@ pub const STUDIES_LIST_HEADER: [&str; 8] = [
     "StudyDescription",
     "StudyDate",
     "StudyTime",
-    "Number of series",
+    "Number of Series",
 ];
 pub const STUDIES_LIST_DICOM_TAGS: [&str; 6] = [
     "PatientID",
@@ -41,7 +41,7 @@ pub const SERIES_LIST_HEADER: [&str; 6] = [
     "SeriesDescription",
     "Modality",
     "BodyPartExamined",
-    "Number of instances",
+    "Number of Instances",
 ];
 pub const SERIES_LIST_DICOM_TAGS: [&str; 4] = [
     "SeriesInstanceUID",

@@ -146,7 +146,7 @@ the identifiers are in the first column (ID):
 
 ```
 $ orthanc study list
- ID                                             PatientID   AccessionNumber   StudyInstanceUID              StudyDescription   StudyDate   StudyTime   Number of series
+ ID                                             PatientID   AccessionNumber   StudyInstanceUID              StudyDescription   StudyDate   StudyTime   Number of Series
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  ab7a6e26-18072a37-5f2a2210-8a7f0823-f2fa9119   patient_2   REMOVED           1.3.46.670589.11.1.5.0.6560   Study 1            20110101    140606      2
  cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6   patient_1   REMOVED           1.3.46.670589.11.1.5.0.7116   Study 1            20120101    130431      2
@@ -167,7 +167,7 @@ $ orthanc study show cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6
  StudyDescription   Study 1
  StudyDate          20120101
  StudyTime          130431
- Number of series   2
+ Number of Series   2
 ```
 
 ### Anonymizing and modifying entities
