@@ -1,0 +1,8 @@
+ ID                    foo
+ Study ID              study_1
+ SeriesInstanceUID     undefined
+ SeriesNumber          undefined
+ SeriesDescription     Foo
+ Modality              undefined
+ BodyPartExamined      ABDOMEN
+ Number of Instances   2

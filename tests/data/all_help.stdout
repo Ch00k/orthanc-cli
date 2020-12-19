@@ -169,7 +169,7 @@ list
 List all studies
 
 USAGE:
-    list [OPTIONS]
+    list
 
 FLAGS:
     -h, --help       Prints help information
@@ -290,7 +290,7 @@ list
 List all series
 
 USAGE:
-    list [OPTIONS]
+    list
 
 FLAGS:
     -h, --help       Prints help information
@@ -412,7 +412,7 @@ list
 List all instances
 
 USAGE:
-    list [OPTIONS]
+    list
 
 FLAGS:
     -h, --help       Prints help information

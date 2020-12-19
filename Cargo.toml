@@ -16,12 +16,14 @@ build = "build.rs"
 [dependencies]
 clap = "3.0.0-beta.2"
 comfy-table = "1.1"
-orthanc = "0.5.2"
+orthanc = "0.6"
 serde_json = "1.0"
 serde_yaml = "0.8"
 
 [dev-dependencies]
+chrono = "0.4"
 dicom-object = "0.3"
+maplit = "1.0"
 pretty_assertions = "0.6"
 regex = "1.4"
 tempfile = "3.1"
@@ -38,6 +40,10 @@ clap_generate = "3.0.0-beta.2"
 [[bin]]
 name = "orthanc"
 path = "src/main.rs"
+
+[lib]
+name = "orthanc_cli"
+path = "src/lib.rs"
 
 [[test]]
 name = "integration"

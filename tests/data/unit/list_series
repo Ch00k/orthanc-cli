@@ -1,0 +1,4 @@
+ ID                                             SeriesInstanceUID   SeriesDescription   Modality    BodyPartExamined   Number of instances
+-------------------------------------------------------------------------------------------------------------------------------------------
+ foo                                            undefined           Foo                 undefined   ABDOMEN            2
+ bar                                            undefined           undefined           CT          KNEE               2

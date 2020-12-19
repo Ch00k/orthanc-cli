@@ -23,7 +23,10 @@ flags:
   unit_test:
     paths:
       - src/lib.rs
+      - src/utils.rs
   integration_test:
     paths:
       - src/lib.rs
+      - src/utils.rs
+      - src/cli.rs
       - src/main.rs
