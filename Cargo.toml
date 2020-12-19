@@ -15,7 +15,7 @@ build = "build.rs"
 
 [dependencies]
 clap = "3.0.0-beta.2"
-comfy-table = "1.1"
+comfy-table = "1.4"
 orthanc = "0.6"
 serde_json = "1.0"
 serde_yaml = "0.8"
