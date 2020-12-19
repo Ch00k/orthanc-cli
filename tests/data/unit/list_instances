@@ -1,0 +1,4 @@
+ ID                                             SOPInstanceUID   InstanceNumber   InstanceCreationDate   InstanceCreationTime   Index in series   File size
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+ foo                                            suid_1           in_1             undefined              undefined              13                139402
+ bar                                            suid_2           undefined        19000101               000000                 13                139402

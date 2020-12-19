@@ -189,9 +189,110 @@ pub fn exit_with_error(error: CliError) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use chrono::NaiveDate;
+    use maplit::hashmap;
+    use orthanc::{Instance, Study};
+    use regex::RegexBuilder;
     use std::env::{remove_var, set_var};
     use std::io::Write;
     use tempfile::NamedTempFile;
+
+    fn format_table(table: Table) -> String {
+        let trailing_whitespace_regex = RegexBuilder::new(r"([ ]+$)")
+            .multi_line(true)
+            .build()
+            .unwrap();
+        trailing_whitespace_regex
+            .replace_all(&format!("{}", table), "")
+            .to_string()
+    }
+
+    #[test]
+    fn test_create_list_table_study() {
+        let study_1 = Study {
+            id: "foo".to_string(),
+            is_stable: true,
+            last_update: NaiveDate::from_ymd(2020, 8, 30).and_hms(19, 11, 09),
+            main_dicom_tags: hashmap! {
+                "AccessionNumber".to_string() => "foo_an".to_string(),
+                "StudyInstanceUID".to_string() => "foo_suid".to_string(),
+                "StudyDescription".to_string() => "foo_sd".to_string(),
+            },
+            parent_patient: "patient_foo".to_string(),
+            patient_main_dicom_tags: hashmap! {
+                "PatientName".to_string() => "Rick Sanchez".to_string(),
+            },
+            series: ["foo_series_1".to_string(), "foo_series_2".to_string()].to_vec(),
+            entity: EntityKind::Study,
+            anonymized_from: None,
+        };
+        let study_2 = Study {
+            id: "bar".to_string(),
+            is_stable: true,
+            last_update: NaiveDate::from_ymd(2020, 12, 30).and_hms(10, 10, 0),
+            main_dicom_tags: hashmap! {
+                "PatientID".to_string() => "bar_pid".to_string(),
+                "StudyDate".to_string() => "20200101".to_string(),
+                "StudyTime".to_string() => "190001".to_string(),
+            },
+            parent_patient: "patient_bar".to_string(),
+            patient_main_dicom_tags: hashmap! {
+                "PatientName".to_string() => "Rick Sanchez".to_string(),
+            },
+            series: ["bar_series_1".to_string()].to_vec(),
+            entity: EntityKind::Study,
+            anonymized_from: None,
+        };
+        assert_eq!(
+            format_table(create_list_table(
+                vec![study_1, study_2],
+                &STUDIES_LIST_HEADER,
+                &STUDIES_LIST_DICOM_TAGS,
+            )),
+            include_str!("../tests/data/unit/list_studies").trim_end()
+        );
+    }
+
+    #[test]
+    fn test_create_list_table_instance() {
+        let instance_1 = Instance {
+            id: "foo".to_string(),
+            main_dicom_tags: hashmap! {
+                "SOPInstanceUID".to_string() => "suid_1".to_string(),
+                "InstanceNumber".to_string() => "in_1".to_string(),
+            },
+            parent_series: "foo_series".to_string(),
+            index_in_series: Some(13),
+            file_uuid: "file_uuid".to_string(),
+            file_size: 139402,
+            modified_from: None,
+            entity: EntityKind::Instance,
+            anonymized_from: None,
+        };
+        let instance_2 = Instance {
+            id: "bar".to_string(),
+            main_dicom_tags: hashmap! {
+                "SOPInstanceUID".to_string() => "suid_2".to_string(),
+                "InstanceCreationDate".to_string() => "19000101".to_string(),
+                "InstanceCreationTime".to_string() => "000000".to_string(),
+            },
+            parent_series: "foo_series".to_string(),
+            index_in_series: Some(13),
+            file_uuid: "file_uuid".to_string(),
+            file_size: 139402,
+            modified_from: None,
+            entity: EntityKind::Instance,
+            anonymized_from: None,
+        };
+        assert_eq!(
+            format_table(create_list_table(
+                vec![instance_1, instance_2],
+                &INSTANCES_LIST_HEADER,
+                &INSTANCES_LIST_DICOM_TAGS,
+            )),
+            include_str!("../tests/data/unit/list_instances").trim_end()
+        );
+    }
 
     #[test]
     fn test_create_error_table() {

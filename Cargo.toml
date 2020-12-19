@@ -21,7 +21,9 @@ serde_json = "1.0"
 serde_yaml = "0.8"
 
 [dev-dependencies]
+chrono = "0.4"
 dicom-object = "0.3"
+maplit = "1.0"
 pretty_assertions = "0.6"
 regex = "1.4"
 tempfile = "3.1"
