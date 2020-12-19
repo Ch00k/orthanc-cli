@@ -1,0 +1,75 @@
+name: release
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: # TODO
+
+  build_and_upload:
+    name: Build and upload artifacts
+    needs: create_release
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+        include:
+          - os: macos-latest
+            arch: macos
+          - os: ubuntu-latest
+            arch: linux64
+
+    steps:
+      - name: Set environment
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=orthanc-cli-${GITHUB_REF#refs/*/}-${{ matrix.arch }}" >> $GITHUB_ENV
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: prepare rust env
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Build
+        run: |
+          # TODO: Completion should be packaged with the executable
+          mkdir -p /tmp/orc_completion
+          cargo build --release
+
+      - name: Pack artifact
+        run: |
+          mv orthanc ${{ env.ARTIFACT_NAME }}
+          tar czf ${{ env.ARTIFACT_NAME }}.tar.gz ${{ env.ARTIFACT_NAME }}
+        working-directory: ./target/release
+
+      - name: Upload release artifact
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ./target/release/${{ env.ARTIFACT_NAME }}.tar.gz
+          asset_name: ${{ env.ARTIFACT_NAME }}.tar.gz
+          asset_content_type: application/gzip
