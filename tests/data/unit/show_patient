@@ -1,0 +1,6 @@
+ ID                  foo
+ PatientID           foo_id
+ PatientName         Rick Sanchez
+ PatientSex          undefined
+ PatientBirthDate    undefined
+ Number of Studies   1

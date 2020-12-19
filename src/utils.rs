@@ -191,7 +191,7 @@ mod tests {
     use super::*;
     use chrono::NaiveDate;
     use maplit::hashmap;
-    use orthanc::{Instance, Study};
+    use orthanc::{Instance, Patient, Series, Study};
     use regex::RegexBuilder;
     use std::env::{remove_var, set_var};
     use std::io::Write;
@@ -205,6 +205,41 @@ mod tests {
         trailing_whitespace_regex
             .replace_all(&format!("{}", table), "")
             .to_string()
+    }
+
+    #[test]
+    fn test_create_list_table_patient() {
+        let patient_1 = Patient {
+            id: "foo".to_string(),
+            is_stable: true,
+            last_update: NaiveDate::from_ymd(2020, 1, 1).and_hms(15, 46, 17),
+            main_dicom_tags: hashmap! {
+                "PatientID".to_string() => "foo_id".to_string(),
+                "PatientName".to_string() => "Rick Sanchez".to_string(),
+            },
+            studies: ["study_1".to_string()].to_vec(),
+            entity: EntityKind::Patient,
+            anonymized_from: None,
+        };
+        let patient_2 = Patient {
+            id: "bar".to_string(),
+            is_stable: true,
+            last_update: NaiveDate::from_ymd(2020, 1, 1).and_hms(15, 46, 17),
+            main_dicom_tags: hashmap! {
+                "PatientName".to_string() => "Morty Smith".to_string(),
+            },
+            studies: ["study_1".to_string(), "study_2".to_string()].to_vec(),
+            entity: EntityKind::Patient,
+            anonymized_from: None,
+        };
+        assert_eq!(
+            format_table(create_list_table(
+                vec![patient_1, patient_2],
+                &PATIENTS_LIST_HEADER,
+                &PATIENTS_LIST_DICOM_TAGS,
+            )),
+            include_str!("../tests/data/unit/list_patients").trim_end()
+        );
     }
 
     #[test]
@@ -254,6 +289,48 @@ mod tests {
     }
 
     #[test]
+    fn test_create_list_table_series() {
+        let series_1 = Series {
+            id: "foo".to_string(),
+            status: "Unknown".to_string(),
+            is_stable: true,
+            last_update: NaiveDate::from_ymd(2020, 8, 30).and_hms(19, 11, 09),
+            main_dicom_tags: hashmap! {
+                "BodyPartExamined".to_string() => "ABDOMEN".to_string(),
+                "SeriesDescription".to_string() => "Foo".to_string(),
+            },
+            parent_study: "study_1".to_string(),
+            expected_number_of_instances: Some(17),
+            instances: ["i1".to_string(), "i2".to_string()].to_vec(),
+            entity: EntityKind::Series,
+            anonymized_from: None,
+        };
+        let series_2 = Series {
+            id: "bar".to_string(),
+            status: "Known".to_string(),
+            is_stable: true,
+            last_update: NaiveDate::from_ymd(2021, 8, 30).and_hms(19, 12, 09),
+            main_dicom_tags: hashmap! {
+                "BodyPartExamined".to_string() => "KNEE".to_string(),
+                "Modality".to_string() => "CT".to_string(),
+            },
+            parent_study: "study_2".to_string(),
+            expected_number_of_instances: Some(17),
+            instances: ["i3".to_string(), "i4".to_string()].to_vec(),
+            entity: EntityKind::Series,
+            anonymized_from: None,
+        };
+        assert_eq!(
+            format_table(create_list_table(
+                vec![series_1, series_2],
+                &SERIES_LIST_HEADER,
+                &SERIES_LIST_DICOM_TAGS,
+            )),
+            include_str!("../tests/data/unit/list_series").trim_end()
+        );
+    }
+
+    #[test]
     fn test_create_list_table_instance() {
         let instance_1 = Instance {
             id: "foo".to_string(),
@@ -295,6 +372,27 @@ mod tests {
     }
 
     #[test]
+    fn test_create_show_table_patient() {
+        let patient = Patient {
+            id: "foo".to_string(),
+            is_stable: true,
+            last_update: NaiveDate::from_ymd(2020, 1, 1).and_hms(15, 46, 17),
+            main_dicom_tags: hashmap! {
+                "PatientID".to_string() => "foo_id".to_string(),
+                "PatientName".to_string() => "Rick Sanchez".to_string(),
+            },
+            studies: ["study_1".to_string()].to_vec(),
+            entity: EntityKind::Patient,
+            anonymized_from: None,
+        };
+
+        assert_eq!(
+            format_table(create_show_table(patient, &PATIENT_DICOM_TAGS)),
+            include_str!("../tests/data/unit/show_patient").trim_end()
+        );
+    }
+
+    #[test]
     fn test_create_show_table_study() {
         let study = Study {
             id: "foo".to_string(),
@@ -317,6 +415,29 @@ mod tests {
         assert_eq!(
             format_table(create_show_table(study, &STUDY_DICOM_TAGS)),
             include_str!("../tests/data/unit/show_study").trim_end()
+        );
+    }
+
+    #[test]
+    fn test_create_show_table_series() {
+        let series = Series {
+            id: "foo".to_string(),
+            status: "Unknown".to_string(),
+            is_stable: true,
+            last_update: NaiveDate::from_ymd(2020, 8, 30).and_hms(19, 11, 09),
+            main_dicom_tags: hashmap! {
+                "BodyPartExamined".to_string() => "ABDOMEN".to_string(),
+                "SeriesDescription".to_string() => "Foo".to_string(),
+            },
+            parent_study: "study_1".to_string(),
+            expected_number_of_instances: Some(17),
+            instances: ["i1".to_string(), "i2".to_string()].to_vec(),
+            entity: EntityKind::Series,
+            anonymized_from: None,
+        };
+        assert_eq!(
+            format_table(create_show_table(series, &SERIES_DICOM_TAGS)),
+            include_str!("../tests/data/unit/show_series").trim_end()
         );
     }
 
