@@ -6,6 +6,7 @@ authors = ["Andrii Yurchuk <ay@mntw.re>"]
 edition = "2018"
 repository = "https://github.com/Ch00k/orthanc-cli"
 homepage = "https://github.com/Ch00k/orthanc-cli"
+documentation = "https://github.com/Ch00k/orthanc-cli"
 keywords = ["cli", "command-line", "orthanc", "dicom"]
 categories = ["cli"]
 readme = "README.md"
