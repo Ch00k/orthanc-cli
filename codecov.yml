@@ -24,6 +24,7 @@ flags:
     paths:
       - src/lib.rs
       - src/utils.rs
+      - src/cli.rs
   integration_test:
     paths:
       - src/lib.rs
