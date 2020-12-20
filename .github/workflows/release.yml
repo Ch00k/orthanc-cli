@@ -55,7 +55,7 @@ jobs:
         run: |
           # TODO: Completion should be packaged with the executable
           mkdir -p /tmp/orc_completion
-          cargo build --release
+          make build_release
 
       - name: Pack artifact
         run: |

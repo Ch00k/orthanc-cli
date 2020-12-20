@@ -56,4 +56,7 @@ check_completion:
 	diff ./completion /tmp/orc_completion
 
 release:
-	cargo-release
+	cargo-release ${VERSION}
+
+build_release:
+	cargo build --release
