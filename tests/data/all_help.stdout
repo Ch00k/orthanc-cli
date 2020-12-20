@@ -1,5 +1,5 @@
 ========== orthanc-cli ==========
-orthanc-cli 0.0.1
+orthanc-cli 0.1.0
 Andrii Yurchuk <ay@mntw.re>
 Command-line interface for Orthanc, an open-source, lightweight DICOM server
 
