@@ -1,7 +1,7 @@
 [package]
 name = "orthanc-cli"
 description = "Command-line interface for Orthanc, an open-source, lightweight DICOM server"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Andrii Yurchuk <ay@mntw.re>"]
 edition = "2018"
 repository = "https://github.com/Ch00k/orthanc-cli"
