@@ -1,7 +1,7 @@
 use clap::{crate_authors, crate_description, crate_version, App, Arg};
 
 pub fn build_cli() -> App<'static> {
-    App::new("orthanc")
+    App::new("orthanc-cli")
         .bin_name("orthanc")
         .version(crate_version!())
         .author(crate_authors!())

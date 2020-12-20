@@ -75,7 +75,7 @@ To get a general idea of the usage run `orthanc --help`. This will present the l
 
 ```
 $ orthanc --help
-orthanc 0.1.0
+orthanc-cli 0.1.0
 Andrii Yurchuk <ay@mntw.re>
 Command-line interface for Orthanc, an open-source, lightweight DICOM server
 

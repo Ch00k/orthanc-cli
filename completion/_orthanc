@@ -26,10 +26,10 @@ _orthanc() {
 '-V[Prints version information]' \
 '--version[Prints version information]' \
 ":: :_orthanc_commands" \
-"*::: :->orthanc" \
+"*::: :->orthanc-cli" \
 && ret=0
     case $state in
-    (orthanc)
+    (orthanc-cli)
         words=($line[1] "${words[@]}")
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:orthanc-command-$line[1]:"
