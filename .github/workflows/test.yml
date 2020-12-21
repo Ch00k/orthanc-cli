@@ -37,7 +37,7 @@ jobs:
     name: integration_test
     strategy:
       matrix:
-        orthanc: [1.6.1, 1.7.4, 1.8.0]
+        orthanc: [1.6.1, 1.7.4, 1.8.2]
     services:
       orthanc:
         image: ch00k/orthanc-nginx:${{matrix.orthanc}}
@@ -77,7 +77,7 @@ jobs:
     name: integration_test_coverage
     services:
       orthanc:
-        image: ch00k/orthanc-nginx:1.8.0
+        image: ch00k/orthanc-nginx:1.8.2
         ports:
           - 8028:80
       dino:
