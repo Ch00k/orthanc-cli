@@ -1,0 +1,9 @@
+pre-release-replacements = [
+    { file="CHANGELOG.md", search="Unreleased", replace="{{version}}" },
+    { file="CHANGELOG.md", search="HEAD", replace="{{version}}" },
+    { file="CHANGELOG.md", search="ReleaseDate", replace="{{date}}" },
+    { file="CHANGELOG.md", search="<!-- next-header -->", replace="<!-- next-header -->\n\n## [Unreleased](https://github.com/Ch00k/orthanc-cli/compare/{{version}}...HEAD) ReleaseDate\n\n**Fixes and improvements**\n" }
+]
+pre-release-hook = "scripts/update-versions.sh"
+tag-name = "{{version}}"
+no-dev-version = true
