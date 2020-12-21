@@ -8,7 +8,7 @@ if [ -z "$CRATE_ROOT" ] || [ -z "$NEW_VERSION" ]; then
     exit 1
 fi
 
-FILES=( README.md )
+FILES=( README.md tests/data/all_help.stdout )
 for file in ${FILES[@]}; do
     sed -i -E \
         -e "s|orthanc-cli [0-9.]+|orthanc-cli ${NEW_VERSION}|g" \
