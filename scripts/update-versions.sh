@@ -11,6 +11,6 @@ fi
 FILES=( README.md )
 for file in ${FILES[@]}; do
     sed -i -E \
-        -e "s|orthanc-cli = \"[0-9.]+\"|orthanc-cli = \"${NEW_VERSION}\"|g" \
+        -e "s|orthanc-cli \"[0-9.]+\"|orthanc-cli \"${NEW_VERSION}\"|g" \
         "${CRATE_ROOT}/$file"
 done
