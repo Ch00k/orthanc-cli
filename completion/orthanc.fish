@@ -23,7 +23,10 @@ complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Patient ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Patient ID' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s r -l replace -d 'DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s k -l keep -d 'DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s c -l config -d 'Anonymization configuration file' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s p -l keep-private-tags -d 'Keep private tags intact'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -d 'Patient ID' -r
@@ -51,7 +54,10 @@ complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Study ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Study ID' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s r -l replace -d 'DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s k -l keep -d 'DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s c -l config -d 'Anonymization configuration file' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s p -l keep-private-tags -d 'Keep private tags intact'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -d 'Study ID' -r
@@ -79,7 +85,10 @@ complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Series ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Series ID' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s r -l replace -d 'DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s k -l keep -d 'DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s c -l config -d 'Anonymization configuration file' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s p -l keep-private-tags -d 'Keep private tags intact'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -d 'Series ID' -r
@@ -111,8 +120,11 @@ complete -c orthanc -n "__fish_seen_subcommand_from tags" -d 'Instance ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from tags" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from tags" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Instance ID' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s r -l replace -d 'DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s k -l keep -d 'DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s c -l config -d 'Anonymization configuration file' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s o -l output -d 'Output file path' -r
+complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s p -l keep-private-tags -d 'Keep private tags intact'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from modify" -d 'Instance ID' -r
