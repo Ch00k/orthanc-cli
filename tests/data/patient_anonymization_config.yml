@@ -4,4 +4,3 @@ replace:
 keep:
   - PatientSex
   - PatientBirthDate
-force: true
