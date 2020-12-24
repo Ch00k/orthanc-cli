@@ -73,17 +73,23 @@ anonymize
 Anonymize patient
 
 USAGE:
-    anonymize [OPTIONS] <ID>
+    anonymize [FLAGS] [OPTIONS] <ID>
 
 ARGS:
     <ID>    Patient ID
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help                 Prints help information
+    -p, --keep-private-tags    Keep private tags intact
+    -V, --version              Prints version information
 
 OPTIONS:
-    -c, --config <CONFIG>    Anonymization configuration file
+    -c, --config <CONFIG>     Anonymization configuration file
+    -k, --keep <TAG>...       DICOM tags that should be kept intact. Space-separated tag names.
+                              Example: PatientSex PatientBirthDate
+    -r, --replace <TAG>...    DICOM tags that should be replaced with the values specified. Space-
+                              separted pairs TagName=TagValue. Example: PatientName=REMOVED
+                              AccessionNumber=42
 
 ========== modify ==========
 modify
@@ -194,17 +200,23 @@ anonymize
 Anonymize study
 
 USAGE:
-    anonymize [OPTIONS] <ID>
+    anonymize [FLAGS] [OPTIONS] <ID>
 
 ARGS:
     <ID>    Study ID
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help                 Prints help information
+    -p, --keep-private-tags    Keep private tags intact
+    -V, --version              Prints version information
 
 OPTIONS:
-    -c, --config <CONFIG>    Anonymization configuration file
+    -c, --config <CONFIG>     Anonymization configuration file
+    -k, --keep <TAG>...       DICOM tags that should be kept intact. Space-separated tag names.
+                              Example: PatientSex PatientBirthDate
+    -r, --replace <TAG>...    DICOM tags that should be replaced with the values specified. Space-
+                              separted pairs TagName=TagValue. Example: PatientName=REMOVED
+                              AccessionNumber=42
 
 ========== modify ==========
 modify
@@ -315,17 +327,23 @@ anonymize
 Anonymize series
 
 USAGE:
-    anonymize [OPTIONS] <ID>
+    anonymize [FLAGS] [OPTIONS] <ID>
 
 ARGS:
     <ID>    Series ID
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help                 Prints help information
+    -p, --keep-private-tags    Keep private tags intact
+    -V, --version              Prints version information
 
 OPTIONS:
-    -c, --config <CONFIG>    Anonymization configuration file
+    -c, --config <CONFIG>     Anonymization configuration file
+    -k, --keep <TAG>...       DICOM tags that should be kept intact. Space-separated tag names.
+                              Example: PatientSex PatientBirthDate
+    -r, --replace <TAG>...    DICOM tags that should be replaced with the values specified. Space-
+                              separted pairs TagName=TagValue. Example: PatientName=REMOVED
+                              AccessionNumber=42
 
 ========== modify ==========
 modify
@@ -451,18 +469,24 @@ anonymize
 Anonymize instance
 
 USAGE:
-    anonymize [OPTIONS] <ID> --output <OUTPUT>
+    anonymize [FLAGS] [OPTIONS] <ID> --output <OUTPUT>
 
 ARGS:
     <ID>    Instance ID
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help                 Prints help information
+    -p, --keep-private-tags    Keep private tags intact
+    -V, --version              Prints version information
 
 OPTIONS:
-    -c, --config <CONFIG>    Anonymization configuration file
-    -o, --output <OUTPUT>    Output file path
+    -c, --config <CONFIG>     Anonymization configuration file
+    -k, --keep <TAG>...       DICOM tags that should be kept intact. Space-separated tag names.
+                              Example: PatientSex PatientBirthDate
+    -o, --output <OUTPUT>     Output file path
+    -r, --replace <TAG>...    DICOM tags that should be replaced with the values specified. Space-
+                              separted pairs TagName=TagValue. Example: PatientName=REMOVED
+                              AccessionNumber=42
 
 ========== modify ==========
 modify
