@@ -1,4 +1,4 @@
-use dicom_object::open_file;
+use dicom_object::{open_file, Error as DicomError, Tag};
 use orthanc::*;
 use regex::{Regex, RegexBuilder};
 use std::env;
@@ -920,6 +920,9 @@ fn test_anonymize_instance_with_config() {
             .unwrap(),
         "Patient 2 " // TODO: Why is there a trailing space?
     );
+    assert!(
+        matches!(obj.element(Tag::from((0x1235, 0x0042))).unwrap_err(), DicomError::NoSuchDataElementTag{..})
+    );
 }
 
 #[test]
@@ -935,6 +938,7 @@ fn test_anonymize_instance_with_cmd_options() {
         "PatientName",
         "-o",
         "/tmp/anonymized_instance.dcm",
+        "-p",
     ]);
     assert!(res == CommandResult::new(0, "".to_string(), "".to_string()));
     let obj = open_file("/tmp/anonymized_instance.dcm").unwrap();
@@ -948,6 +952,13 @@ fn test_anonymize_instance_with_cmd_options() {
             .to_str()
             .unwrap(),
         "Patient 2 " // TODO: Why is there a trailing space?
+    );
+    assert_eq!(
+        obj.element(Tag::from((0x1235, 0x0042)))
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        "bazqux"
     );
 }
 
