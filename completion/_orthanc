@@ -68,8 +68,14 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (anonymize)
 _arguments "${_arguments_options[@]}" \
+'(-c --config)*-r+[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*--replace=[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*-k+[DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
+'(-c --config)*--keep=[DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
 '-c+[Anonymization configuration file]' \
 '--config=[Anonymization configuration file]' \
+'(-c --config)-p[Keep private tags intact]' \
+'(-c --config)--keep-private-tags[Keep private tags intact]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -146,8 +152,14 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (anonymize)
 _arguments "${_arguments_options[@]}" \
+'(-c --config)*-r+[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*--replace=[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*-k+[DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
+'(-c --config)*--keep=[DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
 '-c+[Anonymization configuration file]' \
 '--config=[Anonymization configuration file]' \
+'(-c --config)-p[Keep private tags intact]' \
+'(-c --config)--keep-private-tags[Keep private tags intact]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -224,8 +236,14 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (anonymize)
 _arguments "${_arguments_options[@]}" \
+'(-c --config)*-r+[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*--replace=[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*-k+[DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
+'(-c --config)*--keep=[DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
 '-c+[Anonymization configuration file]' \
 '--config=[Anonymization configuration file]' \
+'(-c --config)-p[Keep private tags intact]' \
+'(-c --config)--keep-private-tags[Keep private tags intact]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -311,10 +329,16 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (anonymize)
 _arguments "${_arguments_options[@]}" \
+'(-c --config)*-r+[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*--replace=[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*-k+[DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
+'(-c --config)*--keep=[DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
 '-c+[Anonymization configuration file]' \
 '--config=[Anonymization configuration file]' \
 '-o+[Output file path]' \
 '--output=[Output file path]' \
+'(-c --config)-p[Keep private tags intact]' \
+'(-c --config)--keep-private-tags[Keep private tags intact]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \

@@ -94,12 +94,18 @@ impl Orthanc {
         ))
     }
 
-    pub fn anonymize_patient(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
-        let anonymization = match config_file {
-            Some(c) => Some(get_anonymization_config(c)?),
-            None => None,
-        };
-        match self.client.anonymize_patient(id, anonymization) {
+    pub fn anonymize_patient(
+        &self,
+        id: &str,
+        replace: Option<Vec<&str>>,
+        keep: Option<Vec<&str>>,
+        keep_private_tags: Option<bool>,
+        config_file: Option<&str>,
+    ) -> Result<Table> {
+        match self.client.anonymize_patient(
+            id,
+            get_anonymization_config(replace, keep, keep_private_tags, config_file)?,
+        ) {
             Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
         }
@@ -146,12 +152,18 @@ impl Orthanc {
         ))
     }
 
-    pub fn anonymize_study(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
-        let anonymization = match config_file {
-            Some(c) => Some(get_anonymization_config(c)?),
-            None => None,
-        };
-        match self.client.anonymize_study(id, anonymization) {
+    pub fn anonymize_study(
+        &self,
+        id: &str,
+        replace: Option<Vec<&str>>,
+        keep: Option<Vec<&str>>,
+        keep_private_tags: Option<bool>,
+        config_file: Option<&str>,
+    ) -> Result<Table> {
+        match self.client.anonymize_study(
+            id,
+            get_anonymization_config(replace, keep, keep_private_tags, config_file)?,
+        ) {
             Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
         }
@@ -198,12 +210,18 @@ impl Orthanc {
         ))
     }
 
-    pub fn anonymize_series(&self, id: &str, config_file: Option<&str>) -> Result<Table> {
-        let anonymization = match config_file {
-            Some(c) => Some(get_anonymization_config(c)?),
-            None => None,
-        };
-        match self.client.anonymize_series(id, anonymization) {
+    pub fn anonymize_series(
+        &self,
+        id: &str,
+        replace: Option<Vec<&str>>,
+        keep: Option<Vec<&str>>,
+        keep_private_tags: Option<bool>,
+        config_file: Option<&str>,
+    ) -> Result<Table> {
+        match self.client.anonymize_series(
+            id,
+            get_anonymization_config(replace, keep, keep_private_tags, config_file)?,
+        ) {
             Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
         }
@@ -253,16 +271,19 @@ impl Orthanc {
     pub fn anonymize_instance(
         &self,
         id: &str,
+        replace: Option<Vec<&str>>,
+        keep: Option<Vec<&str>>,
+        keep_private_tags: Option<bool>,
         config_file: Option<&str>,
         path: &str,
     ) -> Result<()> {
-        let anonymization = match config_file {
-            Some(c) => Some(get_anonymization_config(c)?),
-            None => None,
-        };
         let mut file = fs::File::create(path)?;
         self.client
-            .anonymize_instance(id, anonymization, &mut file)
+            .anonymize_instance(
+                id,
+                get_anonymization_config(replace, keep, keep_private_tags, config_file)?,
+                &mut file,
+            )
             .map_err(Into::<_>::into)
     }
 

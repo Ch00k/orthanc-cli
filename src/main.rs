@@ -29,13 +29,22 @@ fn main() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
             },
-            Some(("anonymize", anonymize)) => match o.anonymize_patient(
-                anonymize.value_of("id").unwrap(),
-                anonymize.value_of("config"),
-            ) {
-                Ok(t) => print(t),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("anonymize", anonymize)) => {
+                let mut keep_private_tags = None;
+                if anonymize.is_present("keep_private_tags") {
+                    keep_private_tags = Some(true);
+                }
+                match o.anonymize_patient(
+                    anonymize.value_of("id").unwrap(),
+                    anonymize.values_of("replace").map(|r| r.collect()),
+                    anonymize.values_of("keep").map(|k| k.collect()),
+                    keep_private_tags,
+                    anonymize.value_of("config"),
+                ) {
+                    Ok(t) => print(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("modify", modify)) => match o.modify_patient(
                 modify.value_of("id").unwrap(),
                 modify.value_of("config").unwrap(),
@@ -65,13 +74,22 @@ fn main() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
             },
-            Some(("anonymize", anonymize)) => match o.anonymize_study(
-                anonymize.value_of("id").unwrap(),
-                anonymize.value_of("config"),
-            ) {
-                Ok(t) => print(t),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("anonymize", anonymize)) => {
+                let mut keep_private_tags = None;
+                if anonymize.is_present("keep_private_tags") {
+                    keep_private_tags = Some(true);
+                }
+                match o.anonymize_study(
+                    anonymize.value_of("id").unwrap(),
+                    anonymize.values_of("replace").map(|r| r.collect()),
+                    anonymize.values_of("keep").map(|k| k.collect()),
+                    keep_private_tags,
+                    anonymize.value_of("config"),
+                ) {
+                    Ok(t) => print(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("modify", modify)) => match o.modify_study(
                 modify.value_of("id").unwrap(),
                 modify.value_of("config").unwrap(),
@@ -101,13 +119,22 @@ fn main() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
             },
-            Some(("anonymize", anonymize)) => match o.anonymize_series(
-                anonymize.value_of("id").unwrap(),
-                anonymize.value_of("config"),
-            ) {
-                Ok(t) => print(t),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("anonymize", anonymize)) => {
+                let mut keep_private_tags = None;
+                if anonymize.is_present("keep_private_tags") {
+                    keep_private_tags = Some(true);
+                }
+                match o.anonymize_series(
+                    anonymize.value_of("id").unwrap(),
+                    anonymize.values_of("replace").map(|r| r.collect()),
+                    anonymize.values_of("keep").map(|k| k.collect()),
+                    keep_private_tags,
+                    anonymize.value_of("config"),
+                ) {
+                    Ok(t) => print(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("modify", modify)) => match o.modify_series(
                 modify.value_of("id").unwrap(),
                 modify.value_of("config").unwrap(),
@@ -137,14 +164,23 @@ fn main() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
             },
-            Some(("anonymize", anonymize)) => match o.anonymize_instance(
-                anonymize.value_of("id").unwrap(),
-                anonymize.value_of("config"),
-                anonymize.value_of("output").unwrap(),
-            ) {
-                Ok(_) => (),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("anonymize", anonymize)) => {
+                let mut keep_private_tags = None;
+                if anonymize.is_present("keep_private_tags") {
+                    keep_private_tags = Some(true);
+                }
+                match o.anonymize_instance(
+                    anonymize.value_of("id").unwrap(),
+                    anonymize.values_of("replace").map(|r| r.collect()),
+                    anonymize.values_of("keep").map(|k| k.collect()),
+                    keep_private_tags,
+                    anonymize.value_of("config"),
+                    anonymize.value_of("output").unwrap(),
+                ) {
+                    Ok(_) => (),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("modify", modify)) => match o.modify_instance(
                 modify.value_of("id").unwrap(),
                 modify.value_of("config").unwrap(),

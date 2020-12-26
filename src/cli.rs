@@ -62,6 +62,43 @@ pub fn build_cli() -> App<'static> {
                                 .value_name("ID"),
                         )
                         .arg(
+                            Arg::new("replace")
+                                .about(concat!(
+                                    "DICOM tags that should be replaced with the values specified. ",
+                                    "Space-separted pairs TagName=TagValue. ",
+                                    "Example: PatientName=REMOVED AccessionNumber=42",
+                                ))
+                                .conflicts_with("config")
+                                .takes_value(true)
+                                .short('r')
+                                .long("replace")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("keep")
+                                .about(concat!(
+                                    "DICOM tags that should be kept intact. ",
+                                    "Space-separated tag names. ",
+                                    "Example: PatientSex PatientBirthDate",
+                                ))
+                                .conflicts_with("config")
+                                .takes_value(true)
+                                .short('k')
+                                .long("keep")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("keep_private_tags")
+                                .about("Keep private tags intact")
+                                .conflicts_with("config")
+                                .short('p')
+                                .long("keep-private-tags"),
+                        )
+                        .arg(
                             Arg::new("config")
                                 .about("Anonymization configuration file")
                                 .takes_value(true)
@@ -150,6 +187,43 @@ pub fn build_cli() -> App<'static> {
                                 .value_name("ID"),
                         )
                         .arg(
+                            Arg::new("replace")
+                                .about(concat!(
+                                    "DICOM tags that should be replaced with the values specified. ",
+                                    "Space-separted pairs TagName=TagValue. ",
+                                    "Example: PatientName=REMOVED AccessionNumber=42",
+                                ))
+                                .conflicts_with("config")
+                                .takes_value(true)
+                                .short('r')
+                                .long("replace")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("keep")
+                                .about(concat!(
+                                    "DICOM tags that should be kept intact. ",
+                                    "Space-separated tag names. ",
+                                    "Example: PatientSex PatientBirthDate",
+                                ))
+                                .conflicts_with("config")
+                                .takes_value(true)
+                                .short('k')
+                                .long("keep")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("keep_private_tags")
+                                .about("Keep private tags intact")
+                                .conflicts_with("config")
+                                .short('p')
+                                .long("keep-private-tags"),
+                        )
+                        .arg(
                             Arg::new("config")
                                 .about("Anonymization configuration file")
                                 .takes_value(true)
@@ -231,6 +305,43 @@ pub fn build_cli() -> App<'static> {
                                 .about("Series ID")
                                 .required(true)
                                 .value_name("ID"),
+                        )
+                        .arg(
+                            Arg::new("replace")
+                                .about(concat!(
+                                    "DICOM tags that should be replaced with the values specified. ",
+                                    "Space-separted pairs TagName=TagValue. ",
+                                    "Example: PatientName=REMOVED AccessionNumber=42",
+                                ))
+                                .conflicts_with("config")
+                                .takes_value(true)
+                                .short('r')
+                                .long("replace")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("keep")
+                                .about(concat!(
+                                    "DICOM tags that should be kept intact. ",
+                                    "Space-separated tag names. ",
+                                    "Example: PatientSex PatientBirthDate",
+                                ))
+                                .conflicts_with("config")
+                                .takes_value(true)
+                                .short('k')
+                                .long("keep")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("keep_private_tags")
+                                .about("Keep private tags intact")
+                                .conflicts_with("config")
+                                .short('p')
+                                .long("keep-private-tags"),
                         )
                         .arg(
                             Arg::new("config")
@@ -334,6 +445,43 @@ pub fn build_cli() -> App<'static> {
                                 .about("Instance ID")
                                 .required(true)
                                 .value_name("ID"),
+                        )
+                        .arg(
+                            Arg::new("replace")
+                                .about(concat!(
+                                    "DICOM tags that should be replaced with the values specified. ",
+                                    "Space-separted pairs TagName=TagValue. ",
+                                    "Example: PatientName=REMOVED AccessionNumber=42",
+                                ))
+                                .conflicts_with("config")
+                                .takes_value(true)
+                                .short('r')
+                                .long("replace")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("keep")
+                                .about(concat!(
+                                    "DICOM tags that should be kept intact. ",
+                                    "Space-separated tag names. ",
+                                    "Example: PatientSex PatientBirthDate",
+                                ))
+                                .conflicts_with("config")
+                                .takes_value(true)
+                                .short('k')
+                                .long("keep")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("keep_private_tags")
+                                .about("Keep private tags intact")
+                                .conflicts_with("config")
+                                .short('p')
+                                .long("keep-private-tags"),
                         )
                         .arg(
                             Arg::new("config")

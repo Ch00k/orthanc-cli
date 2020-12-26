@@ -3,6 +3,7 @@ use crate::{CliError, Result};
 use comfy_table::{ColumnConstraint, ContentArrangement, Table};
 use orthanc::{Anonymization, Entity, EntityKind, Modification, ModificationResult};
 use serde_yaml;
+use std::collections::HashMap;
 use std::{env, fs, process, result};
 
 pub fn create_list_table<T: Entity>(
@@ -90,11 +91,54 @@ pub fn create_show_table<T: Entity>(entity: T, dicom_tags: &[&str]) -> Table {
     table
 }
 
-pub fn get_anonymization_config(config_file: &str) -> Result<Anonymization> {
+pub fn get_anonymization_config(
+    replace: Option<Vec<&str>>,
+    keep: Option<Vec<&str>>,
+    keep_private_tags: Option<bool>,
+    config_file: Option<&str>,
+) -> Result<Option<Anonymization>> {
+    match config_file {
+        Some(c) => Ok(Some(get_anonymization_config_from_file(c)?)),
+        None => match (&replace, &keep, &keep_private_tags) {
+            (None, None, None) => Ok(None),
+            _ => Ok(Some(get_anonymization_config_from_cmd_options(
+                replace,
+                keep,
+                keep_private_tags,
+            ))),
+        },
+    }
+}
+
+pub fn get_anonymization_config_from_file(config_file: &str) -> Result<Anonymization> {
     let yaml = fs::read(config_file)?;
     let mut a: Anonymization = serde_yaml::from_slice(&yaml)?;
     a.force = Some(true);
     Ok(a)
+}
+
+pub fn get_anonymization_config_from_cmd_options(
+    replace: Option<Vec<&str>>,
+    keep: Option<Vec<&str>>,
+    keep_private_tags: Option<bool>,
+) -> Anonymization {
+    Anonymization {
+        replace: match replace {
+            Some(r) => {
+                let mut replace_map = HashMap::new();
+                for v in r {
+                    let tag: Vec<&str> = v.split("=").collect();
+                    replace_map.insert(tag[0].to_string(), tag[1].to_string());
+                }
+                Some(replace_map)
+            }
+            None => None,
+        },
+        keep: keep.map(|vec| vec.iter().map(ToString::to_string).collect()),
+        keep_private_tags,
+        dicom_version: None,
+        force: Some(true),
+    }
 }
 
 pub fn get_modification_config(config_file: &str) -> Result<Modification> {
@@ -533,7 +577,7 @@ mod tests {
         let mut file = fs::File::create("/tmp/anon_config.yml").unwrap();
         file.write(b"{}").unwrap();
         assert_eq!(
-            get_anonymization_config("/tmp/anon_config.yml").unwrap(),
+            get_anonymization_config_from_file("/tmp/anon_config.yml").unwrap(),
             Anonymization {
                 replace: None,
                 keep: None,
@@ -547,7 +591,7 @@ mod tests {
     #[test]
     fn test_get_anonymization_config_file_not_found() {
         assert_eq!(
-            get_anonymization_config("/tmp/anon_garble.yml").unwrap_err(),
+            get_anonymization_config_from_file("/tmp/anon_garble.yml").unwrap_err(),
             CliError {
                 error: "No such file or directory (os error 2)".to_string(),
                 message: None,
@@ -561,7 +605,7 @@ mod tests {
         let mut file = NamedTempFile::new().unwrap();
         writeln!(file, "garble").unwrap();
         assert_eq!(
-            get_anonymization_config(file.path().to_str().unwrap()).unwrap_err(),
+            get_anonymization_config_from_file(file.path().to_str().unwrap()).unwrap_err(),
             CliError {
                 error: "invalid type: string \"garble\", expected struct Anonymization at line 1 column 1".to_string(),
                 message: None,

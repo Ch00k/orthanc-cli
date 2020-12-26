@@ -1,4 +1,4 @@
-use dicom_object::open_file;
+use dicom_object::{open_file, Error as DicomError, Tag};
 use orthanc::*;
 use regex::{Regex, RegexBuilder};
 use std::env;
@@ -609,7 +609,7 @@ fn test_download_instance_error() {
 }
 
 #[test]
-fn test_anonymize_patient_no_config() {
+fn test_anonymize_patient_no_customization() {
     let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
     let res = run_command(vec!["patient", "anonymize", &patient.id]);
     assert!(
@@ -631,7 +631,7 @@ fn test_anonymize_patient_no_config() {
 }
 
 #[test]
-fn test_anonymize_study_no_config() {
+fn test_anonymize_study_no_customization() {
     let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
     let res = run_command(vec!["study", "anonymize", &study.id]);
     assert!(
@@ -653,7 +653,7 @@ fn test_anonymize_study_no_config() {
 }
 
 #[test]
-fn test_anonymize_series_no_config() {
+fn test_anonymize_series_no_customization() {
     let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
     let res = run_command(vec!["series", "anonymize", &series.id]);
     assert!(
@@ -675,7 +675,7 @@ fn test_anonymize_series_no_config() {
 }
 
 #[test]
-fn test_anonymize_instance_no_config() {
+fn test_anonymize_instance_no_customization() {
     let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
     let res = run_command(vec![
         "instance",
@@ -733,6 +733,41 @@ fn test_anonymize_patient_with_config() {
 }
 
 #[test]
+fn test_anonymize_patient_with_cmd_options() {
+    let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
+    let res = run_command(vec![
+        "patient",
+        "anonymize",
+        &patient.id,
+        "-r",
+        "PatientID=gazorpazorp",
+        "PatientName=Morty Smith",
+        "-k",
+        "PatientSex",
+        "PatientBirthDate",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_patient.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_patient_id = res.new_entity_id();
+    assert_result(
+        vec!["patient", "show", &new_patient_id],
+        CommandResult::new(
+            0,
+            include_str!("data/patient_show_anonymized_with_config.stdout")
+                .to_string()
+                // TODO: This is getting out of hand
+                .replace("Number of Studies   2", "Number of Studies   1"),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_anonymize_study_with_config() {
     let mut file = fs::File::create("/tmp/study_anon_config.yml").unwrap();
     file.write_all(include_bytes!("data/study_anonymization_config.yml"))
@@ -744,6 +779,38 @@ fn test_anonymize_study_with_config() {
         &study.id,
         "-c",
         "/tmp/study_anon_config.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_study.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_study_id = res.new_entity_id();
+    assert_result(
+        vec!["study", "show", &new_study_id],
+        CommandResult::new(
+            0,
+            include_str!("data/study_show_anonymized_with_config.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_study_with_cmd_options() {
+    let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "study",
+        "anonymize",
+        &study.id,
+        "-r",
+        "StudyID=gazorpazorp",
+        "AccessionNumber=C137",
+        "-k",
+        "StudyDate",
+        "StudyTime",
     ]);
     assert!(
         res == CommandResult::new(
@@ -795,6 +862,37 @@ fn test_anonymize_series_with_config() {
 }
 
 #[test]
+fn test_anonymize_series_with_cmd_options() {
+    let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "series",
+        "anonymize",
+        &series.id,
+        "-r",
+        "SeriesNumber=42",
+        "BodyPartExamined=PINKY",
+        "-k",
+        "SeriesDescription",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_series.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_series_id = res.new_entity_id();
+    assert_result(
+        vec!["series", "show", &new_series_id],
+        CommandResult::new(
+            0,
+            include_str!("data/series_show_anonymized_with_config.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_anonymize_instance_with_config() {
     let mut file = fs::File::create("/tmp/instance_anon_config.yml").unwrap();
     file.write_all(include_bytes!("data/instance_anonymization_config.yml"))
@@ -821,6 +919,46 @@ fn test_anonymize_instance_with_config() {
             .to_str()
             .unwrap(),
         "Patient 2 " // TODO: Why is there a trailing space?
+    );
+    assert!(
+        matches!(obj.element(Tag::from((0x1235, 0x0042))).unwrap_err(), DicomError::NoSuchDataElementTag{..})
+    );
+}
+
+#[test]
+fn test_anonymize_instance_with_cmd_options() {
+    let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "instance",
+        "anonymize",
+        &instance.id,
+        "-r",
+        "PatientID=C137",
+        "-k",
+        "PatientName",
+        "-o",
+        "/tmp/anonymized_instance.dcm",
+        "-p",
+    ]);
+    assert!(res == CommandResult::new(0, "".to_string(), "".to_string()));
+    let obj = open_file("/tmp/anonymized_instance.dcm").unwrap();
+    assert_eq!(
+        obj.element_by_name("PatientID").unwrap().to_str().unwrap(),
+        "C137"
+    );
+    assert_eq!(
+        obj.element_by_name("PatientName")
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        "Patient 2 " // TODO: Why is there a trailing space?
+    );
+    assert_eq!(
+        obj.element(Tag::from((0x1235, 0x0042)))
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        "bazqux"
     );
 }
 
