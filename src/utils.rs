@@ -110,9 +110,31 @@ pub fn get_anonymization_config(
     }
 }
 
+pub fn get_modification_config(
+    replace: Option<Vec<&str>>,
+    remove: Option<Vec<&str>>,
+    config_file: Option<&str>,
+) -> Result<Modification> {
+    match config_file {
+        Some(c) => Ok(get_modification_config_from_file(c)?),
+        None => match (&replace, &remove) {
+            // TODO: This assumes that there is always either a config file
+            // or at least one of the options
+            _ => Ok(get_modification_config_from_cmd_options(replace, remove)),
+        },
+    }
+}
+
 pub fn get_anonymization_config_from_file(config_file: &str) -> Result<Anonymization> {
     let yaml = fs::read(config_file)?;
     let mut a: Anonymization = serde_yaml::from_slice(&yaml)?;
+    a.force = Some(true);
+    Ok(a)
+}
+
+pub fn get_modification_config_from_file(config_file: &str) -> Result<Modification> {
+    let yaml = fs::read(config_file)?;
+    let mut a: Modification = serde_yaml::from_slice(&yaml)?;
     a.force = Some(true);
     Ok(a)
 }
@@ -141,10 +163,25 @@ pub fn get_anonymization_config_from_cmd_options(
     }
 }
 
-pub fn get_modification_config(config_file: &str) -> Result<Modification> {
-    let yaml = fs::read(config_file)?;
-    let modification: Modification = serde_yaml::from_slice(&yaml)?;
-    Ok(modification)
+pub fn get_modification_config_from_cmd_options(
+    replace: Option<Vec<&str>>,
+    remove: Option<Vec<&str>>,
+) -> Modification {
+    Modification {
+        replace: match replace {
+            Some(r) => {
+                let mut replace_map = HashMap::new();
+                for v in r {
+                    let tag: Vec<&str> = v.split("=").collect();
+                    replace_map.insert(tag[0].to_string(), tag[1].to_string());
+                }
+                Some(replace_map)
+            }
+            None => None,
+        },
+        remove: remove.map(|vec| vec.iter().map(ToString::to_string).collect()),
+        force: Some(true),
+    }
 }
 
 pub fn create_new_entity_table(result: ModificationResult) -> Table {
@@ -619,11 +656,11 @@ mod tests {
         let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
         file.write(b"{}").unwrap();
         assert_eq!(
-            get_modification_config("/tmp/mod_config.yml").unwrap(),
+            get_modification_config_from_file("/tmp/mod_config.yml").unwrap(),
             Modification {
                 replace: None,
                 remove: None,
-                force: None
+                force: Some(true)
             }
         )
     }
@@ -631,7 +668,7 @@ mod tests {
     #[test]
     fn test_get_modification_config_file_not_found() {
         assert_eq!(
-            get_modification_config("/tmp/anon_garble.yml").unwrap_err(),
+            get_modification_config_from_file("/tmp/anon_garble.yml").unwrap_err(),
             CliError {
                 error: "No such file or directory (os error 2)".to_string(),
                 message: None,
@@ -645,7 +682,7 @@ mod tests {
         let mut file = NamedTempFile::new().unwrap();
         writeln!(file, "garble").unwrap();
         assert_eq!(
-            get_modification_config(file.path().to_str().unwrap()).unwrap_err(),
+            get_modification_config_from_file(file.path().to_str().unwrap()).unwrap_err(),
             CliError {
                 error: "invalid type: string \"garble\", expected struct Modification at line 1 column 1".to_string(),
                 message: None,

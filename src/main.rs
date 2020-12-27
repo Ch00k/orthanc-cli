@@ -47,7 +47,9 @@ fn main() {
             }
             Some(("modify", modify)) => match o.modify_patient(
                 modify.value_of("id").unwrap(),
-                modify.value_of("config").unwrap(),
+                modify.values_of("replace").map(|r| r.collect()),
+                modify.values_of("remove").map(|r| r.collect()),
+                modify.value_of("config"),
             ) {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
@@ -92,7 +94,9 @@ fn main() {
             }
             Some(("modify", modify)) => match o.modify_study(
                 modify.value_of("id").unwrap(),
-                modify.value_of("config").unwrap(),
+                modify.values_of("replace").map(|r| r.collect()),
+                modify.values_of("remove").map(|r| r.collect()),
+                modify.value_of("config"),
             ) {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
@@ -137,7 +141,9 @@ fn main() {
             }
             Some(("modify", modify)) => match o.modify_series(
                 modify.value_of("id").unwrap(),
-                modify.value_of("config").unwrap(),
+                modify.values_of("replace").map(|r| r.collect()),
+                modify.values_of("remove").map(|r| r.collect()),
+                modify.value_of("config"),
             ) {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
@@ -183,7 +189,9 @@ fn main() {
             }
             Some(("modify", modify)) => match o.modify_instance(
                 modify.value_of("id").unwrap(),
-                modify.value_of("config").unwrap(),
+                modify.values_of("replace").map(|r| r.collect()),
+                modify.values_of("remove").map(|r| r.collect()),
+                modify.value_of("config"),
                 modify.value_of("output").unwrap(),
             ) {
                 Ok(_) => (),

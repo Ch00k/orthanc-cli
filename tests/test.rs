@@ -1137,7 +1137,7 @@ fn test_anonymize_instance_yaml_parse_error() {
 }
 
 #[test]
-fn test_modify_patient() {
+fn test_modify_patient_config_file() {
     let mut file = fs::File::create("/tmp/patient_mod_config.yml").unwrap();
     file.write_all(include_bytes!("data/patient_modification_config.yml"))
         .unwrap();
@@ -1161,14 +1161,17 @@ fn test_modify_patient() {
         vec!["patient", "show", &new_patient_id],
         CommandResult::new(
             0,
-            include_str!("data/patient_show_modified.stdout").to_string(),
+            include_str!("data/patient_show_modified.stdout")
+                .to_string()
+                // TODO: This is getting out of hand
+                .replace("Number of Studies   1", "Number of Studies   2"),
             "".to_string(),
         ),
     );
 }
 
 #[test]
-fn test_modify_study() {
+fn test_modify_study_config_file() {
     let mut file = fs::File::create("/tmp/study_mod_config.yml").unwrap();
     file.write_all(include_bytes!("data/study_modification_config.yml"))
         .unwrap();
@@ -1199,7 +1202,7 @@ fn test_modify_study() {
 }
 
 #[test]
-fn test_modify_series() {
+fn test_modify_series_config_file() {
     let mut file = fs::File::create("/tmp/series_mod_config.yml").unwrap();
     file.write_all(include_bytes!("data/series_modification_config.yml"))
         .unwrap();
@@ -1230,7 +1233,7 @@ fn test_modify_series() {
 }
 
 #[test]
-fn test_modify_instance() {
+fn test_modify_instance_config_file() {
     let mut file = fs::File::create("/tmp/instance_mod_config.yml").unwrap();
     file.write_all(include_bytes!("data/instance_modification_config.yml"))
         .unwrap();
@@ -1241,6 +1244,136 @@ fn test_modify_instance() {
         &instance.id,
         "-c",
         "/tmp/instance_mod_config.yml",
+        "-o",
+        "/tmp/modified_instance.dcm",
+    ]);
+    assert!(res == CommandResult::new(0, "".to_string(), "".to_string()));
+    let obj = open_file("/tmp/modified_instance.dcm").unwrap();
+    assert_eq!(
+        obj.element_by_name("SpecificCharacterSet")
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        "ISO_IR 13 "
+    );
+    assert_eq!(
+        obj.element_by_name("OperatorsName")
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        "Summer Smith"
+    );
+}
+
+#[test]
+fn test_modify_patient_config_cmdline() {
+    let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
+    let res = run_command(vec![
+        "patient",
+        "modify",
+        &patient.id,
+        "-r",
+        "PatientID=wubalubadubdub",
+        "PatientName=Rick Sanchez",
+        "-m",
+        "PatientSex",
+        "PatientBirthDate",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_patient.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_patient_id = res.new_entity_id();
+    assert_result(
+        vec!["patient", "show", &new_patient_id],
+        CommandResult::new(
+            0,
+            include_str!("data/patient_show_modified.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_study_config_cmdline() {
+    let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "study",
+        "modify",
+        &study.id,
+        "-r",
+        "AccessionNumber=bazqux",
+        "StudyDescription=foobar",
+        "-m",
+        "StudyDate",
+        "StudyTime",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_study.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_study_id = res.new_entity_id();
+    assert_result(
+        vec!["study", "show", &new_study_id],
+        CommandResult::new(
+            0,
+            include_str!("data/study_show_modified.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_series_config_cmdline() {
+    let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "series",
+        "modify",
+        &series.id,
+        "-r",
+        "SeriesNumber=137",
+        "SeriesDescription=foobar-bazqux",
+        "-m",
+        "Modality",
+        "BodyPartExamined",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            0,
+            include_str!("data/anonymize_series.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+    let new_series_id = res.new_entity_id();
+    assert_result(
+        vec!["series", "show", &new_series_id],
+        CommandResult::new(
+            0,
+            include_str!("data/series_show_modified.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_modify_instance_config_cmdline() {
+    let instance = find_instance_by_sop_instance_uid(SOP_INSTANCE_UID).unwrap();
+    let res = run_command(vec![
+        "instance",
+        "modify",
+        &instance.id,
+        "-r",
+        "SpecificCharacterSet=ISO_IR 13",
+        "OperatorsName=Summer Smith",
+        "-m",
+        "InstanceCreationDate",
+        "InstanceCreationTime",
         "-o",
         "/tmp/modified_instance.dcm",
     ]);

@@ -118,12 +118,44 @@ pub fn build_cli() -> App<'static> {
                                 .value_name("ID"),
                         )
                         .arg(
+                            Arg::new("replace")
+                                .about(concat!(
+                                    "DICOM tags that should be replaced with the values specified. ",
+                                    "Space-separted pairs TagName=TagValue. ",
+                                    "Example: PatientName=REMOVED AccessionNumber=42",
+                                ))
+                                .conflicts_with("config")
+                                .required_unless_present_any(&["remove", "config"])
+                                .takes_value(true)
+                                .short('r')
+                                .long("replace")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("remove")
+                                .about(concat!(
+                                    "DICOM tags that should be removed. ",
+                                    "Space-separated tag names. ",
+                                    "Example: PatientSex PatientBirthDate",
+                                ))
+                                .conflicts_with("config")
+                                .required_unless_present_any(&["replace", "config"])
+                                .takes_value(true)
+                                .short('m')
+                                .long("remove")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
                             Arg::new("config")
                                 .about("Modification configuration file")
+                                .required_unless_present_any(&["remove", "replace"])
                                 .takes_value(true)
                                 .short('c')
                                 .long("config")
-                                .required(true)
                                 .value_name("CONFIG"),
                         ),
                 )
@@ -243,12 +275,44 @@ pub fn build_cli() -> App<'static> {
                                 .value_name("ID"),
                         )
                         .arg(
+                            Arg::new("replace")
+                                .about(concat!(
+                                    "DICOM tags that should be replaced with the values specified. ",
+                                    "Space-separted pairs TagName=TagValue. ",
+                                    "Example: PatientName=REMOVED AccessionNumber=42",
+                                ))
+                                .conflicts_with("config")
+                                .required_unless_present_any(&["remove", "config"])
+                                .takes_value(true)
+                                .short('r')
+                                .long("replace")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("remove")
+                                .about(concat!(
+                                    "DICOM tags that should be removed. ",
+                                    "Space-separated tag names. ",
+                                    "Example: PatientSex PatientBirthDate",
+                                ))
+                                .conflicts_with("config")
+                                .required_unless_present_any(&["replace", "config"])
+                                .takes_value(true)
+                                .short('m')
+                                .long("remove")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
                             Arg::new("config")
                                 .about("Modification configuration file")
+                                .required_unless_present_any(&["remove", "replace"])
                                 .takes_value(true)
                                 .short('c')
                                 .long("config")
-                                .required(true)
                                 .value_name("CONFIG"),
                         ),
                 )
@@ -363,12 +427,44 @@ pub fn build_cli() -> App<'static> {
                                 .value_name("ID"),
                         )
                         .arg(
+                            Arg::new("replace")
+                                .about(concat!(
+                                    "DICOM tags that should be replaced with the values specified. ",
+                                    "Space-separted pairs TagName=TagValue. ",
+                                    "Example: PatientName=REMOVED AccessionNumber=42",
+                                ))
+                                .conflicts_with("config")
+                                .required_unless_present_any(&["remove", "config"])
+                                .takes_value(true)
+                                .short('r')
+                                .long("replace")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("remove")
+                                .about(concat!(
+                                    "DICOM tags that should be removed. ",
+                                    "Space-separated tag names. ",
+                                    "Example: PatientSex PatientBirthDate",
+                                ))
+                                .conflicts_with("config")
+                                .required_unless_present_any(&["replace", "config"])
+                                .takes_value(true)
+                                .short('m')
+                                .long("remove")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
                             Arg::new("config")
                                 .about("Modification configuration file")
+                                .required_unless_present_any(&["remove", "replace"])
                                 .takes_value(true)
                                 .short('c')
                                 .long("config")
-                                .required(true)
                                 .value_name("CONFIG"),
                         ),
                 )
@@ -512,12 +608,44 @@ pub fn build_cli() -> App<'static> {
                                 .value_name("ID"),
                         )
                         .arg(
+                            Arg::new("replace")
+                                .about(concat!(
+                                    "DICOM tags that should be replaced with the values specified. ",
+                                    "Space-separted pairs TagName=TagValue. ",
+                                    "Example: PatientName=REMOVED AccessionNumber=42",
+                                ))
+                                .conflicts_with("config")
+                                .required_unless_present_any(&["remove", "config"])
+                                .takes_value(true)
+                                .short('r')
+                                .long("replace")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
+                            Arg::new("remove")
+                                .about(concat!(
+                                    "DICOM tags that should be removed. ",
+                                    "Space-separated tag names. ",
+                                    "Example: PatientSex PatientBirthDate",
+                                ))
+                                .conflicts_with("config")
+                                .required_unless_present_any(&["replace", "config"])
+                                .takes_value(true)
+                                .short('m')
+                                .long("remove")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("TAG"),
+                        )
+                        .arg(
                             Arg::new("config")
                                 .about("Modification configuration file")
+                                .required_unless_present_any(&["remove", "replace"])
                                 .takes_value(true)
                                 .short('c')
                                 .long("config")
-                                .required(true)
                                 .value_name("CONFIG"),
                         )
                         .arg(

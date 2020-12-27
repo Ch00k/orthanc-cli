@@ -85,6 +85,10 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (modify)
 _arguments "${_arguments_options[@]}" \
+'(-c --config)*-r+[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*--replace=[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*-m+[DICOM tags that should be removed. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
+'(-c --config)*--remove=[DICOM tags that should be removed. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
 '-c+[Modification configuration file]' \
 '--config=[Modification configuration file]' \
 '-h[Prints help information]' \
@@ -169,6 +173,10 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (modify)
 _arguments "${_arguments_options[@]}" \
+'(-c --config)*-r+[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*--replace=[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*-m+[DICOM tags that should be removed. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
+'(-c --config)*--remove=[DICOM tags that should be removed. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
 '-c+[Modification configuration file]' \
 '--config=[Modification configuration file]' \
 '-h[Prints help information]' \
@@ -253,6 +261,10 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (modify)
 _arguments "${_arguments_options[@]}" \
+'(-c --config)*-r+[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*--replace=[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*-m+[DICOM tags that should be removed. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
+'(-c --config)*--remove=[DICOM tags that should be removed. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
 '-c+[Modification configuration file]' \
 '--config=[Modification configuration file]' \
 '-h[Prints help information]' \
@@ -348,6 +360,10 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (modify)
 _arguments "${_arguments_options[@]}" \
+'(-c --config)*-r+[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*--replace=[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
+'(-c --config)*-m+[DICOM tags that should be removed. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
+'(-c --config)*--remove=[DICOM tags that should be removed. Space-separated tag names. Example: PatientSex PatientBirthDate]' \
 '-c+[Modification configuration file]' \
 '--config=[Modification configuration file]' \
 '-o+[Output file path]' \

@@ -96,7 +96,7 @@ modify
 Modify patient
 
 USAGE:
-    modify <ID> --config <CONFIG>
+    modify [OPTIONS] <ID>
 
 ARGS:
     <ID>    Patient ID
@@ -106,7 +106,12 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-    -c, --config <CONFIG>    Modification configuration file
+    -c, --config <CONFIG>     Modification configuration file
+    -m, --remove <TAG>...     DICOM tags that should be removed. Space-separated tag names. Example:
+                              PatientSex PatientBirthDate
+    -r, --replace <TAG>...    DICOM tags that should be replaced with the values specified. Space-
+                              separted pairs TagName=TagValue. Example: PatientName=REMOVED
+                              AccessionNumber=42
 
 ========== download ==========
 download
@@ -223,7 +228,7 @@ modify
 Modify study
 
 USAGE:
-    modify <ID> --config <CONFIG>
+    modify [OPTIONS] <ID>
 
 ARGS:
     <ID>    Study ID
@@ -233,7 +238,12 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-    -c, --config <CONFIG>    Modification configuration file
+    -c, --config <CONFIG>     Modification configuration file
+    -m, --remove <TAG>...     DICOM tags that should be removed. Space-separated tag names. Example:
+                              PatientSex PatientBirthDate
+    -r, --replace <TAG>...    DICOM tags that should be replaced with the values specified. Space-
+                              separted pairs TagName=TagValue. Example: PatientName=REMOVED
+                              AccessionNumber=42
 
 ========== download ==========
 download
@@ -350,7 +360,7 @@ modify
 Modify series
 
 USAGE:
-    modify <ID> --config <CONFIG>
+    modify [OPTIONS] <ID>
 
 ARGS:
     <ID>    Series ID
@@ -360,7 +370,12 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-    -c, --config <CONFIG>    Modification configuration file
+    -c, --config <CONFIG>     Modification configuration file
+    -m, --remove <TAG>...     DICOM tags that should be removed. Space-separated tag names. Example:
+                              PatientSex PatientBirthDate
+    -r, --replace <TAG>...    DICOM tags that should be replaced with the values specified. Space-
+                              separted pairs TagName=TagValue. Example: PatientName=REMOVED
+                              AccessionNumber=42
 
 ========== download ==========
 download
@@ -493,7 +508,7 @@ modify
 Modify instance
 
 USAGE:
-    modify <ID> --config <CONFIG> --output <OUTPUT>
+    modify [OPTIONS] <ID> --output <OUTPUT>
 
 ARGS:
     <ID>    Instance ID
@@ -503,8 +518,13 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-    -c, --config <CONFIG>    Modification configuration file
-    -o, --output <OUTPUT>    Output file path
+    -c, --config <CONFIG>     Modification configuration file
+    -o, --output <OUTPUT>     Output file path
+    -m, --remove <TAG>...     DICOM tags that should be removed. Space-separated tag names. Example:
+                              PatientSex PatientBirthDate
+    -r, --replace <TAG>...    DICOM tags that should be replaced with the values specified. Space-
+                              separted pairs TagName=TagValue. Example: PatientName=REMOVED
+                              AccessionNumber=42
 
 ========== download ==========
 download
