@@ -4,4 +4,3 @@ replace:
 remove:
   - PatientSex
   - PatientBirthDate
-force: true
