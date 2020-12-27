@@ -111,10 +111,16 @@ impl Orthanc {
         }
     }
 
-    pub fn modify_patient(&self, id: &str, config_file: &str) -> Result<Table> {
+    pub fn modify_patient(
+        &self,
+        id: &str,
+        replace: Option<Vec<&str>>,
+        remove: Option<Vec<&str>>,
+        config_file: Option<&str>,
+    ) -> Result<Table> {
         match self
             .client
-            .modify_patient(id, get_modification_config(config_file)?)
+            .modify_patient(id, get_modification_config(replace, remove, config_file)?)
         {
             Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
@@ -169,10 +175,16 @@ impl Orthanc {
         }
     }
 
-    pub fn modify_study(&self, id: &str, config_file: &str) -> Result<Table> {
+    pub fn modify_study(
+        &self,
+        id: &str,
+        replace: Option<Vec<&str>>,
+        remove: Option<Vec<&str>>,
+        config_file: Option<&str>,
+    ) -> Result<Table> {
         match self
             .client
-            .modify_study(id, get_modification_config(config_file)?)
+            .modify_study(id, get_modification_config(replace, remove, config_file)?)
         {
             Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
@@ -227,10 +239,16 @@ impl Orthanc {
         }
     }
 
-    pub fn modify_series(&self, id: &str, config_file: &str) -> Result<Table> {
+    pub fn modify_series(
+        &self,
+        id: &str,
+        replace: Option<Vec<&str>>,
+        remove: Option<Vec<&str>>,
+        config_file: Option<&str>,
+    ) -> Result<Table> {
         match self
             .client
-            .modify_series(id, get_modification_config(config_file)?)
+            .modify_series(id, get_modification_config(replace, remove, config_file)?)
         {
             Ok(r) => Ok(create_new_entity_table(r)),
             Err(e) => Err(e.into()),
@@ -287,10 +305,21 @@ impl Orthanc {
             .map_err(Into::<_>::into)
     }
 
-    pub fn modify_instance(&self, id: &str, config_file: &str, path: &str) -> Result<()> {
+    pub fn modify_instance(
+        &self,
+        id: &str,
+        replace: Option<Vec<&str>>,
+        remove: Option<Vec<&str>>,
+        config_file: Option<&str>,
+        path: &str,
+    ) -> Result<()> {
         let mut file = fs::File::create(path)?;
         self.client
-            .modify_instance(id, get_modification_config(config_file)?, &mut file)
+            .modify_instance(
+                id,
+                get_modification_config(replace, remove, config_file)?,
+                &mut file,
+            )
             .map_err(Into::<_>::into)
     }
 
