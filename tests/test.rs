@@ -15,7 +15,7 @@ const DEFAULT_DINO_PORT: &str = "5252";
 const DEFAULT_DINO_AET: &str = "DINO";
 
 const ORTHANC_ID_PATTERN: &str = r"(([0-9a-f]{8}-){4}[0-9a-f]{8})";
-const ORTHANC_DICOM_UID_PATTERN: &str = r"1\.2\.276\.0\.7230010\.3\.1\.[2|3]\.([\d|\.]+)";
+const ORTHANC_DICOM_UID_PATTERN: &str = r"1\.2\.276\.0\.7230010\.3\.1\.[2|3|4]\.([\d|\.]+)";
 const ANONYMIZED_PATIENT_ID_PATTERN: &str = r"([0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12})";
 const ANONYMIZED_PATIENT_NAME_PATTERN: &str = r"Anonymized(\d+)";
 const TRAILING_WHITESPACE_PATTERN: &str = r"([ ]+$)";
@@ -1934,6 +1934,66 @@ fn test_instance_tags_error() {
             1,
             "".to_string(),
             include_str!("data/not_found_with_message_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_search_patients() {
+    assert_result(
+        vec!["patient", "search", "-q", "PatientID=patient*"],
+        CommandResult::new(
+            0,
+            include_str!("data/patients_search.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_search_studies() {
+    assert_result(
+        vec!["study", "search", "-q", "StudyDescription=Study*"],
+        CommandResult::new(
+            0,
+            include_str!("data/studies_search.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_search_series() {
+    assert_result(
+        vec![
+            "series",
+            "search",
+            "-q",
+            "BodyPartExamined=KNEE",
+            "SeriesInstanceUID=1.3.46.670589.11.1.5.0.3724.2011072815265926000",
+        ],
+        CommandResult::new(
+            0,
+            include_str!("data/series_search.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_search_instances() {
+    assert_result(
+        vec![
+            "instance",
+            "search",
+            "-q",
+            "Modality=PR",
+            "PregnancyStatus=4",
+        ],
+        CommandResult::new(
+            0,
+            include_str!("data/instances_search.stdout").to_string(),
+            "".to_string(),
         ),
     );
 }

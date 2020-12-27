@@ -20,7 +20,7 @@ pub fn create_list_table<T: Entity>(
                 .unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER);
             row.push(val);
         }
-        match entity.kind() {
+        match T::kind() {
             EntityKind::Instance => {
                 let index_in_series = match entity.index() {
                     Some(i) => format!("{}", i),
@@ -46,7 +46,7 @@ pub fn create_list_table<T: Entity>(
 pub fn create_show_table<T: Entity>(entity: T, dicom_tags: &[&str]) -> Table {
     let mut table = create_table(None);
     table.add_row(["ID", entity.id()].iter());
-    if entity.kind() != EntityKind::Patient {
+    if T::kind() != EntityKind::Patient {
         table.add_row(
             [
                 &format!("{} ID", entity.parent_kind_name().unwrap()),
@@ -67,7 +67,7 @@ pub fn create_show_table<T: Entity>(entity: T, dicom_tags: &[&str]) -> Table {
             .iter(),
         );
     }
-    match entity.kind() {
+    match T::kind() {
         EntityKind::Instance => {
             let index_in_series = match entity.index() {
                 Some(i) => format!("{}", i),
@@ -91,6 +91,22 @@ pub fn create_show_table<T: Entity>(entity: T, dicom_tags: &[&str]) -> Table {
     table
 }
 
+pub fn parse_tag_kv_pairs(cmd_values: Vec<&str>) -> Result<HashMap<String, String>> {
+    let mut map = HashMap::new();
+    for v in cmd_values {
+        let tag_kv_pair: Vec<&str> = v.split("=").collect();
+        if tag_kv_pair.len() != 2 {
+            return Err(CliError::new(
+                "Command error",
+                Some(&format!("Wrong option value '{}'", v)),
+                Some("Must be of format 'TagName=TagValue'"),
+            ));
+        }
+        map.insert(tag_kv_pair[0].to_string(), tag_kv_pair[1].to_string());
+    }
+    Ok(map)
+}
+
 pub fn get_anonymization_config(
     replace: Option<Vec<&str>>,
     keep: Option<Vec<&str>>,
@@ -105,7 +121,7 @@ pub fn get_anonymization_config(
                 replace,
                 keep,
                 keep_private_tags,
-            ))),
+            )?)),
         },
     }
 }
@@ -120,7 +136,7 @@ pub fn get_modification_config(
         None => match (&replace, &remove) {
             // TODO: This assumes that there is always either a config file
             // or at least one of the options
-            _ => Ok(get_modification_config_from_cmd_options(replace, remove)),
+            _ => Ok(get_modification_config_from_cmd_options(replace, remove)?),
         },
     }
 }
@@ -143,45 +159,31 @@ pub fn get_anonymization_config_from_cmd_options(
     replace: Option<Vec<&str>>,
     keep: Option<Vec<&str>>,
     keep_private_tags: Option<bool>,
-) -> Anonymization {
-    Anonymization {
+) -> Result<Anonymization> {
+    Ok(Anonymization {
         replace: match replace {
-            Some(r) => {
-                let mut replace_map = HashMap::new();
-                for v in r {
-                    let tag: Vec<&str> = v.split("=").collect();
-                    replace_map.insert(tag[0].to_string(), tag[1].to_string());
-                }
-                Some(replace_map)
-            }
+            Some(r) => Some(parse_tag_kv_pairs(r)?),
             None => None,
         },
         keep: keep.map(|vec| vec.iter().map(ToString::to_string).collect()),
         keep_private_tags,
         dicom_version: None,
         force: Some(true),
-    }
+    })
 }
 
 pub fn get_modification_config_from_cmd_options(
     replace: Option<Vec<&str>>,
     remove: Option<Vec<&str>>,
-) -> Modification {
-    Modification {
+) -> Result<Modification> {
+    Ok(Modification {
         replace: match replace {
-            Some(r) => {
-                let mut replace_map = HashMap::new();
-                for v in r {
-                    let tag: Vec<&str> = v.split("=").collect();
-                    replace_map.insert(tag[0].to_string(), tag[1].to_string());
-                }
-                Some(replace_map)
-            }
+            Some(r) => Some(parse_tag_kv_pairs(r)?),
             None => None,
         },
         remove: remove.map(|vec| vec.iter().map(ToString::to_string).collect()),
         force: Some(true),
-    }
+    })
 }
 
 pub fn create_new_entity_table(result: ModificationResult) -> Table {

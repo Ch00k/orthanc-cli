@@ -1,6 +1,6 @@
 use comfy_table::Table;
 use constants::*;
-use orthanc::{Client, Error, Modality};
+use orthanc::{Client, Error, Instance, Modality, Patient, Series, Study};
 use serde_json::Value;
 use serde_yaml;
 use std::{fs, io, result};
@@ -492,5 +492,41 @@ impl Orthanc {
 
     pub fn delete_modality(&self, name: &str) -> Result<()> {
         self.client.delete_modality(name).map_err(Into::<_>::into)
+    }
+
+    pub fn search_patients(&self, query: Vec<&str>) -> Result<Table> {
+        let patients: Vec<Patient> = self.client.search(parse_tag_kv_pairs(query)?)?;
+        Ok(utils::create_list_table(
+            patients,
+            &PATIENTS_LIST_HEADER,
+            &PATIENTS_LIST_DICOM_TAGS,
+        ))
+    }
+
+    pub fn search_studies(&self, query: Vec<&str>) -> Result<Table> {
+        let studies: Vec<Study> = self.client.search(parse_tag_kv_pairs(query)?)?;
+        Ok(utils::create_list_table(
+            studies,
+            &STUDIES_LIST_HEADER,
+            &STUDIES_LIST_DICOM_TAGS,
+        ))
+    }
+
+    pub fn search_series(&self, query: Vec<&str>) -> Result<Table> {
+        let series: Vec<Series> = self.client.search(parse_tag_kv_pairs(query)?)?;
+        Ok(utils::create_list_table(
+            series,
+            &SERIES_LIST_HEADER,
+            &SERIES_LIST_DICOM_TAGS,
+        ))
+    }
+
+    pub fn search_instances(&self, query: Vec<&str>) -> Result<Table> {
+        let instances: Vec<Instance> = self.client.search(parse_tag_kv_pairs(query)?)?;
+        Ok(utils::create_list_table(
+            instances,
+            &INSTANCES_LIST_HEADER,
+            &INSTANCES_LIST_DICOM_TAGS,
+        ))
     }
 }

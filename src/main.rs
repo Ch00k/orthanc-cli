@@ -45,6 +45,13 @@ fn main() {
                     Err(e) => exit_with_error(e),
                 }
             }
+            Some(("search", search)) => {
+                let terms: Vec<&str> = search.values_of("query").unwrap().collect();
+                match o.search_patients(terms) {
+                    Ok(t) => print(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("modify", modify)) => match o.modify_patient(
                 modify.value_of("id").unwrap(),
                 modify.values_of("replace").map(|r| r.collect()),
@@ -76,6 +83,13 @@ fn main() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
             },
+            Some(("search", search)) => {
+                let terms: Vec<&str> = search.values_of("query").unwrap().collect();
+                match o.search_studies(terms) {
+                    Ok(t) => print(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("anonymize", anonymize)) => {
                 let mut keep_private_tags = None;
                 if anonymize.is_present("keep_private_tags") {
@@ -123,6 +137,13 @@ fn main() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
             },
+            Some(("search", search)) => {
+                let terms: Vec<&str> = search.values_of("query").unwrap().collect();
+                match o.search_series(terms) {
+                    Ok(t) => print(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("anonymize", anonymize)) => {
                 let mut keep_private_tags = None;
                 if anonymize.is_present("keep_private_tags") {
@@ -170,6 +191,13 @@ fn main() {
                 Ok(t) => print(t),
                 Err(e) => exit_with_error(e),
             },
+            Some(("search", search)) => {
+                let terms: Vec<&str> = search.values_of("query").unwrap().collect();
+                match o.search_instances(terms) {
+                    Ok(t) => print(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("anonymize", anonymize)) => {
                 let mut keep_private_tags = None;
                 if anonymize.is_present("keep_private_tags") {

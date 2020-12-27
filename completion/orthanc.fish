@@ -13,6 +13,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from patient" -s h -l help -d 'Pr
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "list" -d 'List all patients'
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "show" -d 'Show patient details'
+complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "search" -d 'Search for patients'
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "anonymize" -d 'Anonymize patient'
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "modify" -d 'Modify patient'
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "download" -d 'Download patient'
@@ -22,6 +23,9 @@ complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Pr
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Patient ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s q -l query -d 'Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*' -r
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s h -l help -d 'Prints help information'
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Patient ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s r -l replace -d 'DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s k -l keep -d 'DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate' -r
@@ -46,6 +50,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from study" -s h -l help -d 'Prin
 complete -c orthanc -n "__fish_seen_subcommand_from study" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "list" -d 'List all studies'
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "show" -d 'Show study details'
+complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "search" -d 'Search for studies'
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "anonymize" -d 'Anonymize study'
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "modify" -d 'Modify study'
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "download" -d 'Download study'
@@ -55,6 +60,9 @@ complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Pr
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Study ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s q -l query -d 'Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101' -r
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s h -l help -d 'Prints help information'
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Study ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s r -l replace -d 'DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s k -l keep -d 'DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate' -r
@@ -79,6 +87,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from series" -s h -l help -d 'Pri
 complete -c orthanc -n "__fish_seen_subcommand_from series" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "list" -d 'List all series'
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "show" -d 'Show series details'
+complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "search" -d 'Search for series'
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "anonymize" -d 'Anonymize series'
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "modify" -d 'Modify series'
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "download" -d 'Download series'
@@ -88,6 +97,9 @@ complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Pr
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Series ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s q -l query -d 'Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101' -r
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s h -l help -d 'Prints help information'
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Series ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s r -l replace -d 'DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s k -l keep -d 'DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate' -r
@@ -113,6 +125,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from instance" -s V -l version -d
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "list" -d 'List all instances'
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "show" -d 'Show instance details'
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "tags" -d 'Show instance tags'
+complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "search" -d 'Search for instances'
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "anonymize" -d 'Anonymize instance'
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "modify" -d 'Modify instance'
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "download" -d 'Download instance'
@@ -125,6 +138,9 @@ complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Pr
 complete -c orthanc -n "__fish_seen_subcommand_from tags" -d 'Instance ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from tags" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from tags" -s V -l version -d 'Prints version information'
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s q -l query -d 'Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242' -r
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s h -l help -d 'Prints help information'
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Instance ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s r -l replace -d 'DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42' -r
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -s k -l keep -d 'DICOM tags that should be kept intact. Space-separated tag names. Example: PatientSex PatientBirthDate' -r

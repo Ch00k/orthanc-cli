@@ -52,8 +52,27 @@ pub fn build_cli() -> App<'static> {
                         ),
                 )
                 .subcommand(
-                    App::new("anonymize")
+                    App::new("search")
                         .display_order(2)
+                        .about("Search for patients")
+                        .arg(
+                            Arg::new("query")
+                                .about(concat!(
+                                    "Search query terms. Space-separted pairs TagName=TagValue. ",
+                                    "Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*",
+                                ))
+                                .required(true)
+                                .takes_value(true)
+                                .short('q')
+                                .long("query")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("QUERY"),
+                        ),
+                )
+                .subcommand(
+                    App::new("anonymize")
+                        .display_order(3)
                         .about("Anonymize patient")
                         .arg(
                             Arg::new("id")
@@ -109,7 +128,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("modify")
-                        .display_order(3)
+                        .display_order(4)
                         .about("Modify patient")
                         .arg(
                             Arg::new("id")
@@ -161,7 +180,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("download")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Download patient")
                         .arg(
                             Arg::new("id")
@@ -181,7 +200,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(5)
+                        .display_order(6)
                         .about("Delete patient")
                         .arg(
                             Arg::new("id")
@@ -209,8 +228,27 @@ pub fn build_cli() -> App<'static> {
                         ),
                 )
                 .subcommand(
-                    App::new("anonymize")
+                    App::new("search")
                         .display_order(2)
+                        .about("Search for studies")
+                        .arg(
+                            Arg::new("query")
+                                .about(concat!(
+                                    "Search query terms. Space-separted pairs TagName=TagValue. ",
+                                    "Wildcards are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101",
+                                ))
+                                .required(true)
+                                .takes_value(true)
+                                .short('q')
+                                .long("query")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("QUERY"),
+                        ),
+                )
+                .subcommand(
+                    App::new("anonymize")
+                        .display_order(3)
                         .about("Anonymize study")
                         .arg(
                             Arg::new("id")
@@ -266,7 +304,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("modify")
-                        .display_order(3)
+                        .display_order(4)
                         .about("Modify study")
                         .arg(
                             Arg::new("id")
@@ -318,7 +356,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("download")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Download study")
                         .arg(Arg::new("id").about("Study ID").required(true))
                         .arg(
@@ -333,7 +371,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(5)
+                        .display_order(6)
                         .about("Delete study")
                         .arg(
                             Arg::new("id")
@@ -361,8 +399,27 @@ pub fn build_cli() -> App<'static> {
                         ),
                 )
                 .subcommand(
-                    App::new("anonymize")
+                    App::new("search")
                         .display_order(2)
+                        .about("Search for series")
+                        .arg(
+                            Arg::new("query")
+                                .about(concat!(
+                                    "Search query terms. Space-separted pairs TagName=TagValue. ",
+                                    "Wildcards are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101",
+                                ))
+                                .required(true)
+                                .takes_value(true)
+                                .short('q')
+                                .long("query")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("QUERY"),
+                        ),
+                )
+                .subcommand(
+                    App::new("anonymize")
+                        .display_order(3)
                         .about("Anonymize series")
                         .arg(
                             Arg::new("id")
@@ -418,7 +475,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("modify")
-                        .display_order(3)
+                        .display_order(4)
                         .about("Modify series")
                         .arg(
                             Arg::new("id")
@@ -470,7 +527,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("download")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Download series")
                         .arg(
                             Arg::new("id")
@@ -490,7 +547,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(5)
+                        .display_order(6)
                         .about("Delete series")
                         .arg(
                             Arg::new("id")
@@ -533,8 +590,27 @@ pub fn build_cli() -> App<'static> {
                         ),
                 )
                 .subcommand(
-                    App::new("anonymize")
+                    App::new("search")
                         .display_order(3)
+                        .about("Search for instances")
+                        .arg(
+                            Arg::new("query")
+                                .about(concat!(
+                                    "Search query terms. Space-separted pairs TagName=TagValue. ",
+                                    "Wildcards are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242",
+                                ))
+                                .required(true)
+                                .takes_value(true)
+                                .short('q')
+                                .long("query")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("QUERY"),
+                        ),
+                )
+                .subcommand(
+                    App::new("anonymize")
+                        .display_order(4)
                         .about("Anonymize instance")
                         .arg(
                             Arg::new("id")
@@ -599,7 +675,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("modify")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Modify instance")
                         .arg(
                             Arg::new("id")
@@ -660,7 +736,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("download")
-                        .display_order(5)
+                        .display_order(6)
                         .about("Download instance")
                         .arg(
                             Arg::new("id")
@@ -680,7 +756,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(6)
+                        .display_order(7)
                         .about("Delete instance")
                         .arg(
                             Arg::new("id")
