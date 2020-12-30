@@ -46,6 +46,9 @@ _orthanc() {
             patient)
                 cmd+="__patient"
                 ;;
+            search)
+                cmd+="__search"
+                ;;
             series)
                 cmd+="__series"
                 ;;
@@ -123,7 +126,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__instance)
-            opts=" -h -V  --help --version  list show tags anonymize modify download delete"
+            opts=" -h -V  --help --version  list show tags search anonymize modify download delete"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -274,6 +277,29 @@ _orthanc() {
                     return 0
                     ;;
                     -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        orthanc__instance__search)
+            opts=" -q -h -V  --query --help --version  "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                
+                --query)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -q)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -491,7 +517,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__patient)
-            opts=" -h -V  --help --version  list show anonymize modify download delete"
+            opts=" -h -V  --help --version  list show search anonymize modify download delete"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -636,6 +662,29 @@ _orthanc() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
+        orthanc__patient__search)
+            opts=" -q -h -V  --query --help --version  "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                
+                --query)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -q)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
         orthanc__patient__show)
             opts=" -h -V  --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
@@ -652,7 +701,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__series)
-            opts=" -h -V  --help --version  list show anonymize modify download delete"
+            opts=" -h -V  --help --version  list show search anonymize modify download delete"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -797,6 +846,29 @@ _orthanc() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
+        orthanc__series__search)
+            opts=" -q -h -V  --query --help --version  "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                
+                --query)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -q)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
         orthanc__series__show)
             opts=" -h -V  --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
@@ -813,7 +885,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__study)
-            opts=" -h -V  --help --version  list show anonymize modify download delete"
+            opts=" -h -V  --help --version  list show search anonymize modify download delete"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -948,6 +1020,29 @@ _orthanc() {
                     return 0
                     ;;
                     -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        orthanc__study__search)
+            opts=" -q -h -V  --query --help --version  "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                
+                --query)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -q)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;

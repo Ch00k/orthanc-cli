@@ -37,6 +37,7 @@ FLAGS:
 SUBCOMMANDS:
     list         List all patients
     show         Show patient details
+    search       Search for patients
     anonymize    Anonymize patient
     modify       Modify patient
     download     Download patient
@@ -67,6 +68,21 @@ ARGS:
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
+
+========== search ==========
+search
+Search for patients
+
+USAGE:
+    search --query <QUERY>...
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
+                              are allowed. Example: PatientSex=F PatientName=*Sanchez*
 
 ========== anonymize ==========
 anonymize
@@ -169,6 +185,7 @@ FLAGS:
 SUBCOMMANDS:
     list         List all studies
     show         Show study details
+    search       Search for studies
     anonymize    Anonymize study
     modify       Modify study
     download     Download study
@@ -199,6 +216,21 @@ ARGS:
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
+
+========== search ==========
+search
+Search for studies
+
+USAGE:
+    search --query <QUERY>...
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
+                              are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101
 
 ========== anonymize ==========
 anonymize
@@ -301,6 +333,7 @@ FLAGS:
 SUBCOMMANDS:
     list         List all series
     show         Show series details
+    search       Search for series
     anonymize    Anonymize series
     modify       Modify series
     download     Download series
@@ -331,6 +364,21 @@ ARGS:
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
+
+========== search ==========
+search
+Search for series
+
+USAGE:
+    search --query <QUERY>...
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
+                              are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101
 
 ========== anonymize ==========
 anonymize
@@ -434,6 +482,7 @@ SUBCOMMANDS:
     list         List all instances
     show         Show instance details
     tags         Show instance tags
+    search       Search for instances
     anonymize    Anonymize instance
     modify       Modify instance
     download     Download instance
@@ -478,6 +527,21 @@ ARGS:
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
+
+========== search ==========
+search
+Search for instances
+
+USAGE:
+    search --query <QUERY>...
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
+                              are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242
 
 ========== anonymize ==========
 anonymize

@@ -66,6 +66,16 @@ _arguments "${_arguments_options[@]}" \
 ':id -- Patient ID:' \
 && ret=0
 ;;
+(search)
+_arguments "${_arguments_options[@]}" \
+'*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*]' \
+'*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+&& ret=0
+;;
 (anonymize)
 _arguments "${_arguments_options[@]}" \
 '(-c --config)*-r+[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
@@ -154,6 +164,16 @@ _arguments "${_arguments_options[@]}" \
 ':id -- Study ID:' \
 && ret=0
 ;;
+(search)
+_arguments "${_arguments_options[@]}" \
+'*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101]' \
+'*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+&& ret=0
+;;
 (anonymize)
 _arguments "${_arguments_options[@]}" \
 '(-c --config)*-r+[DICOM tags that should be replaced with the values specified. Space-separted pairs TagName=TagValue. Example: PatientName=REMOVED AccessionNumber=42]' \
@@ -240,6 +260,16 @@ _arguments "${_arguments_options[@]}" \
 '-V[Prints version information]' \
 '--version[Prints version information]' \
 ':id -- Series ID:' \
+&& ret=0
+;;
+(search)
+_arguments "${_arguments_options[@]}" \
+'*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101]' \
+'*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
 && ret=0
 ;;
 (anonymize)
@@ -337,6 +367,16 @@ _arguments "${_arguments_options[@]}" \
 '-V[Prints version information]' \
 '--version[Prints version information]' \
 ':id -- Instance ID:' \
+&& ret=0
+;;
+(search)
+_arguments "${_arguments_options[@]}" \
+'*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242]' \
+'*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242]' \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
 && ret=0
 ;;
 (anonymize)
@@ -637,6 +677,7 @@ _orthanc__instance_commands() {
         "list:List all instances" \
 "show:Show instance details" \
 "tags:Show instance tags" \
+"search:Search for instances" \
 "anonymize:Anonymize instance" \
 "modify:Modify instance" \
 "download:Download instance" \
@@ -732,6 +773,7 @@ _orthanc__patient_commands() {
     local commands; commands=(
         "list:List all patients" \
 "show:Show patient details" \
+"search:Search for patients" \
 "anonymize:Anonymize patient" \
 "modify:Modify patient" \
 "download:Download patient" \
@@ -739,11 +781,40 @@ _orthanc__patient_commands() {
     )
     _describe -t commands 'orthanc patient commands' commands "$@"
 }
+(( $+functions[_orthanc__instance__search_commands] )) ||
+_orthanc__instance__search_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc instance search commands' commands "$@"
+}
+(( $+functions[_orthanc__patient__search_commands] )) ||
+_orthanc__patient__search_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc patient search commands' commands "$@"
+}
+(( $+functions[_orthanc__series__search_commands] )) ||
+_orthanc__series__search_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc series search commands' commands "$@"
+}
+(( $+functions[_orthanc__study__search_commands] )) ||
+_orthanc__study__search_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc study search commands' commands "$@"
+}
 (( $+functions[_orthanc__series_commands] )) ||
 _orthanc__series_commands() {
     local commands; commands=(
         "list:List all series" \
 "show:Show series details" \
+"search:Search for series" \
 "anonymize:Anonymize series" \
 "modify:Modify series" \
 "download:Download series" \
@@ -798,6 +869,7 @@ _orthanc__study_commands() {
     local commands; commands=(
         "list:List all studies" \
 "show:Show study details" \
+"search:Search for studies" \
 "anonymize:Anonymize study" \
 "modify:Modify study" \
 "download:Download study" \
