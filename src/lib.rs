@@ -1,6 +1,9 @@
 use comfy_table::Table;
 use constants::*;
-use orthanc::{Client, Error, Instance, Modality, Patient, Series, Study};
+use orthanc::client::Client;
+use orthanc::entity::*;
+use orthanc::error::Error;
+use orthanc::models::Modality;
 use serde_json::Value;
 use serde_yaml;
 use std::{fs, io, result};

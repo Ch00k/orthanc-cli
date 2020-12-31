@@ -1,5 +1,7 @@
 use dicom_object::{open_file, Error as DicomError, Tag};
-use orthanc::*;
+use orthanc::client::Client;
+use orthanc::entity::*;
+use orthanc::models::*;
 use regex::{Regex, RegexBuilder};
 use std::env;
 use std::fs;

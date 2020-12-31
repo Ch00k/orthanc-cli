@@ -1,7 +1,8 @@
 use crate::constants::*;
 use crate::{CliError, Result};
 use comfy_table::{ColumnConstraint, ContentArrangement, Table};
-use orthanc::{Anonymization, Entity, EntityKind, Modification, ModificationResult};
+use orthanc::entity::*;
+use orthanc::models::*;
 use serde_yaml;
 use std::collections::HashMap;
 use std::{env, fs, process, result};
@@ -274,7 +275,6 @@ mod tests {
     use super::*;
     use chrono::NaiveDate;
     use maplit::hashmap;
-    use orthanc::{Instance, Patient, Series, Study};
     use regex::RegexBuilder;
     use std::env::{remove_var, set_var};
     use std::io::Write;

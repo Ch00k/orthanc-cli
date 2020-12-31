@@ -978,7 +978,7 @@ dependencies = [
 [[package]]
 name = "orthanc"
 version = "0.6.1"
-source = "git+https://github.com/Ch00k/orthanc-rs.git#41150259fd4f154f877cdd716fed3abcff87827a"
+source = "git+https://github.com/Ch00k/orthanc-rs.git#a4f5aa3450b906a87a8c42ec4d77d67124d2e641"
 dependencies = [
  "bytes",
  "chrono",
