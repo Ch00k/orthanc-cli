@@ -116,6 +116,7 @@ FLAGS:
 SUBCOMMANDS:
     list         List all studies
     show         Show study details
+    search       Search for studies
     anonymize    Anonymize study
     modify       Modify study
     download     Download study
@@ -169,9 +170,9 @@ $ orthanc study show cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6
 
 ### Anonymizing and modifying Entities
 
-orthanc-cli allows modification and anonymization of Entities. Anonymization allows, and modification requires, the use
-of a configuration file describing how exactly the entity should be anonymized or modified. The format of the
-configuration file is explained in the next sections.
+orthanc-cli allows modification and anonymization of entities.
+Modification requires you to specify how exactly an entity should be modified, while anonymization does not. For both
+anonymization and modification you can configure the process with either command-line options or a configuration file.
 
 Note that both anonymization and modification create a copy of the entity that is being anonymized/modified instead of
 changing the entity in-place.
@@ -179,8 +180,7 @@ changing the entity in-place.
 #### Anonymization
 
 Anonymization of an entity can be done with or without configuration. If done without configuration, anonymization
-deletes or erases DICOM tags according to [Application Level Confidentiality Profile
-Attributes](http://dicom.nema.org/medical/dicom/2017c/output/html/part15.html#table_E.1-1):
+treats DICOM tags according to [Application Level Confidentiality Profile Attributes](http://dicom.nema.org/medical/dicom/2017c/output/html/part15.html#table_E.1-1):
 
 ```
 $ orthanc study anonymize cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6
@@ -188,12 +188,29 @@ $ orthanc study anonymize cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6
  Patient ID     6cf95a77-4112b9d3-905c17f0-d48ee8e1-b9e6d482
 ```
 
-The configuration file must be in [YAML](https://yaml.org) format and may contain the following fields:
+To change the way particular DICOM tags are treated during anonymization you can use command-line options:
 
-* `replace` - the values of specified DICOM tags will be replaced with those specified
-* `keep` - the values of the specified DICOM tags will be left intact even if they are specified as to be removed in the
-  table mentioned above
-* `keep_private_tags` - whether or not to keep the values of private DICOM tags (defaults to `false` if omitted)
+* `--replace`: the values of specified DICOM tags will be replaced with those specified
+* `--keep`: the values of the specified DICOM tags will be left intact (even if they are specified as to be removed in
+the table mentioned above)
+* `--keep-private-tags`: whether or not to keep the values of private DICOM tags (if omitted private DICOM tags are
+removed)
+
+The above command-line options are used as follows:
+
+```
+$ orthanc study anonymize cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6 --replace PatientName="Rick Sanchez" PatientBirthDate=19700101 --keep StudyDate StudyTime --keep-private-tags
+ New study ID   72b2983e-0196e005-7102f94f-4bf2161c-18d33b59
+ Patient ID     1209a543-256b97d2-639bebf1-c3c076e7-0b4b8a3f
+```
+
+If you intend to give special treatment to more than a couple of DICOM tags, writing them all on the command line can
+become inconvenient. For this purpose you can use an anonymization configuration file instead. The configuration file
+must be in [YAML](https://yaml.org) format and may contain the following fields (see above for their meaning):
+
+* `replace`
+* `keep`
+* `keep_private_tags`
 
 Example:
 
@@ -210,18 +227,33 @@ keep_private_tags: true
 The usage of such a configuration file is as follows:
 
 ```
-$ orthanc study anonymize cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6 -c /tmp/anonymization_conf.yml
+$ orthanc study anonymize cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6 --config /tmp/anonymization_conf.yml
  New study ID   22fc5ba2-650a6ef5-76f78251-af82a47f-87ce33f4
  Patient ID     8d8454ca-3c70d505-3d4ddced-792feac4-7c992741
 ```
 
 #### Modification
 
-A configuration file is required for modification. The configuration file must be in [YAML](https://yaml.org) format and
-may contain the following fields:
+In order to modify an entity you are required to specify how exactly it should me modified. This can be done with the
+following command-line options:
 
-* `replace` - the values of specified DICOM tags will be replaced with those specified
-* `remove` - the specified DICOM tags will be removed
+* `--replace`: the values of specified DICOM tags will be replaced with those specified
+* `--remove`: the specified DICOM tags will be removed
+
+The above command-line options are used as follows:
+
+```
+$ orthanc study modify cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6 --replace PatientName="Rick Sanchez" PatientBirthDate=19700101 --remove StudyDate StudyTime
+ New study ID   24510c21-3b10e0ac-268f7570-b8c01c22-77e19a41
+ Patient ID     b64615f0-5cac7527-68e751f7-c22d822c-e4ff1e1d
+```
+
+Similar to the process of anonymization you can use a configuration file for modification in case you need to modify
+more than a hadful of DICOM tags. The configuration file must be in [YAML](https://yaml.org) format and may contain the
+following fields:
+
+* `replace`
+* `remove`
 
 Example:
 
@@ -237,7 +269,7 @@ remove:
 The usage of such a configuration file is as follows:
 
 ```
-$ orthanc study modify cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6 -c /tmp/modification_conf.yml
+$ orthanc study modify cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6 --config /tmp/modification_conf.yml
  New study ID   db0a9bc8-7b0362ca-f361c32b-ba62bfd2-44ff849b
  Patient ID     8be8a583-193f48d2-d9b8dd53-adc11459-e46c7c27
 ```
