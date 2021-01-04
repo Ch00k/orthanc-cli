@@ -17,8 +17,9 @@ server.
   * [Orthanc server authentication](#orthanc-server-authentication)
 * [Usage](#usage)
   * [Help](#help)
-  * [Entities and identifiers](#entities-and-identifiers)
-  * [Anonymizing and modifying entities](#anonymizing-and-modifying-entities)
+  * [Entities and their IDs](#entities-and-their-ids)
+  * [Search](#search)
+  * [Anonymizing and modifying Entities](#anonymizing-and-modifying-entities)
     * [Anonymization](#anonymization)
     * [Modification](#modification)
 <!--toc-end-->
@@ -166,6 +167,36 @@ $ orthanc study show cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6
  StudyDate          20120101
  StudyTime          130431
  Number of Series   2
+```
+
+### Search
+
+orthanc-cli allows searching for entities withing the Orthanc server. You can search for patients, studies, series and
+instances with `orthanc <ENTITY> search --query <QUERY>`. Each of the commands will return a list of entities you search
+for, e.g. `orthanc patient search` will return a list of patients, `orthanc study search` - a list of studies etc.
+
+The value of the `--query` command-line option are space-separted pairs of DICOM tags: `TagName=TagValue`. For examle:
+
+```
+$ orthanc series search --query BodyPartExamined=PINKY
+ ID                                             SeriesInstanceUID                SeriesDescription   Modality   BodyPartExamined   Number of Instances
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+ 33209de2-5b2e7753-9537bc4d-4bd166f6-fb48d303   1.2.276.0.7230010.3.1.3.816750   Series 1            MR         PINKY              1
+ dab1ca97-70f554a9-c8e83dec-17216f2c-88148c44   1.2.276.0.7230010.3.1.3.816746   Series 1            MR         PINKY              1
+```
+
+Wildcards are allowed in values of some DICOM tags. More info on that
+[here](http://dicom.nema.org/medical/dicom/2019e/output/chtml/part04/sect_C.2.2.2.4.html).
+
+An example of wildcard usage in `StudyDescription`:
+
+```
+$ orthanc study search --query AccessionNumber=REMOVED StudyDescription=*1
+ ID                                             PatientID   AccessionNumber   StudyInstanceUID                 StudyDescription   StudyDate   StudyTime   Number of Series
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 342f1834-e4658a76-2f7f8dd6-5f4034dd-eee91323   patient_1   REMOVED           1.2.276.0.7230010.3.1.2.816848   Study 1            20110101    140606      2
+ 92be942a-744ab613-d5ea8167-5b11a0c9-670f0b10   patient_1   REMOVED           1.2.276.0.7230010.3.1.2.816853   Study 1            20110101    140606      2
+ ab7a6e26-18072a37-5f2a2210-8a7f0823-f2fa9119   patient_2   REMOVED           1.3.46.670589.11.1.5.0.6560.20   Study 1            20110101    140606      4
 ```
 
 ### Anonymizing and modifying Entities
