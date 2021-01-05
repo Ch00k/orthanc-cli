@@ -118,13 +118,6 @@ pub fn get_anonymization_config(
     config_file: Option<&str>,
 ) -> Result<Option<Anonymization>> {
     // This should never happen, but double-checking anyway
-    if replace.is_none() && keep.is_none() && keep_private_tags.is_none() && config_file.is_none() {
-        return Err(CliError::new(
-            "Command error",
-            Some("Not enough options"),
-            None,
-        ));
-    }
     if (replace.is_some() || keep.is_some() || keep_private_tags.is_some()) && config_file.is_some()
     {
         return Err(CliError::new(
