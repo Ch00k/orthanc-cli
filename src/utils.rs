@@ -675,6 +675,65 @@ mod tests {
     }
 
     #[test]
+    fn test_get_anonymization_config_from_cmd_options() {
+        assert_eq!(
+            get_anonymization_config_from_cmd_options(
+                Some(vec!["Foo=Bar", "Baz=qux"]),
+                Some(vec!["Qux", "Quuz"]),
+                Some(true)
+            )
+            .unwrap(),
+            Anonymization {
+                replace: Some(
+                    hashmap! {"Foo".to_string() => "Bar".to_string(), "Baz".to_string() => "qux".to_string()}
+                ),
+                keep: Some(vec!["Qux".to_string(), "Quuz".to_string()]),
+                keep_private_tags: Some(true),
+                dicom_version: None,
+                force: Some(true)
+            }
+        );
+
+        assert_eq!(
+            get_anonymization_config_from_cmd_options(None, None, None).unwrap(),
+            Anonymization {
+                replace: None,
+                keep: None,
+                keep_private_tags: None,
+                dicom_version: None,
+                force: Some(true)
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_from_cmd_options() {
+        assert_eq!(
+            get_modification_config_from_cmd_options(
+                Some(vec!["Foo=Bar", "Baz=qux"]),
+                Some(vec!["Qux", "Quuz"]),
+            )
+            .unwrap(),
+            Modification {
+                replace: Some(
+                    hashmap! {"Foo".to_string() => "Bar".to_string(), "Baz".to_string() => "qux".to_string()}
+                ),
+                remove: Some(vec!["Qux".to_string(), "Quuz".to_string()]),
+                force: Some(true)
+            }
+        );
+
+        assert_eq!(
+            get_modification_config_from_cmd_options(None, None).unwrap(),
+            Modification {
+                replace: None,
+                remove: None,
+                force: Some(true)
+            }
+        );
+    }
+
+    #[test]
     fn test_get_modification_config_from_file() {
         let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
         file.write(b"{}").unwrap();
