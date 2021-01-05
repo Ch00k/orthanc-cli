@@ -1,3 +1,5 @@
+//#![cfg_attr(test, feature(proc_macro_hygiene))]
+
 use crate::constants::*;
 use crate::{CliError, Result};
 use comfy_table::{ColumnConstraint, ContentArrangement, Table};
@@ -115,10 +117,29 @@ pub fn get_anonymization_config(
     keep_private_tags: Option<bool>,
     config_file: Option<&str>,
 ) -> Result<Option<Anonymization>> {
+    // This should never happen, but double-checking anyway
+    if replace.is_none() && keep.is_none() && keep_private_tags.is_none() && config_file.is_none() {
+        return Err(CliError::new(
+            "Command error",
+            Some("Not enough options"),
+            None,
+        ));
+    }
+    if (replace.is_some() || keep.is_some() || keep_private_tags.is_some()) && config_file.is_some()
+    {
+        return Err(CliError::new(
+            "Command error",
+            Some("Conflicting options"),
+            None,
+        ));
+    }
+
     match config_file {
         Some(c) => Ok(Some(get_anonymization_config_from_file(c)?)),
         None => match (&replace, &keep, &keep_private_tags) {
             (None, None, None) => Ok(None),
+            // TODO: This assumes that there is always either a config file
+            // or at least one of the options
             _ => Ok(Some(get_anonymization_config_from_cmd_options(
                 replace,
                 keep,
@@ -133,6 +154,22 @@ pub fn get_modification_config(
     remove: Option<Vec<&str>>,
     config_file: Option<&str>,
 ) -> Result<Modification> {
+    // This should never happen, but double-checking anyway
+    if replace.is_none() && remove.is_none() && config_file.is_none() {
+        return Err(CliError::new(
+            "Command error",
+            Some("Not enough options"),
+            None,
+        ));
+    }
+    if (replace.is_some() || remove.is_some()) && config_file.is_some() {
+        return Err(CliError::new(
+            "Command error",
+            Some("Conflicting options"),
+            None,
+        ));
+    }
+
     match config_file {
         Some(c) => Ok(get_modification_config_from_file(c)?),
         None => match (&replace, &remove) {
