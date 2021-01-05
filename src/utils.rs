@@ -92,6 +92,7 @@ pub fn create_show_table<T: Entity>(entity: T, dicom_tags: &[&str]) -> Table {
     table
 }
 
+/// Parses the command-line option value(s) TagName=TagValue into a HashMap
 pub fn parse_tag_kv_pairs(cmd_values: Vec<&str>) -> Result<HashMap<String, String>> {
     let mut map = HashMap::new();
     for v in cmd_values {
@@ -544,6 +545,26 @@ mod tests {
             format_table(create_show_table(instance, &INSTANCE_DICOM_TAGS)),
             include_str!("../tests/data/unit/show_instance").trim_end()
         );
+    }
+
+    #[test]
+    fn test_parse_tag_kv_pairs() {
+        assert_eq!(
+            parse_tag_kv_pairs(vec!["Foo=Bar", "Baz=42"]).unwrap(),
+            hashmap! {"Foo".to_string() => "Bar".to_string(), "Baz".to_string() => "42".to_string()}
+        )
+    }
+
+    #[test]
+    fn test_parse_tag_kv_pairs_error() {
+        assert_eq!(
+            parse_tag_kv_pairs(vec!["Foo=Bar", "Baz"]).unwrap_err(),
+            CliError::new(
+                "Command error",
+                Some("Wrong option value 'Baz'"),
+                Some("Must be of format 'TagName=TagValue'"),
+            )
+        )
     }
 
     #[test]
