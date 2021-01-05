@@ -633,7 +633,7 @@ mod tests {
     }
 
     #[test]
-    fn test_get_anonymization_config() {
+    fn test_get_anonymization_config_from_file() {
         let mut file = fs::File::create("/tmp/anon_config.yml").unwrap();
         file.write(b"{}").unwrap();
         assert_eq!(
@@ -649,7 +649,7 @@ mod tests {
     }
 
     #[test]
-    fn test_get_anonymization_config_file_not_found() {
+    fn test_get_anonymization_config_from_file_file_not_found() {
         assert_eq!(
             get_anonymization_config_from_file("/tmp/anon_garble.yml").unwrap_err(),
             CliError {
@@ -661,7 +661,7 @@ mod tests {
     }
 
     #[test]
-    fn test_get_anonymization_config_yaml_parse_error() {
+    fn test_get_anonymization_config_from_file_yaml_parse_error() {
         let mut file = NamedTempFile::new().unwrap();
         writeln!(file, "garble").unwrap();
         assert_eq!(
@@ -675,7 +675,7 @@ mod tests {
     }
 
     #[test]
-    fn test_get_modification_config() {
+    fn test_get_modification_config_from_file() {
         let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
         file.write(b"{}").unwrap();
         assert_eq!(
@@ -689,7 +689,7 @@ mod tests {
     }
 
     #[test]
-    fn test_get_modification_config_file_not_found() {
+    fn test_get_modification_config_from_file_file_not_found() {
         assert_eq!(
             get_modification_config_from_file("/tmp/anon_garble.yml").unwrap_err(),
             CliError {
@@ -701,7 +701,7 @@ mod tests {
     }
 
     #[test]
-    fn test_get_modification_config_yaml_parse_error() {
+    fn test_get_modification_config_from_file_yaml_parse_error() {
         let mut file = NamedTempFile::new().unwrap();
         writeln!(file, "garble").unwrap();
         assert_eq!(
