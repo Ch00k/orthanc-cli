@@ -22,11 +22,11 @@ fn main() {
     match matches.subcommand() {
         Some(("patient", patient)) => match patient.subcommand() {
             Some(("list", _)) => match o.list_patients() {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("show", show)) => match o.show_patient(show.value_of("id").unwrap()) {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("anonymize", anonymize)) => {
@@ -41,14 +41,14 @@ fn main() {
                     keep_private_tags,
                     anonymize.value_of("config"),
                 ) {
-                    Ok(t) => print(t),
+                    Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
             }
             Some(("search", search)) => {
                 let terms: Vec<&str> = search.values_of("query").unwrap().collect();
                 match o.search_patients(terms) {
-                    Ok(t) => print(t),
+                    Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
             }
@@ -58,7 +58,7 @@ fn main() {
                 modify.values_of("remove").map(|r| r.collect()),
                 modify.value_of("config"),
             ) {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("download", download)) => match o.download_patient(
@@ -76,17 +76,17 @@ fn main() {
         },
         Some(("study", study)) => match study.subcommand() {
             Some(("list", _)) => match o.list_studies() {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("show", show)) => match o.show_study(show.value_of("id").unwrap()) {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("search", search)) => {
                 let terms: Vec<&str> = search.values_of("query").unwrap().collect();
                 match o.search_studies(terms) {
-                    Ok(t) => print(t),
+                    Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
             }
@@ -102,7 +102,7 @@ fn main() {
                     keep_private_tags,
                     anonymize.value_of("config"),
                 ) {
-                    Ok(t) => print(t),
+                    Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
             }
@@ -112,7 +112,7 @@ fn main() {
                 modify.values_of("remove").map(|r| r.collect()),
                 modify.value_of("config"),
             ) {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("download", download)) => match o.download_study(
@@ -130,17 +130,17 @@ fn main() {
         },
         Some(("series", series)) => match series.subcommand() {
             Some(("list", _)) => match o.list_series() {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("show", show)) => match o.show_series(show.value_of("id").unwrap()) {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("search", search)) => {
                 let terms: Vec<&str> = search.values_of("query").unwrap().collect();
                 match o.search_series(terms) {
-                    Ok(t) => print(t),
+                    Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
             }
@@ -156,7 +156,7 @@ fn main() {
                     keep_private_tags,
                     anonymize.value_of("config"),
                 ) {
-                    Ok(t) => print(t),
+                    Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
             }
@@ -166,7 +166,7 @@ fn main() {
                 modify.values_of("remove").map(|r| r.collect()),
                 modify.value_of("config"),
             ) {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("download", download)) => match o.download_series(
@@ -184,17 +184,17 @@ fn main() {
         },
         Some(("instance", instance)) => match instance.subcommand() {
             Some(("list", _)) => match o.list_instances() {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("show", show)) => match o.show_instance(show.value_of("id").unwrap()) {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("search", search)) => {
                 let terms: Vec<&str> = search.values_of("query").unwrap().collect();
                 match o.search_instances(terms) {
-                    Ok(t) => print(t),
+                    Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
             }
@@ -226,7 +226,7 @@ fn main() {
                 Err(e) => exit_with_error(e),
             },
             Some(("tags", tags)) => match o.show_instance_tags(tags.value_of("id").unwrap()) {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("download", download)) => match o.download_instance(
@@ -244,11 +244,11 @@ fn main() {
         },
         Some(("modality", modality)) => match modality.subcommand() {
             Some(("list", _)) => match o.list_modalities() {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("show", show)) => match o.show_modality(show.value_of("name").unwrap()) {
-                Ok(t) => print(t),
+                Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("create", create)) => match o.create_modality(
@@ -272,7 +272,7 @@ fn main() {
             Some(("store", store)) => {
                 let ids: Vec<&str> = store.values_of("ids").unwrap().collect();
                 match o.do_store(store.value_of("name").unwrap(), &ids) {
-                    Ok(t) => print(t),
+                    Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
             }

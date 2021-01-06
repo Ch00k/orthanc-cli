@@ -1,5 +1,3 @@
-//#![cfg_attr(test, feature(proc_macro_hygiene))]
-
 use crate::constants::*;
 use crate::{CliError, Result};
 use comfy_table::{ColumnConstraint, ContentArrangement, Table};
@@ -8,6 +6,17 @@ use orthanc::models::*;
 use serde_yaml;
 use std::collections::HashMap;
 use std::{env, fs, process, result};
+
+pub fn create_table(header: Option<&[&str]>) -> Table {
+    let mut table = Table::new();
+    table.set_content_arrangement(ContentArrangement::Dynamic);
+    table.load_preset(TABLE_PRESET);
+    match header {
+        Some(h) => table.set_header(h.iter()),
+        None => &table,
+    };
+    table
+}
 
 pub fn create_list_table<T: Entity>(
     entities: Vec<T>,
@@ -94,6 +103,34 @@ pub fn create_show_table<T: Entity>(entity: T, dicom_tags: &[&str]) -> Table {
     table
 }
 
+pub fn create_new_entity_table(result: ModificationResult) -> Table {
+    let mut table = create_table(None);
+    table.add_row([format!("New {:?} ID", result.entity), result.id].iter());
+    match result.entity {
+        EntityKind::Patient => &table,
+        _ => table.add_row(["Patient ID", &result.patient_id].iter()),
+    };
+    table
+}
+
+pub fn create_error_table(error: CliError) -> Table {
+    let mut table = create_table(None);
+    table.add_row(["Error", &error.error].iter());
+    match error.message {
+        Some(m) => {
+            table.add_row(["Message", &m].iter());
+        }
+        None => (),
+    };
+    match error.details {
+        Some(d) => {
+            table.add_row(["Details", &d].iter());
+        }
+        None => (),
+    };
+    table
+}
+
 /// Parses the command-line option value(s) TagName=TagValue into a HashMap
 pub fn parse_tag_kv_pairs(cmd_values: Vec<&str>) -> Result<HashMap<String, String>> {
     let mut map = HashMap::new();
@@ -173,21 +210,21 @@ pub fn get_modification_config(
     }
 }
 
-pub fn get_anonymization_config_from_file(config_file: &str) -> Result<Anonymization> {
+fn get_anonymization_config_from_file(config_file: &str) -> Result<Anonymization> {
     let yaml = fs::read(config_file)?;
     let mut a: Anonymization = serde_yaml::from_slice(&yaml)?;
     a.force = Some(true);
     Ok(a)
 }
 
-pub fn get_modification_config_from_file(config_file: &str) -> Result<Modification> {
+fn get_modification_config_from_file(config_file: &str) -> Result<Modification> {
     let yaml = fs::read(config_file)?;
     let mut a: Modification = serde_yaml::from_slice(&yaml)?;
     a.force = Some(true);
     Ok(a)
 }
 
-pub fn get_anonymization_config_from_cmd_options(
+fn get_anonymization_config_from_cmd_options(
     replace: Option<Vec<&str>>,
     keep: Option<Vec<&str>>,
     keep_private_tags: Option<bool>,
@@ -204,7 +241,7 @@ pub fn get_anonymization_config_from_cmd_options(
     })
 }
 
-pub fn get_modification_config_from_cmd_options(
+fn get_modification_config_from_cmd_options(
     replace: Option<Vec<&str>>,
     remove: Option<Vec<&str>>,
 ) -> Result<Modification> {
@@ -216,45 +253,6 @@ pub fn get_modification_config_from_cmd_options(
         remove: remove.map(|vec| vec.iter().map(ToString::to_string).collect()),
         force: Some(true),
     })
-}
-
-pub fn create_new_entity_table(result: ModificationResult) -> Table {
-    let mut table = create_table(None);
-    table.add_row([format!("New {:?} ID", result.entity), result.id].iter());
-    match result.entity {
-        EntityKind::Patient => &table,
-        _ => table.add_row(["Patient ID", &result.patient_id].iter()),
-    };
-    table
-}
-
-pub fn create_table(header: Option<&[&str]>) -> Table {
-    let mut table = Table::new();
-    table.set_content_arrangement(ContentArrangement::Dynamic);
-    table.load_preset(TABLE_PRESET);
-    match header {
-        Some(h) => table.set_header(h.iter()),
-        None => &table,
-    };
-    table
-}
-
-pub fn create_error_table(error: CliError) -> Table {
-    let mut table = create_table(None);
-    table.add_row(["Error", &error.error].iter());
-    match error.message {
-        Some(m) => {
-            table.add_row(["Message", &m].iter());
-        }
-        None => (),
-    };
-    match error.details {
-        Some(d) => {
-            table.add_row(["Details", &d].iter());
-        }
-        None => (),
-    };
-    table
 }
 
 pub fn get_server_address(cmd_option: Option<&str>) -> result::Result<String, CliError> {
@@ -291,7 +289,7 @@ pub fn get_password(cmd_option: Option<&str>) -> Option<String> {
     }
 }
 
-pub fn print(table: Table) {
+pub fn print_table(table: Table) {
     println!("{}", table);
 }
 
@@ -319,6 +317,18 @@ mod tests {
         trailing_whitespace_regex
             .replace_all(&format!("{}", table), "")
             .to_string()
+    }
+
+    #[test]
+    fn test_create_table_with_header() {
+        let table = create_table(Some(&["Foo", "bar"]));
+        assert_eq!(&format!("{}", table), " Foo   bar \n-----------");
+    }
+
+    #[test]
+    fn test_create_table_no_header() {
+        let table = create_table(None);
+        assert_eq!(&format!("{}", table), "");
     }
 
     #[test]
@@ -578,23 +588,27 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_tag_kv_pairs() {
-        assert_eq!(
-            parse_tag_kv_pairs(vec!["Foo=Bar", "Baz=42"]).unwrap(),
-            hashmap! {"Foo".to_string() => "Bar".to_string(), "Baz".to_string() => "42".to_string()}
-        )
+    fn test_create_new_entity_table() {
+        let res = ModificationResult {
+            id: "foobar".to_string(),
+            patient_id: "bazqux".to_string(),
+            path: "long_and_rocky".to_string(),
+            entity: EntityKind::Study,
+        };
+        let expected_table = " New Study ID   foobar \n Patient ID     bazqux ";
+        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
     }
 
     #[test]
-    fn test_parse_tag_kv_pairs_error() {
-        assert_eq!(
-            parse_tag_kv_pairs(vec!["Foo=Bar", "Baz"]).unwrap_err(),
-            CliError::new(
-                "Command error",
-                Some("Wrong option value 'Baz'"),
-                Some("Must be of format 'TagName=TagValue'"),
-            )
-        )
+    fn test_create_new_entity_table_patient() {
+        let res = ModificationResult {
+            id: "foobar".to_string(),
+            patient_id: "bazqux".to_string(),
+            path: "long_and_rocky".to_string(),
+            entity: EntityKind::Patient,
+        };
+        let expected_table = " New Patient ID   foobar ";
+        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
     }
 
     #[test]
@@ -625,41 +639,25 @@ mod tests {
             " Error   error "
         );
     }
+
     #[test]
-    fn test_get_server() {
-        remove_var("ORC_ORTHANC_SERVER");
-        assert_eq!(get_server_address(Some("foo")).unwrap(), "foo".to_string());
+    fn test_parse_tag_kv_pairs() {
         assert_eq!(
-            get_server_address(None).unwrap_err(),
+            parse_tag_kv_pairs(vec!["Foo=Bar", "Baz=42"]).unwrap(),
+            hashmap! {"Foo".to_string() => "Bar".to_string(), "Baz".to_string() => "42".to_string()}
+        )
+    }
+
+    #[test]
+    fn test_parse_tag_kv_pairs_error() {
+        assert_eq!(
+            parse_tag_kv_pairs(vec!["Foo=Bar", "Baz"]).unwrap_err(),
             CliError::new(
                 "Command error",
-                Some("Neither --server nor ORC_ORTHANC_SERVER are set"),
-                Some("environment variable not found"),
+                Some("Wrong option value 'Baz'"),
+                Some("Must be of format 'TagName=TagValue'"),
             )
-        );
-        set_var("ORC_ORTHANC_SERVER", "bar");
-        assert_eq!(get_server_address(None).unwrap(), "bar".to_string());
-        assert_eq!(get_server_address(Some("baz")).unwrap(), "baz".to_string())
-    }
-
-    #[test]
-    fn test_get_username() {
-        remove_var("ORC_ORTHANC_USERNAME");
-        assert_eq!(get_username(Some("foo")).unwrap(), "foo".to_string());
-        assert_eq!(get_username(None), None);
-        set_var("ORC_ORTHANC_USERNAME", "bar");
-        assert_eq!(get_username(Some("foo")).unwrap(), "foo".to_string());
-        assert_eq!(get_username(None).unwrap(), "bar".to_string());
-    }
-
-    #[test]
-    fn test_get_password() {
-        remove_var("ORC_ORTHANC_PASSWORD");
-        assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
-        assert_eq!(get_password(None), None);
-        set_var("ORC_ORTHANC_PASSWORD", "bar");
-        assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
-        assert_eq!(get_password(None).unwrap(), "bar".to_string());
+        )
     }
 
     #[test]
@@ -804,26 +802,74 @@ mod tests {
     }
 
     #[test]
-    fn test_create_new_entity_table() {
-        let res = ModificationResult {
-            id: "foobar".to_string(),
-            patient_id: "bazqux".to_string(),
-            path: "long_and_rocky".to_string(),
-            entity: EntityKind::Study,
-        };
-        let expected_table = " New Study ID   foobar \n Patient ID     bazqux ";
-        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
+    fn test_get_anonymization_config_conflicting_options() {
+        assert_eq!(
+            get_anonymization_config(
+                Some(vec!["Foo=Bar", "Baz=qux"]),
+                Some(vec!["Qux", "Quuz"]),
+                Some(true),
+                Some("/tmp/foo.yml")
+            )
+            .unwrap_err(),
+            CliError::new("Command error", Some("Conflicting options"), None)
+        )
     }
 
     #[test]
-    fn test_create_new_entity_table_patient() {
-        let res = ModificationResult {
-            id: "foobar".to_string(),
-            patient_id: "bazqux".to_string(),
-            path: "long_and_rocky".to_string(),
-            entity: EntityKind::Patient,
-        };
-        let expected_table = " New Patient ID   foobar ";
-        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
+    fn test_get_modification_config_not_enough_options() {
+        assert_eq!(
+            get_modification_config(None, None, None).unwrap_err(),
+            CliError::new("Command error", Some("Not enough options"), None)
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_conflicting_options() {
+        assert_eq!(
+            get_modification_config(
+                Some(vec!["Foo=Bar", "Baz=qux"]),
+                Some(vec!["Qux", "Quuz"]),
+                Some("/tmp/foo.yml")
+            )
+            .unwrap_err(),
+            CliError::new("Command error", Some("Conflicting options"), None)
+        )
+    }
+
+    #[test]
+    fn test_get_server() {
+        remove_var("ORC_ORTHANC_SERVER");
+        assert_eq!(get_server_address(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(
+            get_server_address(None).unwrap_err(),
+            CliError::new(
+                "Command error",
+                Some("Neither --server nor ORC_ORTHANC_SERVER are set"),
+                Some("environment variable not found"),
+            )
+        );
+        set_var("ORC_ORTHANC_SERVER", "bar");
+        assert_eq!(get_server_address(None).unwrap(), "bar".to_string());
+        assert_eq!(get_server_address(Some("baz")).unwrap(), "baz".to_string())
+    }
+
+    #[test]
+    fn test_get_username() {
+        remove_var("ORC_ORTHANC_USERNAME");
+        assert_eq!(get_username(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_username(None), None);
+        set_var("ORC_ORTHANC_USERNAME", "bar");
+        assert_eq!(get_username(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_username(None).unwrap(), "bar".to_string());
+    }
+
+    #[test]
+    fn test_get_password() {
+        remove_var("ORC_ORTHANC_PASSWORD");
+        assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_password(None), None);
+        set_var("ORC_ORTHANC_PASSWORD", "bar");
+        assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
+        assert_eq!(get_password(None).unwrap(), "bar".to_string());
     }
 }
