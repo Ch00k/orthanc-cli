@@ -380,8 +380,9 @@ impl Orthanc {
                 let mut table = create_table(None);
                 table.add_row(["Remote AET", &r.remote_aet].iter());
                 table.add_row(["Instances sent", &format!("{}", r.instances_count)].iter());
-                table
-                    .add_row(["Instances failed", &format!("{}", r.failed_instances_count)].iter());
+                table.add_row(
+                    ["Instances failed", &format!("{}", r.failed_instances_count)].iter(),
+                );
                 Ok(table)
             }
             Err(e) => Err(e.into()),
@@ -423,18 +424,24 @@ impl Orthanc {
                         .iter(),
                     );
                 };
-                table
-                    .add_row(vec!["C-ECHO", &format!("{}", m_config.allow_c_echo.unwrap())].iter());
-                table
-                    .add_row(vec!["C-FIND", &format!("{}", m_config.allow_c_find.unwrap())].iter());
-                table.add_row(vec!["C-GET", &format!("{}", m_config.allow_c_get.unwrap())].iter());
-                table
-                    .add_row(vec!["C-MOVE", &format!("{}", m_config.allow_c_move.unwrap())].iter());
+                table.add_row(
+                    vec!["C-ECHO", &format!("{}", m_config.allow_c_echo.unwrap())].iter(),
+                );
+                table.add_row(
+                    vec!["C-FIND", &format!("{}", m_config.allow_c_find.unwrap())].iter(),
+                );
+                table.add_row(
+                    vec!["C-GET", &format!("{}", m_config.allow_c_get.unwrap())].iter(),
+                );
+                table.add_row(
+                    vec!["C-MOVE", &format!("{}", m_config.allow_c_move.unwrap())].iter(),
+                );
                 table.add_row(
                     vec!["C-STORE", &format!("{}", m_config.allow_c_store.unwrap())].iter(),
                 );
                 table.add_row(
-                    vec!["N-ACTION", &format!("{}", m_config.allow_n_action.unwrap())].iter(),
+                    vec!["N-ACTION", &format!("{}", m_config.allow_n_action.unwrap())]
+                        .iter(),
                 );
                 table.add_row(
                     vec![
@@ -453,7 +460,13 @@ impl Orthanc {
         ));
     }
 
-    pub fn create_modality(&self, name: &str, aet: &str, host: &str, port: i32) -> Result<()> {
+    pub fn create_modality(
+        &self,
+        name: &str,
+        aet: &str,
+        host: &str,
+        port: i32,
+    ) -> Result<()> {
         let config = Modality {
             aet: aet.to_string(),
             host: host.to_string(),
@@ -473,7 +486,13 @@ impl Orthanc {
             .map_err(Into::<_>::into)
     }
 
-    pub fn modify_modality(&self, name: &str, aet: &str, host: &str, port: i32) -> Result<()> {
+    pub fn modify_modality(
+        &self,
+        name: &str,
+        aet: &str,
+        host: &str,
+        port: i32,
+    ) -> Result<()> {
         let config = Modality {
             aet: aet.to_string(),
             host: host.to_string(),

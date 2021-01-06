@@ -2047,13 +2047,15 @@ fn test_modalities() {
     // Create
     assert_result(
         vec![
-            "modality", "create", "foo", "--aet", "FOO", "--host", "4.3.2.1", "--port", "42",
+            "modality", "create", "foo", "--aet", "FOO", "--host", "4.3.2.1", "--port",
+            "42",
         ],
         CommandResult::new(0, "".to_string(), "".to_string()),
     );
     assert_result(
         vec![
-            "modality", "create", "bar", "--aet", "BAR", "--host", "1.2.3.4", "--port", "1717",
+            "modality", "create", "bar", "--aet", "BAR", "--host", "1.2.3.4", "--port",
+            "1717",
         ],
         CommandResult::new(0, "".to_string(), "".to_string()),
     );
@@ -2071,7 +2073,8 @@ fn test_modalities() {
     // Modify
     assert_result(
         vec![
-            "modality", "modify", "bar", "--aet", "BAZ", "--host", "9.8.7.6", "--port", "1717",
+            "modality", "modify", "bar", "--aet", "BAZ", "--host", "9.8.7.6", "--port",
+            "1717",
         ],
         CommandResult::new(0, "".to_string(), "".to_string()),
     );

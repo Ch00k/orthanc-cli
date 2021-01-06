@@ -68,10 +68,12 @@ fn main() {
                 Ok(_) => (),
                 Err(e) => exit_with_error(e),
             },
-            Some(("delete", delete)) => match o.delete_patient(delete.value_of("id").unwrap()) {
-                Ok(_) => (),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("delete", delete)) => {
+                match o.delete_patient(delete.value_of("id").unwrap()) {
+                    Ok(_) => (),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             _ => {}
         },
         Some(("study", study)) => match study.subcommand() {
@@ -122,10 +124,12 @@ fn main() {
                 Ok(_) => (),
                 Err(e) => exit_with_error(e),
             },
-            Some(("delete", delete)) => match o.delete_study(delete.value_of("id").unwrap()) {
-                Ok(_) => (),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("delete", delete)) => {
+                match o.delete_study(delete.value_of("id").unwrap()) {
+                    Ok(_) => (),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             _ => {}
         },
         Some(("series", series)) => match series.subcommand() {
@@ -176,10 +180,12 @@ fn main() {
                 Ok(_) => (),
                 Err(e) => exit_with_error(e),
             },
-            Some(("delete", delete)) => match o.delete_series(delete.value_of("id").unwrap()) {
-                Ok(_) => (),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("delete", delete)) => {
+                match o.delete_series(delete.value_of("id").unwrap()) {
+                    Ok(_) => (),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             _ => {}
         },
         Some(("instance", instance)) => match instance.subcommand() {
@@ -225,10 +231,12 @@ fn main() {
                 Ok(_) => (),
                 Err(e) => exit_with_error(e),
             },
-            Some(("tags", tags)) => match o.show_instance_tags(tags.value_of("id").unwrap()) {
-                Ok(t) => print_table(t),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("tags", tags)) => {
+                match o.show_instance_tags(tags.value_of("id").unwrap()) {
+                    Ok(t) => print_table(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("download", download)) => match o.download_instance(
                 download.value_of("id").unwrap(),
                 download.value_of("output").unwrap(),
@@ -236,10 +244,12 @@ fn main() {
                 Ok(_) => (),
                 Err(e) => exit_with_error(e),
             },
-            Some(("delete", delete)) => match o.delete_instance(delete.value_of("id").unwrap()) {
-                Ok(_) => (),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("delete", delete)) => {
+                match o.delete_instance(delete.value_of("id").unwrap()) {
+                    Ok(_) => (),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             _ => {}
         },
         Some(("modality", modality)) => match modality.subcommand() {
@@ -276,10 +286,12 @@ fn main() {
                     Err(e) => exit_with_error(e),
                 }
             }
-            Some(("delete", delete)) => match o.delete_modality(delete.value_of("name").unwrap()) {
-                Ok(_) => (),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("delete", delete)) => {
+                match o.delete_modality(delete.value_of("name").unwrap()) {
+                    Ok(_) => (),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             _ => {}
         },
         _ => {}

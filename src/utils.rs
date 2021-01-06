@@ -155,7 +155,8 @@ pub fn get_anonymization_config(
     config_file: Option<&str>,
 ) -> Result<Option<Anonymization>> {
     // This should never happen, but double-checking anyway
-    if (replace.is_some() || keep.is_some() || keep_private_tags.is_some()) && config_file.is_some()
+    if (replace.is_some() || keep.is_some() || keep_private_tags.is_some())
+        && config_file.is_some()
     {
         return Err(CliError::new(
             "Command error",
@@ -616,7 +617,11 @@ mod tests {
         assert_eq!(
             format!(
                 "{}",
-                create_error_table(CliError::new("error", Some("message"), Some("details")))
+                create_error_table(CliError::new(
+                    "error",
+                    Some("message"),
+                    Some("details")
+                ))
             ),
             " Error     error   \n Message   message \n Details   details "
         );
