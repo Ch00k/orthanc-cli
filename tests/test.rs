@@ -611,6 +611,352 @@ fn test_download_instance_error() {
 }
 
 #[test]
+fn test_anonymize_patient_conflicting_options() {
+    let res = run_command(vec![
+        "patient",
+        "anonymize",
+        "foo",
+        "-r",
+        "Foo=Bar",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--replace <TAG>...'\n\nUSAGE:\n    orthanc patient anonymize <ID> --replace <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec![
+        "patient",
+        "anonymize",
+        "foo",
+        "-k",
+        "Foo",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--keep <TAG>...'\n\nUSAGE:\n    orthanc patient anonymize <ID> --keep <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec![
+        "patient",
+        "anonymize",
+        "foo",
+        "-p",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--keep-private-tags'\n\nUSAGE:\n    orthanc patient anonymize <ID> --keep-private-tags\n\nFor more information try --help\n".to_string()
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_study_conflicting_options() {
+    let res = run_command(vec![
+        "study",
+        "anonymize",
+        "foo",
+        "-r",
+        "Foo=Bar",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--replace <TAG>...'\n\nUSAGE:\n    orthanc study anonymize <ID> --replace <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec![
+        "study",
+        "anonymize",
+        "foo",
+        "-k",
+        "Foo",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--keep <TAG>...'\n\nUSAGE:\n    orthanc study anonymize <ID> --keep <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec!["study", "anonymize", "foo", "-p", "-c", "/tmp/c.yml"]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--keep-private-tags'\n\nUSAGE:\n    orthanc study anonymize <ID> --keep-private-tags\n\nFor more information try --help\n".to_string()
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_series_conflicting_options() {
+    let res = run_command(vec![
+        "series",
+        "anonymize",
+        "foo",
+        "-r",
+        "Foo=Bar",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--replace <TAG>...'\n\nUSAGE:\n    orthanc series anonymize <ID> --replace <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec![
+        "series",
+        "anonymize",
+        "foo",
+        "-k",
+        "Foo",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--keep <TAG>...'\n\nUSAGE:\n    orthanc series anonymize <ID> --keep <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec!["series", "anonymize", "foo", "-p", "-c", "/tmp/c.yml"]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--keep-private-tags'\n\nUSAGE:\n    orthanc series anonymize <ID> --keep-private-tags\n\nFor more information try --help\n".to_string()
+        ),
+    );
+}
+
+#[test]
+fn test_anonymize_instance_conflicting_options() {
+    let res = run_command(vec![
+        "instance",
+        "anonymize",
+        "foo",
+        "-r",
+        "Foo=Bar",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--replace <TAG>...'\n\nUSAGE:\n    orthanc instance anonymize <ID> --output <OUTPUT> --replace <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec![
+        "instance",
+        "anonymize",
+        "foo",
+        "-k",
+        "Foo",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--keep <TAG>...'\n\nUSAGE:\n    orthanc instance anonymize <ID> --output <OUTPUT> --keep <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec![
+        "instance",
+        "anonymize",
+        "foo",
+        "-p",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--keep-private-tags'\n\nUSAGE:\n    orthanc instance anonymize <ID> --output <OUTPUT> --keep-private-tags\n\nFor more information try --help\n".to_string()
+        ),
+    );
+}
+
+#[test]
+fn test_modify_patient_conflicting_options() {
+    let res = run_command(vec![
+        "patient",
+        "modify",
+        "foo",
+        "-r",
+        "Foo=Bar",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--replace <TAG>...'\n\nUSAGE:\n    orthanc patient modify <ID> --replace <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec![
+        "patient",
+        "modify",
+        "foo",
+        "-m",
+        "Baz",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--remove <TAG>...'\n\nUSAGE:\n    orthanc patient modify <ID> --remove <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+}
+
+#[test]
+fn test_modify_study_conflicting_options() {
+    let res = run_command(vec![
+        "study",
+        "modify",
+        "foo",
+        "-r",
+        "Foo=Bar",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--replace <TAG>...'\n\nUSAGE:\n    orthanc study modify <ID> --replace <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec![
+        "study",
+        "modify",
+        "foo",
+        "-m",
+        "Baz",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--remove <TAG>...'\n\nUSAGE:\n    orthanc study modify <ID> --remove <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+}
+
+#[test]
+fn test_modify_series_conflicting_options() {
+    let res = run_command(vec![
+        "series",
+        "modify",
+        "foo",
+        "-r",
+        "Foo=Bar",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--replace <TAG>...'\n\nUSAGE:\n    orthanc series modify <ID> --replace <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec![
+        "series",
+        "modify",
+        "foo",
+        "-m",
+        "Baz",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--remove <TAG>...'\n\nUSAGE:\n    orthanc series modify <ID> --remove <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+}
+
+#[test]
+fn test_modify_instance_conflicting_options() {
+    let res = run_command(vec![
+        "instance",
+        "modify",
+        "foo",
+        "-r",
+        "Foo=Bar",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--replace <TAG>...'\n\nUSAGE:\n    orthanc instance modify <ID> --output <OUTPUT> --replace <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+
+    let res = run_command(vec![
+        "instance",
+        "modify",
+        "foo",
+        "-m",
+        "Baz",
+        "-c",
+        "/tmp/c.yml",
+    ]);
+    assert!(
+        res == CommandResult::new(
+            2,
+            "".to_string(),
+            "error: The argument '--config <CONFIG>' cannot be used with '--remove <TAG>...'\n\nUSAGE:\n    orthanc instance modify <ID> --output <OUTPUT> --remove <TAG>...\n\nFor more information try --help\n".to_string()
+        ),
+    );
+}
+
+#[test]
 fn test_anonymize_patient_no_customization() {
     let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
     let res = run_command(vec!["patient", "anonymize", &patient.id]);
@@ -1815,7 +2161,7 @@ fn test_modality_show_error() {
 }
 
 #[test]
-fn modality_modify_error() {
+fn test_modality_modify_error() {
     assert_result(
         vec![
             "-s",

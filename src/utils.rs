@@ -7,6 +7,17 @@ use serde_yaml;
 use std::collections::HashMap;
 use std::{env, fs, process, result};
 
+pub fn create_table(header: Option<&[&str]>) -> Table {
+    let mut table = Table::new();
+    table.set_content_arrangement(ContentArrangement::Dynamic);
+    table.load_preset(TABLE_PRESET);
+    match header {
+        Some(h) => table.set_header(h.iter()),
+        None => &table,
+    };
+    table
+}
+
 pub fn create_list_table<T: Entity>(
     entities: Vec<T>,
     header: &[&str],
@@ -92,6 +103,35 @@ pub fn create_show_table<T: Entity>(entity: T, dicom_tags: &[&str]) -> Table {
     table
 }
 
+pub fn create_new_entity_table(result: ModificationResult) -> Table {
+    let mut table = create_table(None);
+    table.add_row([format!("New {:?} ID", result.entity), result.id].iter());
+    match result.entity {
+        EntityKind::Patient => &table,
+        _ => table.add_row(["Patient ID", &result.patient_id].iter()),
+    };
+    table
+}
+
+pub fn create_error_table(error: CliError) -> Table {
+    let mut table = create_table(None);
+    table.add_row(["Error", &error.error].iter());
+    match error.message {
+        Some(m) => {
+            table.add_row(["Message", &m].iter());
+        }
+        None => (),
+    };
+    match error.details {
+        Some(d) => {
+            table.add_row(["Details", &d].iter());
+        }
+        None => (),
+    };
+    table
+}
+
+/// Parses the command-line option value(s) TagName=TagValue into a HashMap
 pub fn parse_tag_kv_pairs(cmd_values: Vec<&str>) -> Result<HashMap<String, String>> {
     let mut map = HashMap::new();
     for v in cmd_values {
@@ -114,10 +154,22 @@ pub fn get_anonymization_config(
     keep_private_tags: Option<bool>,
     config_file: Option<&str>,
 ) -> Result<Option<Anonymization>> {
+    // This should never happen, but double-checking anyway
+    if (replace.is_some() || keep.is_some() || keep_private_tags.is_some()) && config_file.is_some()
+    {
+        return Err(CliError::new(
+            "Command error",
+            Some("Conflicting options"),
+            None,
+        ));
+    }
+
     match config_file {
         Some(c) => Ok(Some(get_anonymization_config_from_file(c)?)),
         None => match (&replace, &keep, &keep_private_tags) {
             (None, None, None) => Ok(None),
+            // TODO: This assumes that there is always either a config file
+            // or at least one of the options
             _ => Ok(Some(get_anonymization_config_from_cmd_options(
                 replace,
                 keep,
@@ -132,6 +184,22 @@ pub fn get_modification_config(
     remove: Option<Vec<&str>>,
     config_file: Option<&str>,
 ) -> Result<Modification> {
+    // This should never happen, but double-checking anyway
+    if replace.is_none() && remove.is_none() && config_file.is_none() {
+        return Err(CliError::new(
+            "Command error",
+            Some("Not enough options"),
+            None,
+        ));
+    }
+    if (replace.is_some() || remove.is_some()) && config_file.is_some() {
+        return Err(CliError::new(
+            "Command error",
+            Some("Conflicting options"),
+            None,
+        ));
+    }
+
     match config_file {
         Some(c) => Ok(get_modification_config_from_file(c)?),
         None => match (&replace, &remove) {
@@ -142,21 +210,21 @@ pub fn get_modification_config(
     }
 }
 
-pub fn get_anonymization_config_from_file(config_file: &str) -> Result<Anonymization> {
+fn get_anonymization_config_from_file(config_file: &str) -> Result<Anonymization> {
     let yaml = fs::read(config_file)?;
     let mut a: Anonymization = serde_yaml::from_slice(&yaml)?;
     a.force = Some(true);
     Ok(a)
 }
 
-pub fn get_modification_config_from_file(config_file: &str) -> Result<Modification> {
+fn get_modification_config_from_file(config_file: &str) -> Result<Modification> {
     let yaml = fs::read(config_file)?;
     let mut a: Modification = serde_yaml::from_slice(&yaml)?;
     a.force = Some(true);
     Ok(a)
 }
 
-pub fn get_anonymization_config_from_cmd_options(
+fn get_anonymization_config_from_cmd_options(
     replace: Option<Vec<&str>>,
     keep: Option<Vec<&str>>,
     keep_private_tags: Option<bool>,
@@ -173,7 +241,7 @@ pub fn get_anonymization_config_from_cmd_options(
     })
 }
 
-pub fn get_modification_config_from_cmd_options(
+fn get_modification_config_from_cmd_options(
     replace: Option<Vec<&str>>,
     remove: Option<Vec<&str>>,
 ) -> Result<Modification> {
@@ -185,45 +253,6 @@ pub fn get_modification_config_from_cmd_options(
         remove: remove.map(|vec| vec.iter().map(ToString::to_string).collect()),
         force: Some(true),
     })
-}
-
-pub fn create_new_entity_table(result: ModificationResult) -> Table {
-    let mut table = create_table(None);
-    table.add_row([format!("New {:?} ID", result.entity), result.id].iter());
-    match result.entity {
-        EntityKind::Patient => &table,
-        _ => table.add_row(["Patient ID", &result.patient_id].iter()),
-    };
-    table
-}
-
-pub fn create_table(header: Option<&[&str]>) -> Table {
-    let mut table = Table::new();
-    table.set_content_arrangement(ContentArrangement::Dynamic);
-    table.load_preset(TABLE_PRESET);
-    match header {
-        Some(h) => table.set_header(h.iter()),
-        None => &table,
-    };
-    table
-}
-
-pub fn create_error_table(error: CliError) -> Table {
-    let mut table = create_table(None);
-    table.add_row(["Error", &error.error].iter());
-    match error.message {
-        Some(m) => {
-            table.add_row(["Message", &m].iter());
-        }
-        None => (),
-    };
-    match error.details {
-        Some(d) => {
-            table.add_row(["Details", &d].iter());
-        }
-        None => (),
-    };
-    table
 }
 
 pub fn get_server_address(cmd_option: Option<&str>) -> result::Result<String, CliError> {
@@ -260,7 +289,7 @@ pub fn get_password(cmd_option: Option<&str>) -> Option<String> {
     }
 }
 
-pub fn print(table: Table) {
+pub fn print_table(table: Table) {
     println!("{}", table);
 }
 
@@ -288,6 +317,18 @@ mod tests {
         trailing_whitespace_regex
             .replace_all(&format!("{}", table), "")
             .to_string()
+    }
+
+    #[test]
+    fn test_create_table_with_header() {
+        let table = create_table(Some(&["Foo", "bar"]));
+        assert_eq!(&format!("{}", table), " Foo   bar \n-----------");
+    }
+
+    #[test]
+    fn test_create_table_no_header() {
+        let table = create_table(None);
+        assert_eq!(&format!("{}", table), "");
     }
 
     #[test]
@@ -547,6 +588,30 @@ mod tests {
     }
 
     #[test]
+    fn test_create_new_entity_table() {
+        let res = ModificationResult {
+            id: "foobar".to_string(),
+            patient_id: "bazqux".to_string(),
+            path: "long_and_rocky".to_string(),
+            entity: EntityKind::Study,
+        };
+        let expected_table = " New Study ID   foobar \n Patient ID     bazqux ";
+        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
+    }
+
+    #[test]
+    fn test_create_new_entity_table_patient() {
+        let res = ModificationResult {
+            id: "foobar".to_string(),
+            patient_id: "bazqux".to_string(),
+            path: "long_and_rocky".to_string(),
+            entity: EntityKind::Patient,
+        };
+        let expected_table = " New Patient ID   foobar ";
+        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
+    }
+
+    #[test]
     fn test_create_error_table() {
         assert_eq!(
             format!(
@@ -574,6 +639,203 @@ mod tests {
             " Error   error "
         );
     }
+
+    #[test]
+    fn test_parse_tag_kv_pairs() {
+        assert_eq!(
+            parse_tag_kv_pairs(vec!["Foo=Bar", "Baz=42"]).unwrap(),
+            hashmap! {"Foo".to_string() => "Bar".to_string(), "Baz".to_string() => "42".to_string()}
+        )
+    }
+
+    #[test]
+    fn test_parse_tag_kv_pairs_error() {
+        assert_eq!(
+            parse_tag_kv_pairs(vec!["Foo=Bar", "Baz"]).unwrap_err(),
+            CliError::new(
+                "Command error",
+                Some("Wrong option value 'Baz'"),
+                Some("Must be of format 'TagName=TagValue'"),
+            )
+        )
+    }
+
+    #[test]
+    fn test_get_anonymization_config_from_file() {
+        let mut file = fs::File::create("/tmp/anon_config.yml").unwrap();
+        file.write(b"{}").unwrap();
+        assert_eq!(
+            get_anonymization_config_from_file("/tmp/anon_config.yml").unwrap(),
+            Anonymization {
+                replace: None,
+                keep: None,
+                keep_private_tags: None,
+                force: Some(true),
+                dicom_version: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_anonymization_config_from_file_file_not_found() {
+        assert_eq!(
+            get_anonymization_config_from_file("/tmp/anon_garble.yml").unwrap_err(),
+            CliError {
+                error: "No such file or directory (os error 2)".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_anonymization_config_from_file_yaml_parse_error() {
+        let mut file = NamedTempFile::new().unwrap();
+        writeln!(file, "garble").unwrap();
+        assert_eq!(
+            get_anonymization_config_from_file(file.path().to_str().unwrap()).unwrap_err(),
+            CliError {
+                error: "invalid type: string \"garble\", expected struct Anonymization at line 1 column 1".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_anonymization_config_from_cmd_options() {
+        assert_eq!(
+            get_anonymization_config_from_cmd_options(
+                Some(vec!["Foo=Bar", "Baz=qux"]),
+                Some(vec!["Qux", "Quuz"]),
+                Some(true)
+            )
+            .unwrap(),
+            Anonymization {
+                replace: Some(
+                    hashmap! {"Foo".to_string() => "Bar".to_string(), "Baz".to_string() => "qux".to_string()}
+                ),
+                keep: Some(vec!["Qux".to_string(), "Quuz".to_string()]),
+                keep_private_tags: Some(true),
+                dicom_version: None,
+                force: Some(true)
+            }
+        );
+
+        assert_eq!(
+            get_anonymization_config_from_cmd_options(None, None, None).unwrap(),
+            Anonymization {
+                replace: None,
+                keep: None,
+                keep_private_tags: None,
+                dicom_version: None,
+                force: Some(true)
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_from_cmd_options() {
+        assert_eq!(
+            get_modification_config_from_cmd_options(
+                Some(vec!["Foo=Bar", "Baz=qux"]),
+                Some(vec!["Qux", "Quuz"]),
+            )
+            .unwrap(),
+            Modification {
+                replace: Some(
+                    hashmap! {"Foo".to_string() => "Bar".to_string(), "Baz".to_string() => "qux".to_string()}
+                ),
+                remove: Some(vec!["Qux".to_string(), "Quuz".to_string()]),
+                force: Some(true)
+            }
+        );
+
+        assert_eq!(
+            get_modification_config_from_cmd_options(None, None).unwrap(),
+            Modification {
+                replace: None,
+                remove: None,
+                force: Some(true)
+            }
+        );
+    }
+
+    #[test]
+    fn test_get_modification_config_from_file() {
+        let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
+        file.write(b"{}").unwrap();
+        assert_eq!(
+            get_modification_config_from_file("/tmp/mod_config.yml").unwrap(),
+            Modification {
+                replace: None,
+                remove: None,
+                force: Some(true)
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_from_file_file_not_found() {
+        assert_eq!(
+            get_modification_config_from_file("/tmp/anon_garble.yml").unwrap_err(),
+            CliError {
+                error: "No such file or directory (os error 2)".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_from_file_yaml_parse_error() {
+        let mut file = NamedTempFile::new().unwrap();
+        writeln!(file, "garble").unwrap();
+        assert_eq!(
+            get_modification_config_from_file(file.path().to_str().unwrap()).unwrap_err(),
+            CliError {
+                error: "invalid type: string \"garble\", expected struct Modification at line 1 column 1".to_string(),
+                message: None,
+                details: None
+            }
+        )
+    }
+
+    #[test]
+    fn test_get_anonymization_config_conflicting_options() {
+        assert_eq!(
+            get_anonymization_config(
+                Some(vec!["Foo=Bar", "Baz=qux"]),
+                Some(vec!["Qux", "Quuz"]),
+                Some(true),
+                Some("/tmp/foo.yml")
+            )
+            .unwrap_err(),
+            CliError::new("Command error", Some("Conflicting options"), None)
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_not_enough_options() {
+        assert_eq!(
+            get_modification_config(None, None, None).unwrap_err(),
+            CliError::new("Command error", Some("Not enough options"), None)
+        )
+    }
+
+    #[test]
+    fn test_get_modification_config_conflicting_options() {
+        assert_eq!(
+            get_modification_config(
+                Some(vec!["Foo=Bar", "Baz=qux"]),
+                Some(vec!["Qux", "Quuz"]),
+                Some("/tmp/foo.yml")
+            )
+            .unwrap_err(),
+            CliError::new("Command error", Some("Conflicting options"), None)
+        )
+    }
+
     #[test]
     fn test_get_server() {
         remove_var("ORC_ORTHANC_SERVER");
@@ -609,111 +871,5 @@ mod tests {
         set_var("ORC_ORTHANC_PASSWORD", "bar");
         assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
         assert_eq!(get_password(None).unwrap(), "bar".to_string());
-    }
-
-    #[test]
-    fn test_get_anonymization_config() {
-        let mut file = fs::File::create("/tmp/anon_config.yml").unwrap();
-        file.write(b"{}").unwrap();
-        assert_eq!(
-            get_anonymization_config_from_file("/tmp/anon_config.yml").unwrap(),
-            Anonymization {
-                replace: None,
-                keep: None,
-                keep_private_tags: None,
-                force: Some(true),
-                dicom_version: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_get_anonymization_config_file_not_found() {
-        assert_eq!(
-            get_anonymization_config_from_file("/tmp/anon_garble.yml").unwrap_err(),
-            CliError {
-                error: "No such file or directory (os error 2)".to_string(),
-                message: None,
-                details: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_get_anonymization_config_yaml_parse_error() {
-        let mut file = NamedTempFile::new().unwrap();
-        writeln!(file, "garble").unwrap();
-        assert_eq!(
-            get_anonymization_config_from_file(file.path().to_str().unwrap()).unwrap_err(),
-            CliError {
-                error: "invalid type: string \"garble\", expected struct Anonymization at line 1 column 1".to_string(),
-                message: None,
-                details: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_get_modification_config() {
-        let mut file = fs::File::create("/tmp/mod_config.yml").unwrap();
-        file.write(b"{}").unwrap();
-        assert_eq!(
-            get_modification_config_from_file("/tmp/mod_config.yml").unwrap(),
-            Modification {
-                replace: None,
-                remove: None,
-                force: Some(true)
-            }
-        )
-    }
-
-    #[test]
-    fn test_get_modification_config_file_not_found() {
-        assert_eq!(
-            get_modification_config_from_file("/tmp/anon_garble.yml").unwrap_err(),
-            CliError {
-                error: "No such file or directory (os error 2)".to_string(),
-                message: None,
-                details: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_get_modification_config_yaml_parse_error() {
-        let mut file = NamedTempFile::new().unwrap();
-        writeln!(file, "garble").unwrap();
-        assert_eq!(
-            get_modification_config_from_file(file.path().to_str().unwrap()).unwrap_err(),
-            CliError {
-                error: "invalid type: string \"garble\", expected struct Modification at line 1 column 1".to_string(),
-                message: None,
-                details: None
-            }
-        )
-    }
-
-    #[test]
-    fn test_create_new_entity_table() {
-        let res = ModificationResult {
-            id: "foobar".to_string(),
-            patient_id: "bazqux".to_string(),
-            path: "long_and_rocky".to_string(),
-            entity: EntityKind::Study,
-        };
-        let expected_table = " New Study ID   foobar \n Patient ID     bazqux ";
-        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
-    }
-
-    #[test]
-    fn test_create_new_entity_table_patient() {
-        let res = ModificationResult {
-            id: "foobar".to_string(),
-            patient_id: "bazqux".to_string(),
-            path: "long_and_rocky".to_string(),
-            entity: EntityKind::Patient,
-        };
-        let expected_table = " New Patient ID   foobar ";
-        assert_eq!(format!("{}", create_new_entity_table(res)), expected_table)
     }
 }
