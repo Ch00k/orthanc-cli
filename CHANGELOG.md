@@ -2,7 +2,12 @@
 
 <!-- next-header -->
 
-## [Unreleased](https://github.com/Ch00k/orthanc-cli/compare/0.1.1...HEAD) ReleaseDate
+## [Unreleased](https://github.com/Ch00k/orthanc-cli/compare/0.2.0...HEAD) ReleaseDate
+
+**Fixes and improvements**
+
+
+## [0.2.0](https://github.com/Ch00k/orthanc-cli/compare/0.1.1...0.2.0) 2021-01-09
 
 **Fixes and improvements**
 
