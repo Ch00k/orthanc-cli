@@ -52,10 +52,7 @@ jobs:
           toolchain: stable
 
       - name: Build
-        run: |
-          # TODO: Completion should be packaged with the executable
-          mkdir -p /tmp/orc_completion
-          make build_release
+        run: make build_release
 
       - name: Pack artifact
         run: |

@@ -8,6 +8,8 @@
 
 * Add `list-studies`, `list-series`, `list-instances` subcommands to show a list of child entities, filtered a single
   parent [#48](https://github.com/Ch00k/orthanc-cli/pull/48)
+* Fix installation with `cargo install` [#49](https://github.com/Ch00k/orthanc-cli/pull/49),
+  [#50](https://github.com/Ch00k/orthanc-cli/pull/50)
 
 ## [0.2.0](https://github.com/Ch00k/orthanc-cli/compare/0.1.1...0.2.0) 2021-01-09
 
