@@ -52,8 +52,19 @@ pub fn build_cli() -> App<'static> {
                         ),
                 )
                 .subcommand(
-                    App::new("search")
+                    App::new("list-studies")
                         .display_order(2)
+                        .about("List all studies of a patient")
+                        .arg(
+                            Arg::new("id")
+                                .about("Patient ID")
+                                .required(true)
+                                .value_name("ID"),
+                        ),
+                )
+                .subcommand(
+                    App::new("search")
+                        .display_order(3)
                         .about("Search for patients")
                         .arg(
                             Arg::new("query")
@@ -72,7 +83,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("anonymize")
-                        .display_order(3)
+                        .display_order(4)
                         .about("Anonymize patient")
                         .arg(
                             Arg::new("id")
@@ -128,7 +139,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("modify")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Modify patient")
                         .arg(
                             Arg::new("id")
@@ -180,7 +191,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("download")
-                        .display_order(5)
+                        .display_order(6)
                         .about("Download patient")
                         .arg(
                             Arg::new("id")
@@ -200,7 +211,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(6)
+                        .display_order(7)
                         .about("Delete patient")
                         .arg(
                             Arg::new("id")
@@ -228,8 +239,19 @@ pub fn build_cli() -> App<'static> {
                         ),
                 )
                 .subcommand(
-                    App::new("search")
+                    App::new("list-series")
                         .display_order(2)
+                        .about("List all series of a study")
+                        .arg(
+                            Arg::new("id")
+                                .about("Study ID")
+                                .required(true)
+                                .value_name("ID"),
+                        ),
+                )
+                .subcommand(
+                    App::new("search")
+                        .display_order(3)
                         .about("Search for studies")
                         .arg(
                             Arg::new("query")
@@ -248,7 +270,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("anonymize")
-                        .display_order(3)
+                        .display_order(4)
                         .about("Anonymize study")
                         .arg(
                             Arg::new("id")
@@ -304,7 +326,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("modify")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Modify study")
                         .arg(
                             Arg::new("id")
@@ -356,7 +378,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("download")
-                        .display_order(5)
+                        .display_order(6)
                         .about("Download study")
                         .arg(Arg::new("id").about("Study ID").required(true))
                         .arg(
@@ -371,7 +393,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(6)
+                        .display_order(7)
                         .about("Delete study")
                         .arg(
                             Arg::new("id")
@@ -399,8 +421,19 @@ pub fn build_cli() -> App<'static> {
                         ),
                 )
                 .subcommand(
-                    App::new("search")
+                    App::new("list-instances")
                         .display_order(2)
+                        .about("List all instances of a series")
+                        .arg(
+                            Arg::new("id")
+                                .about("Series ID")
+                                .required(true)
+                                .value_name("ID"),
+                        ),
+                )
+                .subcommand(
+                    App::new("search")
+                        .display_order(3)
                         .about("Search for series")
                         .arg(
                             Arg::new("query")
@@ -419,7 +452,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("anonymize")
-                        .display_order(3)
+                        .display_order(4)
                         .about("Anonymize series")
                         .arg(
                             Arg::new("id")
@@ -475,7 +508,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("modify")
-                        .display_order(4)
+                        .display_order(5)
                         .about("Modify series")
                         .arg(
                             Arg::new("id")
@@ -527,7 +560,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("download")
-                        .display_order(5)
+                        .display_order(6)
                         .about("Download series")
                         .arg(
                             Arg::new("id")
@@ -547,7 +580,7 @@ pub fn build_cli() -> App<'static> {
                 )
                 .subcommand(
                     App::new("delete")
-                        .display_order(6)
+                        .display_order(7)
                         .about("Delete series")
                         .arg(
                             Arg::new("id")

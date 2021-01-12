@@ -66,6 +66,15 @@ _arguments "${_arguments_options[@]}" \
 ':id -- Patient ID:' \
 && ret=0
 ;;
+(list-studies)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Patient ID:' \
+&& ret=0
+;;
 (search)
 _arguments "${_arguments_options[@]}" \
 '*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*]' \
@@ -164,6 +173,15 @@ _arguments "${_arguments_options[@]}" \
 ':id -- Study ID:' \
 && ret=0
 ;;
+(list-series)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Study ID:' \
+&& ret=0
+;;
 (search)
 _arguments "${_arguments_options[@]}" \
 '*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101]' \
@@ -254,6 +272,15 @@ _arguments "${_arguments_options[@]}" \
 && ret=0
 ;;
 (show)
+_arguments "${_arguments_options[@]}" \
+'-h[Prints help information]' \
+'--help[Prints help information]' \
+'-V[Prints version information]' \
+'--version[Prints version information]' \
+':id -- Series ID:' \
+&& ret=0
+;;
+(list-instances)
 _arguments "${_arguments_options[@]}" \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
@@ -720,6 +747,27 @@ _orthanc__study__list_commands() {
     )
     _describe -t commands 'orthanc study list commands' commands "$@"
 }
+(( $+functions[_orthanc__series__list-instances_commands] )) ||
+_orthanc__series__list-instances_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc series list-instances commands' commands "$@"
+}
+(( $+functions[_orthanc__study__list-series_commands] )) ||
+_orthanc__study__list-series_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc study list-series commands' commands "$@"
+}
+(( $+functions[_orthanc__patient__list-studies_commands] )) ||
+_orthanc__patient__list-studies_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'orthanc patient list-studies commands' commands "$@"
+}
 (( $+functions[_orthanc__modality_commands] )) ||
 _orthanc__modality_commands() {
     local commands; commands=(
@@ -773,6 +821,7 @@ _orthanc__patient_commands() {
     local commands; commands=(
         "list:List all patients" \
 "show:Show patient details" \
+"list-studies:List all studies of a patient" \
 "search:Search for patients" \
 "anonymize:Anonymize patient" \
 "modify:Modify patient" \
@@ -814,6 +863,7 @@ _orthanc__series_commands() {
     local commands; commands=(
         "list:List all series" \
 "show:Show series details" \
+"list-instances:List all instances of a series" \
 "search:Search for series" \
 "anonymize:Anonymize series" \
 "modify:Modify series" \
@@ -869,6 +919,7 @@ _orthanc__study_commands() {
     local commands; commands=(
         "list:List all studies" \
 "show:Show study details" \
+"list-series:List all series of a study" \
 "search:Search for studies" \
 "anonymize:Anonymize study" \
 "modify:Modify study" \

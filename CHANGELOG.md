@@ -6,6 +6,8 @@
 
 **Fixes and improvements**
 
+* Add `list-studies`, `list-series`, `list-instances` subcommands to show a list of child entities, filtered by their
+  parent [#48](https://github.com/Ch00k/orthanc-cli/pull/48)
 
 ## [0.2.0](https://github.com/Ch00k/orthanc-cli/compare/0.1.1...0.2.0) 2021-01-09
 
