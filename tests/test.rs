@@ -481,6 +481,81 @@ fn _test_show_instance_error() {
 }
 
 #[test]
+fn _test_list_patient_studies() {
+    let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
+    assert_result(
+        vec!["patient", "list-studies", &patient.id],
+        CommandResult::new(
+            0,
+            include_str!("data/patient_list_studies.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_patient_studies_error() {
+    assert_result(
+        vec!["patient", "list-studies", "foo"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_study_series() {
+    let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
+    assert_result(
+        vec!["study", "list-series", &study.id],
+        CommandResult::new(
+            0,
+            include_str!("data/study_list_series.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_study_series_error() {
+    assert_result(
+        vec!["study", "list-series", "foo"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_series_instances() {
+    let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
+    assert_result(
+        vec!["series", "list-instances", &series.id],
+        CommandResult::new(
+            0,
+            include_str!("data/series_list_instances.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_series_instances_error() {
+    assert_result(
+        vec!["series", "list-instances", "foo"],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/not_found_error.stderr").to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_download_patient() {
     let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
     assert_result(

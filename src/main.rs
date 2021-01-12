@@ -29,6 +29,12 @@ fn main() {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
+            Some(("list-studies", list_studies)) => {
+                match o.list_studies(list_studies.value_of("id")) {
+                    Ok(t) => print_table(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("anonymize", anonymize)) => {
                 let mut keep_private_tags = None;
                 if anonymize.is_present("keep_private_tags") {
@@ -77,7 +83,7 @@ fn main() {
             _ => {}
         },
         Some(("study", study)) => match study.subcommand() {
-            Some(("list", _)) => match o.list_studies() {
+            Some(("list", _)) => match o.list_studies(None) {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
@@ -85,6 +91,12 @@ fn main() {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
+            Some(("list-series", list_series)) => {
+                match o.list_series(list_series.value_of("id")) {
+                    Ok(t) => print_table(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("search", search)) => {
                 let terms: Vec<&str> = search.values_of("query").unwrap().collect();
                 match o.search_studies(terms) {
@@ -133,7 +145,7 @@ fn main() {
             _ => {}
         },
         Some(("series", series)) => match series.subcommand() {
-            Some(("list", _)) => match o.list_series() {
+            Some(("list", _)) => match o.list_series(None) {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
@@ -141,6 +153,12 @@ fn main() {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
+            Some(("list-instances", list_instances)) => {
+                match o.list_instances(list_instances.value_of("id")) {
+                    Ok(t) => print_table(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("search", search)) => {
                 let terms: Vec<&str> = search.values_of("query").unwrap().collect();
                 match o.search_series(terms) {
@@ -189,7 +207,7 @@ fn main() {
             _ => {}
         },
         Some(("instance", instance)) => match instance.subcommand() {
-            Some(("list", _)) => match o.list_instances() {
+            Some(("list", _)) => match o.list_instances(None) {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },

@@ -35,14 +35,15 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    list         List all patients
-    show         Show patient details
-    search       Search for patients
-    anonymize    Anonymize patient
-    modify       Modify patient
-    download     Download patient
-    delete       Delete patient
-    help         Prints this message or the help of the given subcommand(s)
+    list            List all patients
+    show            Show patient details
+    list-studies    List all studies of a patient
+    search          Search for patients
+    anonymize       Anonymize patient
+    modify          Modify patient
+    download        Download patient
+    delete          Delete patient
+    help            Prints this message or the help of the given subcommand(s)
 
 ========== list ==========
 list
@@ -61,6 +62,20 @@ Show patient details
 
 USAGE:
     show <ID>
+
+ARGS:
+    <ID>    Patient ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== list-studies ==========
+list-studies
+List all studies of a patient
+
+USAGE:
+    list-studies <ID>
 
 ARGS:
     <ID>    Patient ID
@@ -183,14 +198,15 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    list         List all studies
-    show         Show study details
-    search       Search for studies
-    anonymize    Anonymize study
-    modify       Modify study
-    download     Download study
-    delete       Delete study
-    help         Prints this message or the help of the given subcommand(s)
+    list           List all studies
+    show           Show study details
+    list-series    List all series of a study
+    search         Search for studies
+    anonymize      Anonymize study
+    modify         Modify study
+    download       Download study
+    delete         Delete study
+    help           Prints this message or the help of the given subcommand(s)
 
 ========== list ==========
 list
@@ -209,6 +225,20 @@ Show study details
 
 USAGE:
     show <ID>
+
+ARGS:
+    <ID>    Study ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== list-series ==========
+list-series
+List all series of a study
+
+USAGE:
+    list-series <ID>
 
 ARGS:
     <ID>    Study ID
@@ -331,14 +361,15 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    list         List all series
-    show         Show series details
-    search       Search for series
-    anonymize    Anonymize series
-    modify       Modify series
-    download     Download series
-    delete       Delete series
-    help         Prints this message or the help of the given subcommand(s)
+    list              List all series
+    show              Show series details
+    list-instances    List all instances of a series
+    search            Search for series
+    anonymize         Anonymize series
+    modify            Modify series
+    download          Download series
+    delete            Delete series
+    help              Prints this message or the help of the given subcommand(s)
 
 ========== list ==========
 list
@@ -357,6 +388,20 @@ Show series details
 
 USAGE:
     show <ID>
+
+ARGS:
+    <ID>    Series ID
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+========== list-instances ==========
+list-instances
+List all instances of a series
+
+USAGE:
+    list-instances <ID>
 
 ARGS:
     <ID>    Series ID
