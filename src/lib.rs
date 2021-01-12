@@ -149,6 +149,7 @@ impl Orthanc {
     pub fn list_studies(&self, patient_id: Option<&str>) -> Result<Table> {
         let mut studies = self.client.studies_expanded()?;
         if let Some(pid) = patient_id {
+            self.client.patient(pid)?; // Check if the patient exists
             studies.retain(|s| s.parent_id().unwrap() == pid);
         };
         Ok(create_list_table(
@@ -216,8 +217,9 @@ impl Orthanc {
 
     pub fn list_series(&self, study_id: Option<&str>) -> Result<Table> {
         let mut series = self.client.series_expanded()?;
-        if let Some(pid) = study_id {
-            series.retain(|s| s.parent_id().unwrap() == pid);
+        if let Some(sid) = study_id {
+            self.client.study(sid)?; // Check if the study exists
+            series.retain(|s| s.parent_id().unwrap() == sid);
         };
         Ok(create_list_table(
             series,
@@ -284,8 +286,9 @@ impl Orthanc {
 
     pub fn list_instances(&self, series_id: Option<&str>) -> Result<Table> {
         let mut instances = self.client.instances_expanded()?;
-        if let Some(pid) = series_id {
-            instances.retain(|s| s.parent_id().unwrap() == pid);
+        if let Some(sid) = series_id {
+            self.client.series(sid)?; // Check if the series exists
+            instances.retain(|s| s.parent_id().unwrap() == sid);
         };
         Ok(create_list_table(
             instances,
