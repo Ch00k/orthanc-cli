@@ -56,7 +56,7 @@ jobs:
 
       - name: Pack artifact
         run: |
-          cp ./target/release/orthanc ${{ env.ARTIFACT_NAME }}
+          cp target/release/orthanc ${{ env.ARTIFACT_NAME }}
           tar czf ${{ env.ARTIFACT_NAME }}.tar.gz ${{ env.ARTIFACT_NAME }} completion
 
       - name: Upload release artifact
@@ -66,6 +66,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./target/release/${{ env.ARTIFACT_NAME }}.tar.gz
+          asset_path: ${{ env.ARTIFACT_NAME }}.tar.gz
           asset_name: ${{ env.ARTIFACT_NAME }}.tar.gz
           asset_content_type: application/gzip
