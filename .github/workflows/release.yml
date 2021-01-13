@@ -56,9 +56,8 @@ jobs:
 
       - name: Pack artifact
         run: |
-          mv orthanc ${{ env.ARTIFACT_NAME }}
-          tar czf ${{ env.ARTIFACT_NAME }}.tar.gz ${{ env.ARTIFACT_NAME }} ../../completion
-        working-directory: ./target/release
+          cp ./target/release/orthanc ${{ env.ARTIFACT_NAME }}
+          tar czf ${{ env.ARTIFACT_NAME }}.tar.gz ${{ env.ARTIFACT_NAME }} completion
 
       - name: Upload release artifact
         id: upload-release-asset
