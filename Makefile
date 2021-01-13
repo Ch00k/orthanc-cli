@@ -56,7 +56,7 @@ stop_services:
 check_completion:
 	mkdir -p /tmp/orc_completion
 	ORC_COMPLETION_OUTPUT_DIR=/tmp/orc_completion cargo build
-	diff ./completion /tmp/orc_completion
+	diff --exclude=README.md ./completion /tmp/orc_completion
 
 release:
 	cargo-release ${VERSION}
