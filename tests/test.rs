@@ -68,11 +68,11 @@ impl CommandResult {
 
 impl PartialEq for CommandResult {
     fn eq(&self, other: &Self) -> bool {
-        println!("EXIT_CODE\n{}", self.exit_code);
-        println!("STDOUT\n{}", self.stdout);
-        println!("STDERR\n{}", self.stderr);
-
         if self.exit_code != other.exit_code {
+            println!(
+                "EXIT_CODE mismatch: {} != {}",
+                self.exit_code, other.exit_code
+            );
             return false;
         };
 
@@ -82,6 +82,7 @@ impl PartialEq for CommandResult {
             let self_stdout = sort_output_lines(&self_stdout);
             let other_stdout = sort_output_lines(&other_stdout);
             if self_stdout != other_stdout {
+                println!("STDOUT mismatch:\n{}\n{}", self_stdout, other_stdout);
                 return false;
             }
         }
@@ -92,6 +93,7 @@ impl PartialEq for CommandResult {
             let self_stderr = sort_output_lines(&self_stderr);
             let other_stderr = sort_output_lines(&other_stderr);
             if self_stderr != other_stderr {
+                println!("STDERR mismatch:\n{}\n{}", self_stderr, other_stderr);
                 return false;
             }
         }
