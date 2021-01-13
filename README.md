@@ -12,6 +12,7 @@ server.
 <!--toc-start-->
 * [Compatibility](#compatibility)
 * [Installation](#installation)
+  * [Completions](#completions)
 * [Configuration](#configuration)
   * [Orthanc server address](#orthanc-server-address)
   * [Orthanc server authentication](#orthanc-server-authentication)
@@ -26,12 +27,12 @@ server.
 
 ## Compatibility
 
-orthanc-cli usually supports the same Orthanc versions as its underlying [orthanc-rs](https://crates.io/crates/orthanc)
+_orthanc-cli_ usually supports the same Orthanc versions as its underlying [orthanc-rs](https://crates.io/crates/orthanc)
 crate. See [Compatibility](https://github.com/Ch00k/orthanc-rs#compatibility) for details.
 
 ## Installation
 
-There are multuple different ways to install orthanc-cli.
+There are multuple different ways to install _orthanc-cli_.
 
 * using [cargo](https://doc.rust-lang.org/cargo):
 
@@ -41,9 +42,14 @@ There are multuple different ways to install orthanc-cli.
 
 * manually downloading a release package from Github Releases [page](https://github.com/Ch00k/orthanc-cli/releases)
 
+### Completions
+
+_orthanc-cli_ comes with pre-built completion files for Bash, fish and Zsh. See [here](./completion/README.md) for
+details on how to use those files.
+
 ## Configuration
 
-orthanc-cli needs several settings configured in order to communicate with an Orthanc server: Orthanc server address,
+_orthanc-cli_ needs several settings configured in order to communicate with an Orthanc server: Orthanc server address,
 and username and password (in case the server requires authentication).
 
 ### Orthanc server address
@@ -130,11 +136,11 @@ see how to use it.
 
 ### Entities and their IDs
 
-orthanc-cli makes a convention of calling Patients, Studies, Series and Instances _Entities_ (not to be confused with
+_orthanc-cli_ makes a convention of calling Patients, Studies, Series and Instances _Entities_ (not to be confused with
 [Application Entities](http://otpedia.com/entryDetails.cfm?id=137)). You might come across this naming in documentation
 or names of command-line options or flags.
 
-Similarly to Orthanc web interface orthanc-cli operates mainly with unique identifiers (IDs) when it comes to referring
+Similarly to Orthanc web interface _orthanc-cli_ operates mainly with unique identifiers (IDs) when it comes to referring
 to _Entities_ (Patients, Studies, Series etc.). Each Entity is assigned a unique identifier (ID) by the Orthanc server,
 that looks similar to this:
 
@@ -153,7 +159,7 @@ $ orthanc study list
  8c69229f-eba0eccb-2aa35808-e26bf10a-69375f79   patient_1   REMOVED           1.3.46.670589.11.3540642177   Study 2            20110101    084707      2
 ```
 
-When you need to refer to an Entity in any of the orthanc-cli commands use its Orthanc ID:
+When you need to refer to an Entity in any of the _orthanc-cli_ commands use its Orthanc ID:
 
 ```
 $ orthanc study show cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6
@@ -171,7 +177,7 @@ $ orthanc study show cbec5098-53cd29f5-86d01e4b-c6e76386-709f00a6
 
 ### Search
 
-orthanc-cli allows searching for entities withing the Orthanc server. You can search for patients, studies, series and
+_orthanc-cli_ allows searching for entities withing the Orthanc server. You can search for patients, studies, series and
 instances with `orthanc <ENTITY> search --query <QUERY>`. Each of the commands will return a list of entities you search
 for, e.g. `orthanc patient search` will return a list of patients, `orthanc study search` - a list of studies etc.
 
@@ -201,7 +207,7 @@ $ orthanc study search --query AccessionNumber=REMOVED StudyDescription=*1
 
 ### Anonymizing and modifying Entities
 
-orthanc-cli allows modification and anonymization of entities.
+_orthanc-cli_ allows modification and anonymization of entities.
 Modification requires you to specify how exactly an entity should be modified, while anonymization does not. For both
 anonymization and modification you can configure the process with either command-line options or a configuration file.
 
