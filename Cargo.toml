@@ -49,3 +49,7 @@ path = "src/lib.rs"
 [[test]]
 name = "integration"
 path = "tests/test.rs"
+
+[[test]]
+name = "slow"
+path = "tests/slow.rs"
