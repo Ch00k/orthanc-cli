@@ -390,7 +390,7 @@ impl Orthanc {
     ////////// MODALITY //////////
 
     pub fn do_store(&self, modality: &str, ids: &Vec<&str>) -> Result<Table> {
-        match self.client.store(modality, ids) {
+        match self.client.modality_store(modality, ids) {
             Ok(r) => {
                 let mut table = create_table(None);
                 table.add_row(["Remote AET", &r.remote_aet].iter());
