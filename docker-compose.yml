@@ -2,9 +2,9 @@ version: "3"
 
 services:
   orthanc:
-    image: ch00k/orthanc-nginx
+    image: jodogne/orthanc:1.9.0
     ports:
-      - 8028:80
+      - 127.0.0.1:8028:8042
 
   dino:
     image: ch00k/dino
@@ -13,4 +13,4 @@ services:
       DINO_SCP_PORT: ${DINO_SCP_PORT:-5252}
       DINO_SCP_AET: ${DINO_SCP_AET:-DINO}
     ports:
-      - 5252:5252
+      - 127.0.0.1:5252:5252
