@@ -2,7 +2,7 @@ version: "3"
 
 services:
   orthanc:
-    image: jodogne/orthanc:1.9.0
+    image: jodogne/orthanc:1.9.1
     ports:
       - 127.0.0.1:8028:8042
 
