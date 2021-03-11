@@ -360,7 +360,7 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![patient_1, patient_2],
-                &PATIENTS_LIST_HEADER,
+                Some(&PATIENTS_LIST_HEADER),
                 &PATIENTS_LIST_DICOM_TAGS,
             )),
             include_str!("../tests/data/unit/list_patients").trim_end()
@@ -406,7 +406,7 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![study_1, study_2],
-                &STUDIES_LIST_HEADER,
+                Some(&STUDIES_LIST_HEADER),
                 &STUDIES_LIST_DICOM_TAGS,
             )),
             include_str!("../tests/data/unit/list_studies").trim_end()
@@ -448,7 +448,7 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![series_1, series_2],
-                &SERIES_LIST_HEADER,
+                Some(&SERIES_LIST_HEADER),
                 &SERIES_LIST_DICOM_TAGS,
             )),
             include_str!("../tests/data/unit/list_series").trim_end()
@@ -489,7 +489,7 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![instance_1, instance_2],
-                &INSTANCES_LIST_HEADER,
+                Some(&INSTANCES_LIST_HEADER),
                 &INSTANCES_LIST_DICOM_TAGS,
             )),
             include_str!("../tests/data/unit/list_instances").trim_end()
