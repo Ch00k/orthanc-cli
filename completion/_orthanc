@@ -51,6 +51,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \

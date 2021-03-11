@@ -20,10 +20,10 @@ pub fn create_table(header: Option<&[&str]>) -> Table {
 
 pub fn create_list_table<T: Entity>(
     entities: Vec<T>,
-    header: &[&str],
+    header: Option<&[&str]>,
     dicom_tags: &[&str],
 ) -> Table {
-    let mut table = create_table(Some(header));
+    let mut table = create_table(header);
     for entity in entities {
         let mut row: Vec<&str> = vec![entity.id()];
         for t in dicom_tags.iter() {

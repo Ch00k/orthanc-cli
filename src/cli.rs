@@ -39,7 +39,17 @@ pub fn build_cli() -> App<'static> {
                 .setting(clap::AppSettings::SubcommandRequiredElseHelp)
                 .display_order(0)
                 .about("Patient-level commands")
-                .subcommand(App::new("list").display_order(0).about("List all patients"))
+                .subcommand(
+                    App::new("list")
+                        .display_order(0)
+                        .about("List all patients")
+                        .arg(
+                            Arg::new("no_header")
+                            .about("Don't display table header")
+                            .short('n')
+                            .long("no-header"),
+                        )
+                )
                 .subcommand(
                     App::new("show")
                         .display_order(1)

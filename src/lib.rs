@@ -82,10 +82,14 @@ impl Orthanc {
 
     ////////// PATIENT //////////
 
-    pub fn list_patients(&self) -> Result<Table> {
+    pub fn list_patients(&self, no_header: bool) -> Result<Table> {
         Ok(utils::create_list_table(
             self.client.patients_expanded()?,
-            &PATIENTS_LIST_HEADER,
+            if no_header {
+                None
+            } else {
+                Some(&PATIENTS_LIST_HEADER)
+            },
             &PATIENTS_LIST_DICOM_TAGS,
         ))
     }
@@ -146,7 +150,7 @@ impl Orthanc {
 
     ////////// STUDY //////////
 
-    pub fn list_studies(&self, patient_id: Option<&str>) -> Result<Table> {
+    pub fn list_studies(&self, patient_id: Option<&str>, no_header: bool) -> Result<Table> {
         let mut studies = self.client.studies_expanded()?;
         if let Some(pid) = patient_id {
             self.client.patient(pid)?; // Check if the patient exists
@@ -154,7 +158,11 @@ impl Orthanc {
         };
         Ok(create_list_table(
             studies,
-            &STUDIES_LIST_HEADER,
+            if no_header {
+                None
+            } else {
+                Some(&STUDIES_LIST_HEADER)
+            },
             &STUDIES_LIST_DICOM_TAGS,
         ))
     }
@@ -215,7 +223,7 @@ impl Orthanc {
 
     ////////// SERIES //////////
 
-    pub fn list_series(&self, study_id: Option<&str>) -> Result<Table> {
+    pub fn list_series(&self, study_id: Option<&str>, no_header: bool) -> Result<Table> {
         let mut series = self.client.series_expanded()?;
         if let Some(sid) = study_id {
             self.client.study(sid)?; // Check if the study exists
@@ -223,7 +231,11 @@ impl Orthanc {
         };
         Ok(create_list_table(
             series,
-            &SERIES_LIST_HEADER,
+            if no_header {
+                None
+            } else {
+                Some(&SERIES_LIST_HEADER)
+            },
             &SERIES_LIST_DICOM_TAGS,
         ))
     }
@@ -284,7 +296,11 @@ impl Orthanc {
 
     ////////// INSTANCE //////////
 
-    pub fn list_instances(&self, series_id: Option<&str>) -> Result<Table> {
+    pub fn list_instances(
+        &self,
+        series_id: Option<&str>,
+        no_header: bool,
+    ) -> Result<Table> {
         let mut instances = self.client.instances_expanded()?;
         if let Some(sid) = series_id {
             self.client.series(sid)?; // Check if the series exists
@@ -292,7 +308,11 @@ impl Orthanc {
         };
         Ok(create_list_table(
             instances,
-            &INSTANCES_LIST_HEADER,
+            if no_header {
+                None
+            } else {
+                Some(&INSTANCES_LIST_HEADER)
+            },
             &INSTANCES_LIST_DICOM_TAGS,
         ))
     }
@@ -531,38 +551,54 @@ impl Orthanc {
         self.client.delete_modality(name).map_err(Into::<_>::into)
     }
 
-    pub fn search_patients(&self, query: Vec<&str>) -> Result<Table> {
+    pub fn search_patients(&self, query: Vec<&str>, no_header: bool) -> Result<Table> {
         let patients: Vec<Patient> = self.client.search(parse_tag_kv_pairs(query)?)?;
         Ok(utils::create_list_table(
             patients,
-            &PATIENTS_LIST_HEADER,
+            if no_header {
+                None
+            } else {
+                Some(&PATIENTS_LIST_HEADER)
+            },
             &PATIENTS_LIST_DICOM_TAGS,
         ))
     }
 
-    pub fn search_studies(&self, query: Vec<&str>) -> Result<Table> {
+    pub fn search_studies(&self, query: Vec<&str>, no_header: bool) -> Result<Table> {
         let studies: Vec<Study> = self.client.search(parse_tag_kv_pairs(query)?)?;
         Ok(utils::create_list_table(
             studies,
-            &STUDIES_LIST_HEADER,
+            if no_header {
+                None
+            } else {
+                Some(&STUDIES_LIST_HEADER)
+            },
             &STUDIES_LIST_DICOM_TAGS,
         ))
     }
 
-    pub fn search_series(&self, query: Vec<&str>) -> Result<Table> {
+    pub fn search_series(&self, query: Vec<&str>, no_header: bool) -> Result<Table> {
         let series: Vec<Series> = self.client.search(parse_tag_kv_pairs(query)?)?;
         Ok(utils::create_list_table(
             series,
-            &SERIES_LIST_HEADER,
+            if no_header {
+                None
+            } else {
+                Some(&SERIES_LIST_HEADER)
+            },
             &SERIES_LIST_DICOM_TAGS,
         ))
     }
 
-    pub fn search_instances(&self, query: Vec<&str>) -> Result<Table> {
+    pub fn search_instances(&self, query: Vec<&str>, no_header: bool) -> Result<Table> {
         let instances: Vec<Instance> = self.client.search(parse_tag_kv_pairs(query)?)?;
         Ok(utils::create_list_table(
             instances,
-            &INSTANCES_LIST_HEADER,
+            if no_header {
+                None
+            } else {
+                Some(&INSTANCES_LIST_HEADER)
+            },
             &INSTANCES_LIST_DICOM_TAGS,
         ))
     }

@@ -19,6 +19,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "anonymize" -
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "modify" -d 'Modify patient'
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "download" -d 'Download patient'
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "delete" -d 'Delete patient'
+complete -c orthanc -n "__fish_seen_subcommand_from list" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Patient ID' -r
