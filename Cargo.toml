@@ -31,7 +31,7 @@ tempfile = "3.2"
 zip = "0.5"
 
 # https://github.com/colin-kiegel/rust-pretty-assertions/issues/19#issuecomment-657672143
-[profile.dev.package.difference]
+[profile.dev.package.diff]
 opt-level = 3
 
 [build-dependencies]

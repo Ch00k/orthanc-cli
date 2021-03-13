@@ -2,13 +2,13 @@ pub const TABLE_PRESET: &str = "     --            ";
 pub const ID_COLUMN_WIDTH: u16 = 46;
 pub const ABSENT_DICOM_TAG_PLACEHOLDER: &str = "undefined";
 
-pub const PATIENTS_LIST_HEADER: [&str; 4] =
-    ["ID", "PatientID", "PatientName", "Number of Studies"];
-pub const PATIENTS_LIST_DICOM_TAGS: [&str; 2] = ["PatientID", "PatientName"];
-pub const PATIENT_DICOM_TAGS: [&str; 4] =
-    ["PatientID", "PatientName", "PatientSex", "PatientBirthDate"];
+pub const PATIENTS_LIST_HEADER: &[&str] =
+    &["ID", "PatientID", "PatientName", "Number of Studies"];
+pub const PATIENTS_LIST_DICOM_TAGS: &[&str] = &["PatientID", "PatientName"];
+pub const PATIENT_DICOM_TAGS: &[&str] =
+    &["PatientID", "PatientName", "PatientSex", "PatientBirthDate"];
 
-pub const STUDIES_LIST_HEADER: [&str; 8] = [
+pub const STUDIES_LIST_HEADER: &[&str] = &[
     "ID",
     "PatientID",
     "AccessionNumber",
@@ -18,7 +18,7 @@ pub const STUDIES_LIST_HEADER: [&str; 8] = [
     "StudyTime",
     "Number of Series",
 ];
-pub const STUDIES_LIST_DICOM_TAGS: [&str; 6] = [
+pub const STUDIES_LIST_DICOM_TAGS: &[&str] = &[
     "PatientID",
     "AccessionNumber",
     "StudyInstanceUID",
@@ -26,7 +26,7 @@ pub const STUDIES_LIST_DICOM_TAGS: [&str; 6] = [
     "StudyDate",
     "StudyTime",
 ];
-pub const STUDY_DICOM_TAGS: [&str; 7] = [
+pub const STUDY_DICOM_TAGS: &[&str] = &[
     "PatientID",
     "StudyID",
     "AccessionNumber",
@@ -36,7 +36,7 @@ pub const STUDY_DICOM_TAGS: [&str; 7] = [
     "StudyTime",
 ];
 
-pub const SERIES_LIST_HEADER: [&str; 6] = [
+pub const SERIES_LIST_HEADER: &[&str] = &[
     "ID",
     "SeriesInstanceUID",
     "SeriesDescription",
@@ -44,13 +44,13 @@ pub const SERIES_LIST_HEADER: [&str; 6] = [
     "BodyPartExamined",
     "Number of Instances",
 ];
-pub const SERIES_LIST_DICOM_TAGS: [&str; 4] = [
+pub const SERIES_LIST_DICOM_TAGS: &[&str] = &[
     "SeriesInstanceUID",
     "SeriesDescription",
     "Modality",
     "BodyPartExamined",
 ];
-pub const SERIES_DICOM_TAGS: [&str; 5] = [
+pub const SERIES_DICOM_TAGS: &[&str] = &[
     "SeriesInstanceUID",
     "SeriesNumber",
     "SeriesDescription",
@@ -58,7 +58,7 @@ pub const SERIES_DICOM_TAGS: [&str; 5] = [
     "BodyPartExamined",
 ];
 
-pub const INSTANCES_LIST_HEADER: [&str; 7] = [
+pub const INSTANCES_LIST_HEADER: &[&str] = &[
     "ID",
     "SOPInstanceUID",
     "InstanceNumber",
@@ -67,18 +67,18 @@ pub const INSTANCES_LIST_HEADER: [&str; 7] = [
     "Index in series",
     "File size",
 ];
-pub const INSTANCES_LIST_DICOM_TAGS: [&str; 4] = [
+pub const INSTANCES_LIST_DICOM_TAGS: &[&str] = &[
     "SOPInstanceUID",
     "InstanceNumber",
     "InstanceCreationDate",
     "InstanceCreationTime",
 ];
-pub const INSTANCE_DICOM_TAGS: [&str; 4] = [
+pub const INSTANCE_DICOM_TAGS: &[&str] = &[
     "SOPInstanceUID",
     "InstanceNumber",
     "InstanceCreationDate",
     "InstanceCreationTime",
 ];
 
-pub const MODALITIES_LIST_HEADER: [&str; 5] =
-    ["Name", "AET", "Host", "Port", "Manufacturer"];
+pub const MODALITIES_LIST_HEADER: &[&str] =
+    &["Name", "AET", "Host", "Port", "Manufacturer"];

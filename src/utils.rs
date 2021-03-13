@@ -20,39 +20,59 @@ pub fn create_table(header: Option<&[&str]>) -> Table {
 
 pub fn create_list_table<T: Entity>(
     entities: Vec<T>,
-    header: Option<&[&str]>,
+    columns: &[&str],
     dicom_tags: &[&str],
+    no_header: bool,
 ) -> Table {
+    let header = if no_header { None } else { Some(columns) };
     let mut table = create_table(header);
     for entity in entities {
-        let mut row: Vec<&str> = vec![entity.id()];
+        let mut row: Vec<String> = vec![];
+
+        if columns.contains(&"ID") {
+            row.push(entity.id().to_string());
+        };
+
         for t in dicom_tags.iter() {
             let val = entity
                 .main_dicom_tag(t)
                 .unwrap_or(ABSENT_DICOM_TAG_PLACEHOLDER);
-            row.push(val);
+            row.push(val.to_string());
         }
+
         match T::kind() {
             EntityKind::Instance => {
-                let index_in_series = match entity.index() {
-                    Some(i) => format!("{}", i),
-                    None => "".to_string(),
+                if columns.contains(&"Index in series") {
+                    let index_in_series = match entity.index() {
+                        Some(i) => format!("{}", i),
+                        None => "".to_string(),
+                    };
+                    row.push(index_in_series);
                 };
-                let file_size = format!("{}", entity.size());
-                row.push(&index_in_series);
-                row.push(&file_size);
-                table.add_row(row.iter());
+                if columns.contains(&"File size") {
+                    let file_size = format!("{}", entity.size());
+                    row.push(file_size);
+                };
             }
             _ => {
-                let num_children = format!("{}", entity.children_len());
-                row.push(&num_children);
-                table.add_row(row.iter());
+                if columns.contains(&"Number of Studies")
+                    || columns.contains(&"Number of Series")
+                    || columns.contains(&"Number of Instances")
+                {
+                    let num_children = format!("{}", entity.children_len());
+                    row.push(num_children);
+                }
             }
         }
+        table.add_row(row.iter());
     }
-    if let Some(id_column) = table.get_column_mut(0) {
-        id_column.set_constraint(ColumnConstraint::MinWidth(ID_COLUMN_WIDTH));
-    }
+
+    // This assumes the ID is always the first column
+    if columns.contains(&"ID") {
+        if let Some(id_column) = table.get_column_mut(0) {
+            id_column.set_constraint(ColumnConstraint::MinWidth(ID_COLUMN_WIDTH));
+        }
+    };
     table
 }
 
@@ -291,6 +311,22 @@ pub fn get_password(cmd_option: Option<&str>) -> Option<String> {
     }
 }
 
+pub fn check_columns_option(
+    original_header: &[&str],
+    requested_columns: &[&str],
+) -> Result<()> {
+    for c in requested_columns {
+        if !original_header.contains(&c) {
+            return Err(CliError::new(
+                "Command error",
+                Some(&format!("Invalid column name: {}", c)),
+                None,
+            ));
+        }
+    }
+    Ok(())
+}
+
 pub fn print_table(table: Table) {
     println!("{}", table);
 }
@@ -333,7 +369,12 @@ mod tests {
         assert_eq!(&format!("{}", table), "");
     }
 
-    fn test_list_table_patient(header: Option<&[&str]>, expected_output: &str) {
+    fn test_list_table_patient(
+        columns: &[&str],
+        dicom_tags: &[&str],
+        no_header: bool,
+        expected_output: &str,
+    ) {
         let patient_1 = Patient {
             id: "foo".to_string(),
             is_stable: true,
@@ -360,14 +401,20 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![patient_1, patient_2],
-                header,
-                &PATIENTS_LIST_DICOM_TAGS,
+                columns,
+                dicom_tags,
+                no_header,
             )),
             expected_output
         );
     }
 
-    fn test_list_table_study(header: Option<&[&str]>, expected_output: &str) {
+    fn test_list_table_study(
+        columns: &[&str],
+        dicom_tags: &[&str],
+        no_header: bool,
+        expected_output: &str,
+    ) {
         let study_1 = Study {
             id: "foo".to_string(),
             is_stable: true,
@@ -405,14 +452,20 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![study_1, study_2],
-                header,
-                &STUDIES_LIST_DICOM_TAGS,
+                columns,
+                dicom_tags,
+                no_header,
             )),
             expected_output
         );
     }
 
-    fn test_list_table_series(header: Option<&[&str]>, expected_output: &str) {
+    fn test_list_table_series(
+        columns: &[&str],
+        dicom_tags: &[&str],
+        no_header: bool,
+        expected_output: &str,
+    ) {
         let series_1 = Series {
             id: "foo".to_string(),
             status: "Unknown".to_string(),
@@ -446,13 +499,19 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![series_1, series_2],
-                header,
-                &SERIES_LIST_DICOM_TAGS,
+                columns,
+                dicom_tags,
+                no_header,
             )),
             expected_output
         );
     }
-    fn test_list_table_instance(header: Option<&[&str]>, expected_output: &str) {
+    fn test_list_table_instance(
+        columns: &[&str],
+        dicom_tags: &[&str],
+        no_header: bool,
+        expected_output: &str,
+    ) {
         let instance_1 = Instance {
             id: "foo".to_string(),
             main_dicom_tags: hashmap! {
@@ -485,8 +544,9 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![instance_1, instance_2],
-                header,
-                &INSTANCES_LIST_DICOM_TAGS,
+                columns,
+                dicom_tags,
+                no_header,
             )),
             expected_output
         );
@@ -495,7 +555,9 @@ mod tests {
     #[test]
     fn test_create_list_table_patient() {
         test_list_table_patient(
-            Some(&PATIENTS_LIST_HEADER),
+            PATIENTS_LIST_HEADER,
+            PATIENTS_LIST_DICOM_TAGS,
+            false,
             include_str!("../tests/data/unit/list_patients").trim_end(),
         );
     }
@@ -503,7 +565,9 @@ mod tests {
     #[test]
     fn test_create_list_table_patient_no_header() {
         test_list_table_patient(
-            None,
+            PATIENTS_LIST_HEADER,
+            PATIENTS_LIST_DICOM_TAGS,
+            true,
             include_str!("../tests/data/unit/list_patients_no_header").trim_end(),
         );
     }
@@ -511,7 +575,9 @@ mod tests {
     #[test]
     fn test_create_list_table_study() {
         test_list_table_study(
-            Some(&STUDIES_LIST_HEADER),
+            STUDIES_LIST_HEADER,
+            STUDIES_LIST_DICOM_TAGS,
+            false,
             include_str!("../tests/data/unit/list_studies").trim_end(),
         );
     }
@@ -519,7 +585,9 @@ mod tests {
     #[test]
     fn test_create_list_table_study_no_header() {
         test_list_table_study(
-            None,
+            STUDIES_LIST_HEADER,
+            STUDIES_LIST_DICOM_TAGS,
+            true,
             include_str!("../tests/data/unit/list_studies_no_header").trim_end(),
         );
     }
@@ -527,7 +595,9 @@ mod tests {
     #[test]
     fn test_create_list_table_series() {
         test_list_table_series(
-            Some(&SERIES_LIST_HEADER),
+            SERIES_LIST_HEADER,
+            SERIES_LIST_DICOM_TAGS,
+            false,
             include_str!("../tests/data/unit/list_series").trim_end(),
         );
     }
@@ -535,7 +605,9 @@ mod tests {
     #[test]
     fn test_create_list_table_series_no_header() {
         test_list_table_series(
-            None,
+            SERIES_LIST_HEADER,
+            SERIES_LIST_DICOM_TAGS,
+            true,
             include_str!("../tests/data/unit/list_series_no_header").trim_end(),
         );
     }
@@ -543,7 +615,9 @@ mod tests {
     #[test]
     fn test_create_list_table_instance() {
         test_list_table_instance(
-            Some(&INSTANCES_LIST_HEADER),
+            INSTANCES_LIST_HEADER,
+            INSTANCES_LIST_DICOM_TAGS,
+            false,
             include_str!("../tests/data/unit/list_instances").trim_end(),
         );
     }
@@ -551,7 +625,9 @@ mod tests {
     #[test]
     fn test_create_list_table_instance_no_header() {
         test_list_table_instance(
-            None,
+            INSTANCES_LIST_HEADER,
+            INSTANCES_LIST_DICOM_TAGS,
+            true,
             include_str!("../tests/data/unit/list_instances_no_header").trim_end(),
         );
     }
@@ -560,7 +636,12 @@ mod tests {
     fn test_create_list_table_no_header_no_data() {
         let data: Vec<Patient> = vec![];
         assert_eq!(
-            format_table(create_list_table(data, None, &PATIENTS_LIST_DICOM_TAGS)),
+            format_table(create_list_table(
+                data,
+                PATIENTS_LIST_HEADER,
+                PATIENTS_LIST_DICOM_TAGS,
+                true,
+            )),
             ""
         );
     }
