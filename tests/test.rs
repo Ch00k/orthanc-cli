@@ -300,6 +300,18 @@ fn _test_list_patients() {
 }
 
 #[test]
+fn _test_list_patients_no_header() {
+    assert_result(
+        vec!["patient", "list", "-n"],
+        CommandResult::new(
+            0,
+            include_str!("data/patient_list_no_header.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_list_patients_error() {
     assert_result(
         vec!["-s", "http://example.com", "patient", "list"],
@@ -318,6 +330,18 @@ fn _test_list_studies() {
         CommandResult::new(
             0,
             include_str!("data/study_list.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_studies_no_header() {
+    assert_result(
+        vec!["study", "list", "-n"],
+        CommandResult::new(
+            0,
+            include_str!("data/study_list_no_header.stdout").to_string(),
             "".to_string(),
         ),
     );
@@ -348,6 +372,18 @@ fn _test_list_series() {
 }
 
 #[test]
+fn _test_list_series_no_header() {
+    assert_result(
+        vec!["series", "list", "-n"],
+        CommandResult::new(
+            0,
+            include_str!("data/series_list_no_header.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_list_series_error() {
     assert_result(
         vec!["-s", "http://example.com", "series", "list"],
@@ -366,6 +402,18 @@ fn _test_list_instances() {
         CommandResult::new(
             0,
             include_str!("data/instance_list.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_instances_no_header() {
+    assert_result(
+        vec!["instance", "list", "-n"],
+        CommandResult::new(
+            0,
+            include_str!("data/instance_list_no_header.stdout").to_string(),
             "".to_string(),
         ),
     );
@@ -497,6 +545,19 @@ fn _test_list_patient_studies() {
 }
 
 #[test]
+fn _test_list_patient_studies_no_header() {
+    let patient = find_patient_by_patient_id(PATIENT_ID).unwrap();
+    assert_result(
+        vec!["patient", "list-studies", &patient.id, "-n"],
+        CommandResult::new(
+            0,
+            include_str!("data/patient_list_studies_no_header.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_list_patient_studies_error() {
     assert_result(
         vec!["patient", "list-studies", "foo"],
@@ -522,6 +583,19 @@ fn _test_list_study_series() {
 }
 
 #[test]
+fn _test_list_study_series_no_header() {
+    let study = find_study_by_study_instance_uid(STUDY_INSTANCE_UID).unwrap();
+    assert_result(
+        vec!["study", "list-series", &study.id, "-n"],
+        CommandResult::new(
+            0,
+            include_str!("data/study_list_series_no_header.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_list_study_series_error() {
     assert_result(
         vec!["study", "list-series", "foo"],
@@ -541,6 +615,19 @@ fn _test_list_series_instances() {
         CommandResult::new(
             0,
             include_str!("data/series_list_instances.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_series_instances_no_header() {
+    let series = find_series_by_series_instance_uid(SERIES_INSTANCE_UID).unwrap();
+    assert_result(
+        vec!["series", "list-instances", &series.id, "-n"],
+        CommandResult::new(
+            0,
+            include_str!("data/series_list_instances_no_header.stdout").to_string(),
             "".to_string(),
         ),
     );
@@ -2380,12 +2467,36 @@ fn test_search_patients() {
 }
 
 #[test]
+fn test_search_patients_no_header() {
+    assert_result(
+        vec!["patient", "search", "-q", "PatientID=patient*", "-n"],
+        CommandResult::new(
+            0,
+            include_str!("data/patients_search_no_header.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_search_studies() {
     assert_result(
         vec!["study", "search", "-q", "StudyDescription=Study*"],
         CommandResult::new(
             0,
             include_str!("data/studies_search.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_search_studies_no_header() {
+    assert_result(
+        vec!["study", "search", "-q", "StudyDescription=Study*", "-n"],
+        CommandResult::new(
+            0,
+            include_str!("data/studies_search_no_header.stdout").to_string(),
             "".to_string(),
         ),
     );
@@ -2410,6 +2521,25 @@ fn test_search_series() {
 }
 
 #[test]
+fn test_search_series_no_header() {
+    assert_result(
+        vec![
+            "series",
+            "search",
+            "-q",
+            "BodyPartExamined=KNEE",
+            "SeriesInstanceUID=1.3.46.670589.11.1.5.0.3724.2011072815265926000",
+            "-n",
+        ],
+        CommandResult::new(
+            0,
+            include_str!("data/series_search_no_header.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn test_search_instances() {
     assert_result(
         vec![
@@ -2422,6 +2552,25 @@ fn test_search_instances() {
         CommandResult::new(
             0,
             include_str!("data/instances_search.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_search_instances_no_header() {
+    assert_result(
+        vec![
+            "instance",
+            "search",
+            "-q",
+            "Modality=PR",
+            "PregnancyStatus=4",
+            "-n",
+        ],
+        CommandResult::new(
+            0,
+            include_str!("data/instances_search_no_header.stdout").to_string(),
             "".to_string(),
         ),
     );
