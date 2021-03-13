@@ -70,7 +70,13 @@ pub fn build_cli() -> App<'static> {
                                 .about("Patient ID")
                                 .required(true)
                                 .value_name("ID"),
-                        ),
+                        )
+                        .arg(
+                            Arg::new("no_header")
+                            .about("Don't display table header")
+                            .short('n')
+                            .long("no-header"),
+                        )
                 )
                 .subcommand(
                     App::new("search")
@@ -89,7 +95,13 @@ pub fn build_cli() -> App<'static> {
                                 .multiple_occurrences(true)
                                 .multiple_values(true)
                                 .value_name("QUERY"),
-                        ),
+                        )
+                        .arg(
+                            Arg::new("no_header")
+                                .about("Don't display table header")
+                                .short('n')
+                                .long("no-header"),
+                        )
                 )
                 .subcommand(
                     App::new("anonymize")
@@ -236,7 +248,17 @@ pub fn build_cli() -> App<'static> {
                 .setting(clap::AppSettings::SubcommandRequiredElseHelp)
                 .display_order(1)
                 .about("Study-level commands")
-                .subcommand(App::new("list").display_order(0).about("List all studies"))
+                .subcommand(
+                    App::new("list")
+                        .display_order(0)
+                        .about("List all studies")
+                        .arg(
+                            Arg::new("no_header")
+                                .about("Don't display table header")
+                                .short('n')
+                                .long("no-header"),
+                        )
+                    )
                 .subcommand(
                     App::new("show")
                         .display_order(1)
@@ -257,7 +279,13 @@ pub fn build_cli() -> App<'static> {
                                 .about("Study ID")
                                 .required(true)
                                 .value_name("ID"),
-                        ),
+                        )
+                        .arg(
+                            Arg::new("no_header")
+                                .about("Don't display table header")
+                                .short('n')
+                                .long("no-header"),
+                        )
                 )
                 .subcommand(
                     App::new("search")
@@ -276,7 +304,13 @@ pub fn build_cli() -> App<'static> {
                                 .multiple_occurrences(true)
                                 .multiple_values(true)
                                 .value_name("QUERY"),
-                        ),
+                        )
+                        .arg(
+                            Arg::new("no_header")
+                                .about("Don't display table header")
+                                .short('n')
+                                .long("no-header"),
+                        )
                 )
                 .subcommand(
                     App::new("anonymize")
@@ -418,7 +452,17 @@ pub fn build_cli() -> App<'static> {
                 .setting(clap::AppSettings::SubcommandRequiredElseHelp)
                 .display_order(2)
                 .about("Series-level commands")
-                .subcommand(App::new("list").display_order(0).about("List all series"))
+                .subcommand(
+                    App::new("list")
+                    .display_order(0)
+                    .about("List all series")
+                    .arg(
+                        Arg::new("no_header")
+                            .about("Don't display table header")
+                            .short('n')
+                            .long("no-header"),
+                    )
+                )
                 .subcommand(
                     App::new("show")
                         .display_order(1)
@@ -439,7 +483,13 @@ pub fn build_cli() -> App<'static> {
                                 .about("Series ID")
                                 .required(true)
                                 .value_name("ID"),
-                        ),
+                        )
+                        .arg(
+                            Arg::new("no_header")
+                                .about("Don't display table header")
+                                .short('n')
+                                .long("no-header"),
+                        )
                 )
                 .subcommand(
                     App::new("search")
@@ -458,7 +508,13 @@ pub fn build_cli() -> App<'static> {
                                 .multiple_occurrences(true)
                                 .multiple_values(true)
                                 .value_name("QUERY"),
-                        ),
+                        )
+                        .arg(
+                            Arg::new("no_header")
+                                .about("Don't display table header")
+                                .short('n')
+                                .long("no-header"),
+                        )
                 )
                 .subcommand(
                     App::new("anonymize")
@@ -608,7 +664,13 @@ pub fn build_cli() -> App<'static> {
                 .subcommand(
                     App::new("list")
                         .display_order(0)
-                        .about("List all instances"),
+                        .about("List all instances")
+                        .arg(
+                            Arg::new("no_header")
+                                .about("Don't display table header")
+                                .short('n')
+                                .long("no-header"),
+                        )
                 )
                 .subcommand(
                     App::new("show")
@@ -649,7 +711,13 @@ pub fn build_cli() -> App<'static> {
                                 .multiple_occurrences(true)
                                 .multiple_values(true)
                                 .value_name("QUERY"),
-                        ),
+                        )
+                        .arg(
+                            Arg::new("no_header")
+                                .about("Don't display table header")
+                                .short('n')
+                                .long("no-header"),
+                        )
                 )
                 .subcommand(
                     App::new("anonymize")
