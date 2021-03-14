@@ -2235,6 +2235,16 @@ fn test_modalities() {
         ),
     );
 
+    // List without header
+    assert_result(
+        vec!["modality", "list", "-n"],
+        CommandResult::new(
+            0,
+            include_str!("data/modality_list_no_header.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+
     // Modify
     assert_result(
         vec![

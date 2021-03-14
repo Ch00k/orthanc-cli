@@ -714,11 +714,12 @@ list
 List all modalities
 
 USAGE:
-    list
+    list [FLAGS]
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 ========== show ==========
 show

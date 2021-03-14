@@ -424,10 +424,16 @@ impl Orthanc {
         }
     }
 
-    pub fn list_modalities(&self) -> Result<Table> {
+    pub fn list_modalities(&self, no_header: bool) -> Result<Table> {
         let modalities = self.client.modalities_expanded()?;
+        let header: Option<&[&str]>;
+        if no_header {
+            header = None;
+        } else {
+            header = Some(&MODALITIES_LIST_HEADER);
+        };
 
-        let mut table = create_table(Some(&MODALITIES_LIST_HEADER));
+        let mut table = create_table(header);
         for (m_name, m_config) in modalities {
             let row = vec![
                 m_name,
