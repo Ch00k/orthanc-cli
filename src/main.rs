@@ -21,7 +21,7 @@ fn main() {
 
     match matches.subcommand() {
         Some(("patient", patient)) => match patient.subcommand() {
-            Some(("list", _)) => match o.list_patients() {
+            Some(("list", list)) => match o.list_patients(list.is_present("no_header")) {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
@@ -30,7 +30,10 @@ fn main() {
                 Err(e) => exit_with_error(e),
             },
             Some(("list-studies", list_studies)) => {
-                match o.list_studies(list_studies.value_of("id")) {
+                match o.list_studies(
+                    list_studies.value_of("id"),
+                    list_studies.is_present("no_header"),
+                ) {
                     Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
@@ -53,7 +56,7 @@ fn main() {
             }
             Some(("search", search)) => {
                 let terms: Vec<&str> = search.values_of("query").unwrap().collect();
-                match o.search_patients(terms) {
+                match o.search_patients(terms, search.is_present("no_header")) {
                     Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
@@ -83,23 +86,28 @@ fn main() {
             _ => {}
         },
         Some(("study", study)) => match study.subcommand() {
-            Some(("list", _)) => match o.list_studies(None) {
-                Ok(t) => print_table(t),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("list", list)) => {
+                match o.list_studies(None, list.is_present("no_header")) {
+                    Ok(t) => print_table(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("show", show)) => match o.show_study(show.value_of("id").unwrap()) {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("list-series", list_series)) => {
-                match o.list_series(list_series.value_of("id")) {
+                match o.list_series(
+                    list_series.value_of("id"),
+                    list_series.is_present("no_header"),
+                ) {
                     Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
             }
             Some(("search", search)) => {
                 let terms: Vec<&str> = search.values_of("query").unwrap().collect();
-                match o.search_studies(terms) {
+                match o.search_studies(terms, search.is_present("no_header")) {
                     Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
@@ -145,23 +153,28 @@ fn main() {
             _ => {}
         },
         Some(("series", series)) => match series.subcommand() {
-            Some(("list", _)) => match o.list_series(None) {
-                Ok(t) => print_table(t),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("list", list)) => {
+                match o.list_series(None, list.is_present("no_header")) {
+                    Ok(t) => print_table(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("show", show)) => match o.show_series(show.value_of("id").unwrap()) {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("list-instances", list_instances)) => {
-                match o.list_instances(list_instances.value_of("id")) {
+                match o.list_instances(
+                    list_instances.value_of("id"),
+                    list_instances.is_present("no_header"),
+                ) {
                     Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
             }
             Some(("search", search)) => {
                 let terms: Vec<&str> = search.values_of("query").unwrap().collect();
-                match o.search_series(terms) {
+                match o.search_series(terms, search.is_present("no_header")) {
                     Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
@@ -207,17 +220,19 @@ fn main() {
             _ => {}
         },
         Some(("instance", instance)) => match instance.subcommand() {
-            Some(("list", _)) => match o.list_instances(None) {
-                Ok(t) => print_table(t),
-                Err(e) => exit_with_error(e),
-            },
+            Some(("list", list)) => {
+                match o.list_instances(None, list.is_present("no_header")) {
+                    Ok(t) => print_table(t),
+                    Err(e) => exit_with_error(e),
+                }
+            }
             Some(("show", show)) => match o.show_instance(show.value_of("id").unwrap()) {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
             Some(("search", search)) => {
                 let terms: Vec<&str> = search.values_of("query").unwrap().collect();
-                match o.search_instances(terms) {
+                match o.search_instances(terms, search.is_present("no_header")) {
                     Ok(t) => print_table(t),
                     Err(e) => exit_with_error(e),
                 }
@@ -271,7 +286,7 @@ fn main() {
             _ => {}
         },
         Some(("modality", modality)) => match modality.subcommand() {
-            Some(("list", _)) => match o.list_modalities() {
+            Some(("list", list)) => match o.list_modalities(list.is_present("no_header")) {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },

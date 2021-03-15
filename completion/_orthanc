@@ -51,6 +51,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -68,6 +70,8 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (list-studies)
 _arguments "${_arguments_options[@]}" \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -79,6 +83,8 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*]' \
 '*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*]' \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -158,6 +164,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -175,6 +183,8 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (list-series)
 _arguments "${_arguments_options[@]}" \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -186,6 +196,8 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101]' \
 '*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101]' \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -265,6 +277,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -282,6 +296,8 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (list-instances)
 _arguments "${_arguments_options[@]}" \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -293,6 +309,8 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101]' \
 '*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101]' \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -372,6 +390,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -400,6 +420,8 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242]' \
 '*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242]' \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \
@@ -483,6 +505,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'-n[Don'\''t display table header]' \
+'--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
 '--help[Prints help information]' \
 '-V[Prints version information]' \

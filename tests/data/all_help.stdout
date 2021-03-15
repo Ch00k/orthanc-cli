@@ -50,11 +50,12 @@ list
 List all patients
 
 USAGE:
-    list
+    list [FLAGS]
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 ========== show ==========
 show
@@ -75,25 +76,27 @@ list-studies
 List all studies of a patient
 
 USAGE:
-    list-studies <ID>
+    list-studies [FLAGS] <ID>
 
 ARGS:
     <ID>    Patient ID
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 ========== search ==========
 search
 Search for patients
 
 USAGE:
-    search --query <QUERY>...
+    search [FLAGS] --query <QUERY>...
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 OPTIONS:
     -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
@@ -213,11 +216,12 @@ list
 List all studies
 
 USAGE:
-    list
+    list [FLAGS]
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 ========== show ==========
 show
@@ -238,25 +242,27 @@ list-series
 List all series of a study
 
 USAGE:
-    list-series <ID>
+    list-series [FLAGS] <ID>
 
 ARGS:
     <ID>    Study ID
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 ========== search ==========
 search
 Search for studies
 
 USAGE:
-    search --query <QUERY>...
+    search [FLAGS] --query <QUERY>...
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 OPTIONS:
     -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
@@ -376,11 +382,12 @@ list
 List all series
 
 USAGE:
-    list
+    list [FLAGS]
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 ========== show ==========
 show
@@ -401,25 +408,27 @@ list-instances
 List all instances of a series
 
 USAGE:
-    list-instances <ID>
+    list-instances [FLAGS] <ID>
 
 ARGS:
     <ID>    Series ID
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 ========== search ==========
 search
 Search for series
 
 USAGE:
-    search --query <QUERY>...
+    search [FLAGS] --query <QUERY>...
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 OPTIONS:
     -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
@@ -539,11 +548,12 @@ list
 List all instances
 
 USAGE:
-    list
+    list [FLAGS]
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 ========== show ==========
 show
@@ -578,11 +588,12 @@ search
 Search for instances
 
 USAGE:
-    search --query <QUERY>...
+    search [FLAGS] --query <QUERY>...
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 OPTIONS:
     -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
@@ -703,11 +714,12 @@ list
 List all modalities
 
 USAGE:
-    list
+    list [FLAGS]
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help         Prints help information
+    -n, --no-header    Don't display table header
+    -V, --version      Prints version information
 
 ========== show ==========
 show

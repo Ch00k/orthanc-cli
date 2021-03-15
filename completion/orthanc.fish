@@ -19,15 +19,18 @@ complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "anonymize" -
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "modify" -d 'Modify patient'
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "download" -d 'Download patient'
 complete -c orthanc -n "__fish_seen_subcommand_from patient" -f -a "delete" -d 'Delete patient'
+complete -c orthanc -n "__fish_seen_subcommand_from list" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Patient ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from list-studies" -d 'Patient ID' -r
+complete -c orthanc -n "__fish_seen_subcommand_from list-studies" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from list-studies" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list-studies" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s q -l query -d 'Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*' -r
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Patient ID' -r
@@ -60,15 +63,18 @@ complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "anonymize" -d 
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "modify" -d 'Modify study'
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "download" -d 'Download study'
 complete -c orthanc -n "__fish_seen_subcommand_from study" -f -a "delete" -d 'Delete study'
+complete -c orthanc -n "__fish_seen_subcommand_from list" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Study ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from list-series" -d 'Study ID' -r
+complete -c orthanc -n "__fish_seen_subcommand_from list-series" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from list-series" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list-series" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s q -l query -d 'Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101' -r
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Study ID' -r
@@ -101,15 +107,18 @@ complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "anonymize" -d
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "modify" -d 'Modify series'
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "download" -d 'Download series'
 complete -c orthanc -n "__fish_seen_subcommand_from series" -f -a "delete" -d 'Delete series'
+complete -c orthanc -n "__fish_seen_subcommand_from list" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Series ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from list-instances" -d 'Series ID' -r
+complete -c orthanc -n "__fish_seen_subcommand_from list-instances" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from list-instances" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list-instances" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s q -l query -d 'Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101' -r
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Series ID' -r
@@ -142,6 +151,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "anonymize" 
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "modify" -d 'Modify instance'
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "download" -d 'Download instance'
 complete -c orthanc -n "__fish_seen_subcommand_from instance" -f -a "delete" -d 'Delete instance'
+complete -c orthanc -n "__fish_seen_subcommand_from list" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Instance ID' -r
@@ -151,6 +161,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from tags" -d 'Instance ID' -r
 complete -c orthanc -n "__fish_seen_subcommand_from tags" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from tags" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s q -l query -d 'Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242' -r
+complete -c orthanc -n "__fish_seen_subcommand_from search" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from search" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from anonymize" -d 'Instance ID' -r
@@ -184,6 +195,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "modify" -d 
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "echo" -d 'Send a C-ECHO request to a modality'
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "store" -d 'Send a C-STORE request to a modality'
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "delete" -d 'Delete modality'
+complete -c orthanc -n "__fish_seen_subcommand_from list" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'
 complete -c orthanc -n "__fish_seen_subcommand_from show" -d 'Modality name' -r

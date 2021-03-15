@@ -6,6 +6,8 @@
 
 **Fixes and improvements**
 
+* Add `-n/--no-header` flag to list commands to suppress the table header (could be used for scripting)
+  [#74](https://github.com/Ch00k/orthanc-cli/pull/74)
 
 ## [0.3.0](https://github.com/Ch00k/orthanc-cli/compare/0.2.0...0.3.0) 2021-01-13
 
