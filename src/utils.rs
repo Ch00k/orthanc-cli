@@ -50,8 +50,9 @@ pub fn create_list_table<T: Entity>(
             }
         }
     }
-    let id_column = table.get_column_mut(0).unwrap();
-    id_column.set_constraint(ColumnConstraint::MinWidth(ID_COLUMN_WIDTH));
+    if let Some(id_column) = table.get_column_mut(0) {
+        id_column.set_constraint(ColumnConstraint::MinWidth(ID_COLUMN_WIDTH));
+    }
     table
 }
 
@@ -552,6 +553,15 @@ mod tests {
         test_list_table_instance(
             None,
             include_str!("../tests/data/unit/list_instances_no_header").trim_end(),
+        );
+    }
+
+    #[test]
+    fn test_create_list_table_no_header_no_data() {
+        let data: Vec<Patient> = vec![];
+        assert_eq!(
+            format_table(create_list_table(data, None, &PATIENTS_LIST_DICOM_TAGS)),
+            ""
         );
     }
 
