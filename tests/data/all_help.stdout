@@ -753,12 +753,16 @@ list
 List all modalities
 
 USAGE:
-    list [FLAGS]
+    list [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help         Prints help information
     -n, --no-header    Don't display table header
     -V, --version      Prints version information
+
+OPTIONS:
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: Name Manufacturer
 
 ========== show ==========
 show

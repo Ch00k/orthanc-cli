@@ -319,7 +319,11 @@ pub fn check_columns_option(
         if !original_header.contains(&c) {
             return Err(CliError::new(
                 "Command error",
-                Some(&format!("Invalid column name: {}", c)),
+                Some(&format!(
+                    "Invalid column name: {}. Available columns: {}",
+                    c,
+                    original_header.join(", ")
+                )),
                 None,
             ));
         }
@@ -559,6 +563,16 @@ mod tests {
             PATIENTS_LIST_DICOM_TAGS,
             false,
             include_str!("../tests/data/unit/list_patients").trim_end(),
+        );
+    }
+
+    #[test]
+    fn test_create_list_table_patient_no_header() {
+        test_list_table_patient(
+            PATIENTS_LIST_HEADER,
+            PATIENTS_LIST_DICOM_TAGS,
+            true,
+            include_str!("../tests/data/unit/list_patients_no_header").trim_end(),
         );
     }
 
@@ -1026,5 +1040,22 @@ mod tests {
         set_var("ORC_ORTHANC_PASSWORD", "bar");
         assert_eq!(get_password(Some("foo")).unwrap(), "foo".to_string());
         assert_eq!(get_password(None).unwrap(), "bar".to_string());
+    }
+
+    #[test]
+    fn test_check_columns_options() {
+        assert_eq!(
+            check_columns_option(&["foo", "bar", "baz"], &["foo", "baz"]).unwrap(),
+            ()
+        );
+
+        assert_eq!(
+            check_columns_option(&["foo", "bar", "baz"], &["bar", "qux"]).unwrap_err(),
+            CliError::new(
+                "Command error",
+                Some("Invalid column name: qux. Available columns: foo, bar, baz"),
+                None
+            )
+        )
     }
 }

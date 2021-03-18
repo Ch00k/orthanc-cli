@@ -87,13 +87,15 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
+        if let Some(c) = &columns {
+            check_columns_option(PATIENTS_LIST_HEADER, &c)?;
+        };
+
         let patients = self.client.patients_expanded()?;
 
         // TODO: This is being duplicated a lot
         match columns {
             Some(c) => {
-                check_columns_option(PATIENTS_LIST_HEADER, &c)?;
-
                 // Make sure that the columns are sorted in the same way as the original header
                 let mut sorted_c = PATIENTS_LIST_HEADER.to_vec();
                 sorted_c.retain(|v| c.contains(v));
@@ -179,6 +181,10 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
+        if let Some(c) = &columns {
+            check_columns_option(STUDIES_LIST_HEADER, &c)?;
+        };
+
         let mut studies = self.client.studies_expanded()?;
         if let Some(pid) = patient_id {
             self.client.patient(pid)?; // Check if the patient exists
@@ -187,8 +193,6 @@ impl Orthanc {
 
         match columns {
             Some(c) => {
-                check_columns_option(STUDIES_LIST_HEADER, &c)?;
-
                 // Make sure that the columns are sorted in the same way as the original header
                 let mut sorted_c = STUDIES_LIST_HEADER.to_vec();
                 sorted_c.retain(|v| c.contains(v));
@@ -274,6 +278,10 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
+        if let Some(c) = &columns {
+            check_columns_option(SERIES_LIST_HEADER, &c)?;
+        };
+
         let mut series = self.client.series_expanded()?;
         if let Some(sid) = study_id {
             self.client.study(sid)?; // Check if the study exists
@@ -282,8 +290,6 @@ impl Orthanc {
 
         match columns {
             Some(c) => {
-                check_columns_option(SERIES_LIST_HEADER, &c)?;
-
                 // Make sure that the columns are sorted in the same way as the original header
                 let mut sorted_c = SERIES_LIST_HEADER.to_vec();
                 sorted_c.retain(|v| c.contains(v));
@@ -369,6 +375,10 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
+        if let Some(c) = &columns {
+            check_columns_option(INSTANCES_LIST_HEADER, &c)?;
+        };
+
         let mut instances = self.client.instances_expanded()?;
         if let Some(sid) = series_id {
             self.client.series(sid)?; // Check if the series exists
@@ -377,8 +387,6 @@ impl Orthanc {
 
         match columns {
             Some(c) => {
-                check_columns_option(INSTANCES_LIST_HEADER, &c)?;
-
                 // Make sure that the columns are sorted in the same way as the original header
                 let mut sorted_c = INSTANCES_LIST_HEADER.to_vec();
                 sorted_c.retain(|v| c.contains(v));
@@ -514,12 +522,14 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
+        if let Some(c) = &columns {
+            check_columns_option(MODALITIES_LIST_HEADER, &c)?;
+        };
+
         let modalities = self.client.modalities_expanded()?;
         let mut header: Option<&[&str]> = None;
 
         if let Some(c) = columns {
-            check_columns_option(MODALITIES_LIST_HEADER, &c)?;
-
             // Make sure that the columns are sorted in the same way as the original header
             let mut sorted_c = MODALITIES_LIST_HEADER.to_vec();
             sorted_c.retain(|v| c.contains(v));
@@ -550,7 +560,9 @@ impl Orthanc {
             }
             Ok(table)
         } else {
-            header = Some(MODALITIES_LIST_HEADER);
+            if !no_header {
+                header = Some(MODALITIES_LIST_HEADER);
+            };
             let mut table = create_table(header);
             for (m_name, m_config) in modalities {
                 let row = vec![
@@ -682,12 +694,14 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
+        if let Some(c) = &columns {
+            check_columns_option(PATIENTS_LIST_HEADER, &c)?;
+        };
+
         let patients: Vec<Patient> = self.client.search(parse_tag_kv_pairs(query)?)?;
 
         match columns {
             Some(c) => {
-                check_columns_option(PATIENTS_LIST_HEADER, &c)?;
-
                 // Make sure that the columns are sorted in the same way as the original header
                 let mut sorted_c = PATIENTS_LIST_HEADER.to_vec();
                 sorted_c.retain(|v| c.contains(v));
@@ -717,12 +731,14 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
+        if let Some(c) = &columns {
+            check_columns_option(STUDIES_LIST_HEADER, &c)?;
+        };
+
         let studies: Vec<Study> = self.client.search(parse_tag_kv_pairs(query)?)?;
 
         match columns {
             Some(c) => {
-                check_columns_option(STUDIES_LIST_HEADER, &c)?;
-
                 // Make sure that the columns are sorted in the same way as the original header
                 let mut sorted_c = STUDIES_LIST_HEADER.to_vec();
                 sorted_c.retain(|v| c.contains(v));
@@ -752,12 +768,14 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
+        if let Some(c) = &columns {
+            check_columns_option(SERIES_LIST_HEADER, &c)?;
+        };
+
         let series: Vec<Series> = self.client.search(parse_tag_kv_pairs(query)?)?;
 
         match columns {
             Some(c) => {
-                check_columns_option(SERIES_LIST_HEADER, &c)?;
-
                 // Make sure that the columns are sorted in the same way as the original header
                 let mut sorted_c = SERIES_LIST_HEADER.to_vec();
                 sorted_c.retain(|v| c.contains(v));
@@ -787,12 +805,14 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
+        if let Some(c) = &columns {
+            check_columns_option(INSTANCES_LIST_HEADER, &c)?;
+        };
+
         let instances: Vec<Instance> = self.client.search(parse_tag_kv_pairs(query)?)?;
 
         match columns {
             Some(c) => {
-                check_columns_option(INSTANCES_LIST_HEADER, &c)?;
-
                 // Make sure that the columns are sorted in the same way as the original header
                 let mut sorted_c = INSTANCES_LIST_HEADER.to_vec();
                 sorted_c.retain(|v| c.contains(v));

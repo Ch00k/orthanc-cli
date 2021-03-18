@@ -1,0 +1,2 @@
+ Error     Command error
+ Message   Invalid column name: Foo. Available columns: ID, SOPInstanceUID, InstanceNumber, InstanceCreationDate, InstanceCreationTime, Index in series, File size
