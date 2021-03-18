@@ -1056,6 +1056,21 @@ pub fn build_cli() -> App<'static> {
                                 .short('n')
                                 .long("no-header"),
                         )
+                        .arg(
+                            Arg::new("columns")
+                                .about(
+                                    concat!(
+                                        "Display only the columns specified. Space-separated values. ",
+                                        "Example: Name Manufacturer",
+                                    )
+                                )
+                                .takes_value(true)
+                                .short('c')
+                                .long("columns")
+                                .multiple_occurrences(true)
+                                .multiple_values(true)
+                                .value_name("COLUMNS"),
+                        )
                 )
                 .subcommand(
                     App::new("show")

@@ -509,27 +509,61 @@ impl Orthanc {
         }
     }
 
-    pub fn list_modalities(&self, no_header: bool) -> Result<Table> {
+    pub fn list_modalities(
+        &self,
+        columns: Option<Vec<&str>>,
+        no_header: bool,
+    ) -> Result<Table> {
         let modalities = self.client.modalities_expanded()?;
-        let header: Option<&[&str]>;
-        if no_header {
-            header = None;
-        } else {
-            header = Some(&MODALITIES_LIST_HEADER);
-        };
+        let mut header: Option<&[&str]> = None;
 
-        let mut table = create_table(header);
-        for (m_name, m_config) in modalities {
-            let row = vec![
-                m_name,
-                m_config.aet,
-                m_config.host,
-                format!("{}", m_config.port),
-                m_config.manufacturer.unwrap(),
-            ];
-            table.add_row(row.iter());
+        if let Some(c) = columns {
+            check_columns_option(MODALITIES_LIST_HEADER, &c)?;
+
+            // Make sure that the columns are sorted in the same way as the original header
+            let mut sorted_c = MODALITIES_LIST_HEADER.to_vec();
+            sorted_c.retain(|v| c.contains(v));
+
+            if !no_header {
+                header = Some(&sorted_c);
+            };
+
+            let mut table = create_table(header);
+            for (m_name, m_config) in modalities {
+                let mut row = vec![];
+                if sorted_c.contains(&"Name") {
+                    row.push(m_name);
+                };
+                if sorted_c.contains(&"AET") {
+                    row.push(m_config.aet);
+                };
+                if sorted_c.contains(&"Host") {
+                    row.push(m_config.host);
+                };
+                if sorted_c.contains(&"Port") {
+                    row.push(format!("{}", m_config.port));
+                };
+                if sorted_c.contains(&"Manufacturer") {
+                    row.push(m_config.manufacturer.unwrap());
+                };
+                table.add_row(row.iter());
+            }
+            Ok(table)
+        } else {
+            header = Some(MODALITIES_LIST_HEADER);
+            let mut table = create_table(header);
+            for (m_name, m_config) in modalities {
+                let row = vec![
+                    m_name,
+                    m_config.aet,
+                    m_config.host,
+                    format!("{}", m_config.port),
+                    m_config.manufacturer.unwrap(),
+                ];
+                table.add_row(row.iter());
+            }
+            Ok(table)
         }
-        Ok(table)
     }
 
     pub fn show_modality(&self, name: &str) -> Result<Table> {

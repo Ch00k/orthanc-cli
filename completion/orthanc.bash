@@ -450,13 +450,21 @@ _orthanc() {
             return 0
             ;;
         orthanc__modality__list)
-            opts=" -n -h -V  --no-header --help --version  "
+            opts=" -n -c -h -V  --no-header --columns --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;

@@ -206,6 +206,7 @@ complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "modify" -d 
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "echo" -d 'Send a C-ECHO request to a modality'
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "store" -d 'Send a C-STORE request to a modality'
 complete -c orthanc -n "__fish_seen_subcommand_from modality" -f -a "delete" -d 'Delete modality'
+complete -c orthanc -n "__fish_seen_subcommand_from list" -s c -l columns -d 'Display only the columns specified. Space-separated values. Example: Name Manufacturer' -r
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s n -l no-header -d 'Don\'t display table header'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s h -l help -d 'Prints help information'
 complete -c orthanc -n "__fish_seen_subcommand_from list" -s V -l version -d 'Prints version information'

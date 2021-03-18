@@ -527,6 +527,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'*-c+[Display only the columns specified. Space-separated values. Example: Name Manufacturer]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: Name Manufacturer]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \

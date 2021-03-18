@@ -316,7 +316,10 @@ fn main() {
             _ => {}
         },
         Some(("modality", modality)) => match modality.subcommand() {
-            Some(("list", list)) => match o.list_modalities(list.is_present("no_header")) {
+            Some(("list", list)) => match o.list_modalities(
+                list.values_of("columns").map(|c| c.collect()),
+                list.is_present("no_header"),
+            ) {
                 Ok(t) => print_table(t),
                 Err(e) => exit_with_error(e),
             },
