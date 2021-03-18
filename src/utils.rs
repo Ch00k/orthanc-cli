@@ -577,12 +577,22 @@ mod tests {
     }
 
     #[test]
-    fn test_create_list_table_patient_no_header() {
+    fn test_create_list_table_patient_columns() {
         test_list_table_patient(
-            PATIENTS_LIST_HEADER,
-            PATIENTS_LIST_DICOM_TAGS,
+            &["PatientID", "Number of Studies"],
+            &["PatientID"],
+            false,
+            include_str!("../tests/data/unit/list_patients_columns").trim_end(),
+        );
+    }
+
+    #[test]
+    fn test_create_list_table_patient_columns_no_header() {
+        test_list_table_patient(
+            &["PatientID", "Number of Studies"],
+            &["PatientID"],
             true,
-            include_str!("../tests/data/unit/list_patients_no_header").trim_end(),
+            include_str!("../tests/data/unit/list_patients_columns_no_header").trim_end(),
         );
     }
 
@@ -643,6 +653,26 @@ mod tests {
             INSTANCES_LIST_DICOM_TAGS,
             true,
             include_str!("../tests/data/unit/list_instances_no_header").trim_end(),
+        );
+    }
+
+    #[test]
+    fn test_create_list_table_instance_columns() {
+        test_list_table_instance(
+            &["SOPInstanceUID", "Index in series", "File size"],
+            &["SOPInstanceUID"],
+            false,
+            include_str!("../tests/data/unit/list_instances_columns").trim_end(),
+        );
+    }
+
+    #[test]
+    fn test_create_list_table_instance_columns_no_header() {
+        test_list_table_instance(
+            &["SOPInstanceUID", "Index in series", "File size"],
+            &["SOPInstanceUID"],
+            true,
+            include_str!("../tests/data/unit/list_instances_columns_no_header").trim_end(),
         );
     }
 
