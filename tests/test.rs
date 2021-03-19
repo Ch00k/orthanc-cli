@@ -312,6 +312,18 @@ fn _test_list_patients_no_header() {
 }
 
 #[test]
+fn _test_list_patients_columns() {
+    assert_result(
+        vec!["patient", "list", "-c", "ID", "PatientName"],
+        CommandResult::new(
+            0,
+            include_str!("data/patient_list_columns.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_list_patients_error() {
     assert_result(
         vec!["-s", "http://example.com", "patient", "list"],
@@ -342,6 +354,18 @@ fn _test_list_studies_no_header() {
         CommandResult::new(
             0,
             include_str!("data/study_list_no_header.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_studies_columns() {
+    assert_result(
+        vec!["study", "list", "-c", "ID", "AccessionNumber", "StudyDate"],
+        CommandResult::new(
+            0,
+            include_str!("data/study_list_columns.stdout").to_string(),
             "".to_string(),
         ),
     );
@@ -384,6 +408,18 @@ fn _test_list_series_no_header() {
 }
 
 #[test]
+fn _test_list_series_columns() {
+    assert_result(
+        vec!["series", "list", "-c", "ID", "Modality", "BodyPartExamined"],
+        CommandResult::new(
+            0,
+            include_str!("data/series_list_columns.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
 fn _test_list_series_error() {
     assert_result(
         vec!["-s", "http://example.com", "series", "list"],
@@ -414,6 +450,18 @@ fn _test_list_instances_no_header() {
         CommandResult::new(
             0,
             include_str!("data/instance_list_no_header.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn _test_list_instances_columns() {
+    assert_result(
+        vec!["instance", "list", "-c", "ID", "InstanceCreationDate"],
+        CommandResult::new(
+            0,
+            include_str!("data/instance_list_columns.stdout").to_string(),
             "".to_string(),
         ),
     );
@@ -2245,6 +2293,16 @@ fn test_modalities() {
         ),
     );
 
+    // List with columns
+    assert_result(
+        vec!["modality", "list", "-c", "Name", "Manufacturer"],
+        CommandResult::new(
+            0,
+            include_str!("data/modality_list_columns.stdout").to_string(),
+            "".to_string(),
+        ),
+    );
+
     // Modify
     assert_result(
         vec![
@@ -2582,6 +2640,27 @@ fn test_search_instances_no_header() {
             0,
             include_str!("data/instances_search_no_header.stdout").to_string(),
             "".to_string(),
+        ),
+    );
+}
+
+#[test]
+fn test_search_instances_error() {
+    assert_result(
+        vec![
+            "instance",
+            "search",
+            "-q",
+            "Modality=PR",
+            "PregnancyStatus=4",
+            "-c",
+            "Foo",
+            "Bar",
+        ],
+        CommandResult::new(
+            1,
+            "".to_string(),
+            include_str!("data/instances_search_error.stderr").to_string(),
         ),
     );
 }

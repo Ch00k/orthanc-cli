@@ -235,13 +235,21 @@ _orthanc() {
             return 0
             ;;
         orthanc__instance__list)
-            opts=" -n -h -V  --no-header --help --version  "
+            opts=" -n -c -h -V  --no-header --columns --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -297,7 +305,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__instance__search)
-            opts=" -q -n -h -V  --query --no-header --help --version  "
+            opts=" -q -n -c -h -V  --query --no-header --columns --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -309,6 +317,14 @@ _orthanc() {
                     return 0
                     ;;
                     -q)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -434,13 +450,21 @@ _orthanc() {
             return 0
             ;;
         orthanc__modality__list)
-            opts=" -n -h -V  --no-header --help --version  "
+            opts=" -n -c -h -V  --no-header --columns --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -618,13 +642,21 @@ _orthanc() {
             return 0
             ;;
         orthanc__patient__list)
-            opts=" -n -h -V  --no-header --help --version  "
+            opts=" -n -c -h -V  --no-header --columns --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -633,13 +665,21 @@ _orthanc() {
             return 0
             ;;
         orthanc__patient__list__studies)
-            opts=" -n -h -V  --no-header --help --version  <ID> "
+            opts=" -n -c -h -V  --no-header --columns --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -687,7 +727,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__patient__search)
-            opts=" -q -n -h -V  --query --no-header --help --version  "
+            opts=" -q -n -c -h -V  --query --no-header --columns --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -699,6 +739,14 @@ _orthanc() {
                     return 0
                     ;;
                     -q)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -817,13 +865,21 @@ _orthanc() {
             return 0
             ;;
         orthanc__series__list)
-            opts=" -n -h -V  --no-header --help --version  "
+            opts=" -n -c -h -V  --no-header --columns --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -832,13 +888,21 @@ _orthanc() {
             return 0
             ;;
         orthanc__series__list__instances)
-            opts=" -n -h -V  --no-header --help --version  <ID> "
+            opts=" -n -c -h -V  --no-header --columns --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -886,7 +950,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__series__search)
-            opts=" -q -n -h -V  --query --no-header --help --version  "
+            opts=" -q -n -c -h -V  --query --no-header --columns --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -898,6 +962,14 @@ _orthanc() {
                     return 0
                     ;;
                     -q)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -1016,13 +1088,21 @@ _orthanc() {
             return 0
             ;;
         orthanc__study__list)
-            opts=" -n -h -V  --no-header --help --version  "
+            opts=" -n -c -h -V  --no-header --columns --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -1031,13 +1111,21 @@ _orthanc() {
             return 0
             ;;
         orthanc__study__list__series)
-            opts=" -n -h -V  --no-header --help --version  <ID> "
+            opts=" -n -c -h -V  --no-header --columns --help --version  <ID> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -1085,7 +1173,7 @@ _orthanc() {
             return 0
             ;;
         orthanc__study__search)
-            opts=" -q -n -h -V  --query --no-header --help --version  "
+            opts=" -q -n -c -h -V  --query --no-header --columns --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -1097,6 +1185,14 @@ _orthanc() {
                     return 0
                     ;;
                     -q)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --columns)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;

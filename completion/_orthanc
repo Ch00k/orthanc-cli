@@ -51,6 +51,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID PatientName]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID PatientName]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -70,6 +72,8 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (list-studies)
 _arguments "${_arguments_options[@]}" \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID AccessionNumber StudyDate]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID AccessionNumber StudyDate]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -83,6 +87,8 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*]' \
 '*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*]' \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID PatientName]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID PatientName]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -164,6 +170,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID AccessionNumber StudyDate]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID AccessionNumber StudyDate]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -183,6 +191,8 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (list-series)
 _arguments "${_arguments_options[@]}" \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID Modality BodyPartExamined]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID Modality BodyPartExamined]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -196,6 +206,8 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101]' \
 '*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101]' \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID AccessionNumber StudyDate]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID AccessionNumber StudyDate]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -277,6 +289,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID Modality BodyPartExamined]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID Modality BodyPartExamined]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -296,6 +310,8 @@ _arguments "${_arguments_options[@]}" \
 ;;
 (list-instances)
 _arguments "${_arguments_options[@]}" \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID InstanceCreationDate]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID InstanceCreationDate]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -309,6 +325,8 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101]' \
 '*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101]' \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID Modality BodyPartExamined]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID Modality BodyPartExamined]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -390,6 +408,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID InstanceCreationDate]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID InstanceCreationDate]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -420,6 +440,8 @@ _arguments "${_arguments_options[@]}" \
 _arguments "${_arguments_options[@]}" \
 '*-q+[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242]' \
 '*--query=[Search query terms. Space-separted pairs TagName=TagValue. Wildcards are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242]' \
+'*-c+[Display only the columns specified. Space-separated values. Example: ID InstanceCreationDate]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: ID InstanceCreationDate]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \
@@ -505,6 +527,8 @@ case $state in
         case $line[1] in
             (list)
 _arguments "${_arguments_options[@]}" \
+'*-c+[Display only the columns specified. Space-separated values. Example: Name Manufacturer]' \
+'*--columns=[Display only the columns specified. Space-separated values. Example: Name Manufacturer]' \
 '-n[Don'\''t display table header]' \
 '--no-header[Don'\''t display table header]' \
 '-h[Prints help information]' \

@@ -50,12 +50,16 @@ list
 List all patients
 
 USAGE:
-    list [FLAGS]
+    list [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help         Prints help information
     -n, --no-header    Don't display table header
     -V, --version      Prints version information
+
+OPTIONS:
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID PatientName
 
 ========== show ==========
 show
@@ -76,7 +80,7 @@ list-studies
 List all studies of a patient
 
 USAGE:
-    list-studies [FLAGS] <ID>
+    list-studies [FLAGS] [OPTIONS] <ID>
 
 ARGS:
     <ID>    Patient ID
@@ -86,12 +90,16 @@ FLAGS:
     -n, --no-header    Don't display table header
     -V, --version      Prints version information
 
+OPTIONS:
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID AccessionNumber StudyDate
+
 ========== search ==========
 search
 Search for patients
 
 USAGE:
-    search [FLAGS] --query <QUERY>...
+    search [FLAGS] [OPTIONS] --query <QUERY>...
 
 FLAGS:
     -h, --help         Prints help information
@@ -99,8 +107,10 @@ FLAGS:
     -V, --version      Prints version information
 
 OPTIONS:
-    -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
-                              are allowed. Example: PatientSex=F PatientName=*Sanchez*
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID PatientName
+    -q, --query <QUERY>...        Search query terms. Space-separted pairs TagName=TagValue.
+                                  Wildcards are allowed. Example: PatientSex=F PatientName=*Sanchez*
 
 ========== anonymize ==========
 anonymize
@@ -216,12 +226,16 @@ list
 List all studies
 
 USAGE:
-    list [FLAGS]
+    list [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help         Prints help information
     -n, --no-header    Don't display table header
     -V, --version      Prints version information
+
+OPTIONS:
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID AccessionNumber StudyDate
 
 ========== show ==========
 show
@@ -242,7 +256,7 @@ list-series
 List all series of a study
 
 USAGE:
-    list-series [FLAGS] <ID>
+    list-series [FLAGS] [OPTIONS] <ID>
 
 ARGS:
     <ID>    Study ID
@@ -252,12 +266,16 @@ FLAGS:
     -n, --no-header    Don't display table header
     -V, --version      Prints version information
 
+OPTIONS:
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID Modality BodyPartExamined
+
 ========== search ==========
 search
 Search for studies
 
 USAGE:
-    search [FLAGS] --query <QUERY>...
+    search [FLAGS] [OPTIONS] --query <QUERY>...
 
 FLAGS:
     -h, --help         Prints help information
@@ -265,8 +283,11 @@ FLAGS:
     -V, --version      Prints version information
 
 OPTIONS:
-    -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
-                              are allowed. Example: StudyDescription=*BRAIN* StudyDate=20200101
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID AccessionNumber StudyDate
+    -q, --query <QUERY>...        Search query terms. Space-separted pairs TagName=TagValue.
+                                  Wildcards are allowed. Example: StudyDescription=*BRAIN*
+                                  StudyDate=20200101
 
 ========== anonymize ==========
 anonymize
@@ -382,12 +403,16 @@ list
 List all series
 
 USAGE:
-    list [FLAGS]
+    list [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help         Prints help information
     -n, --no-header    Don't display table header
     -V, --version      Prints version information
+
+OPTIONS:
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID Modality BodyPartExamined
 
 ========== show ==========
 show
@@ -408,7 +433,7 @@ list-instances
 List all instances of a series
 
 USAGE:
-    list-instances [FLAGS] <ID>
+    list-instances [FLAGS] [OPTIONS] <ID>
 
 ARGS:
     <ID>    Series ID
@@ -418,12 +443,16 @@ FLAGS:
     -n, --no-header    Don't display table header
     -V, --version      Prints version information
 
+OPTIONS:
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID InstanceCreationDate
+
 ========== search ==========
 search
 Search for series
 
 USAGE:
-    search [FLAGS] --query <QUERY>...
+    search [FLAGS] [OPTIONS] --query <QUERY>...
 
 FLAGS:
     -h, --help         Prints help information
@@ -431,8 +460,11 @@ FLAGS:
     -V, --version      Prints version information
 
 OPTIONS:
-    -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
-                              are allowed. Example: SeriesDescription=*BRAIN* SeriesDate=20200101
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID Modality BodyPartExamined
+    -q, --query <QUERY>...        Search query terms. Space-separted pairs TagName=TagValue.
+                                  Wildcards are allowed. Example: SeriesDescription=*BRAIN*
+                                  SeriesDate=20200101
 
 ========== anonymize ==========
 anonymize
@@ -548,12 +580,16 @@ list
 List all instances
 
 USAGE:
-    list [FLAGS]
+    list [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help         Prints help information
     -n, --no-header    Don't display table header
     -V, --version      Prints version information
+
+OPTIONS:
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID InstanceCreationDate
 
 ========== show ==========
 show
@@ -588,7 +624,7 @@ search
 Search for instances
 
 USAGE:
-    search [FLAGS] --query <QUERY>...
+    search [FLAGS] [OPTIONS] --query <QUERY>...
 
 FLAGS:
     -h, --help         Prints help information
@@ -596,8 +632,11 @@ FLAGS:
     -V, --version      Prints version information
 
 OPTIONS:
-    -q, --query <QUERY>...    Search query terms. Space-separted pairs TagName=TagValue. Wildcards
-                              are allowed. Example: InstanceNumber=42 InstanceCreationTime=174242
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: ID InstanceCreationDate
+    -q, --query <QUERY>...        Search query terms. Space-separted pairs TagName=TagValue.
+                                  Wildcards are allowed. Example: InstanceNumber=42
+                                  InstanceCreationTime=174242
 
 ========== anonymize ==========
 anonymize
@@ -714,12 +753,16 @@ list
 List all modalities
 
 USAGE:
-    list [FLAGS]
+    list [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help         Prints help information
     -n, --no-header    Don't display table header
     -V, --version      Prints version information
+
+OPTIONS:
+    -c, --columns <COLUMNS>...    Display only the columns specified. Space-separated values.
+                                  Example: Name Manufacturer
 
 ========== show ==========
 show
