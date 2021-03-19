@@ -331,15 +331,15 @@ pub fn check_columns_option(
     Ok(())
 }
 
-pub fn get_header_and_dicom_tags<'a>(
-    original_header: &mut Vec<&str>,
-    original_dicom_tags: &mut Vec<&str>,
+pub fn get_header_and_dicom_tags(
+    header: &mut Vec<&str>,
+    dicom_tags: &mut Vec<&str>,
     columns: Option<Vec<&str>>,
 ) -> Result<()> {
     if let Some(c) = columns {
-        check_columns_option(original_header, &c)?;
-        original_header.retain(|v| c.contains(v));
-        original_dicom_tags.retain(|v| c.contains(v));
+        check_columns_option(header, &c)?;
+        header.retain(|v| c.contains(v));
+        dicom_tags.retain(|v| c.contains(v));
     };
     Ok(())
 }
@@ -1100,5 +1100,32 @@ mod tests {
                 None
             )
         )
+    }
+
+    #[test]
+    fn test_get_header_and_dicom_tags() {
+        let mut header = vec!["foo", "bar", "baz", "qux", "quux", "quuz"];
+        let mut dicom_tags = vec!["qux", "quux", "quuz"];
+
+        get_header_and_dicom_tags(
+            &mut header,
+            &mut dicom_tags,
+            Some(vec!["bar", "quux", "quuz"]),
+        )
+        .unwrap();
+
+        assert_eq!(header, vec!["bar", "quux", "quuz"]);
+        assert_eq!(dicom_tags, vec!["quux", "quuz"]);
+    }
+
+    #[test]
+    fn test_get_header_and_dicom_tags_no_columns() {
+        let mut header = vec!["foo", "bar", "baz"];
+        let mut dicom_tags = vec!["qux", "quux", "quuz"];
+
+        get_header_and_dicom_tags(&mut header, &mut dicom_tags, None).unwrap();
+
+        assert_eq!(header, vec!["foo", "bar", "baz"]);
+        assert_eq!(dicom_tags, vec!["qux", "quux", "quuz"]);
     }
 }
