@@ -87,36 +87,16 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
-        if let Some(c) = &columns {
-            check_columns_option(PATIENTS_LIST_HEADER, &c)?;
-        };
+        let header = &mut PATIENTS_LIST_HEADER.to_vec();
+        let dicom_tags = &mut PATIENTS_LIST_DICOM_TAGS.to_vec();
+        get_header_and_dicom_tags(header, dicom_tags, columns)?;
 
-        let patients = self.client.patients_expanded()?;
-
-        // TODO: This is being duplicated a lot
-        match columns {
-            Some(c) => {
-                // Make sure that the columns are sorted in the same way as the original header
-                let mut sorted_c = PATIENTS_LIST_HEADER.to_vec();
-                sorted_c.retain(|v| c.contains(v));
-
-                let mut dicom_tags = c.to_vec();
-                dicom_tags.retain(|v| PATIENTS_LIST_DICOM_TAGS.contains(v));
-
-                Ok(utils::create_list_table(
-                    patients,
-                    &sorted_c,
-                    &dicom_tags,
-                    no_header,
-                ))
-            }
-            None => Ok(utils::create_list_table(
-                patients,
-                PATIENTS_LIST_HEADER,
-                PATIENTS_LIST_DICOM_TAGS,
-                no_header,
-            )),
-        }
+        Ok(utils::create_list_table(
+            self.client.patients_expanded()?,
+            header,
+            dicom_tags,
+            no_header,
+        ))
     }
 
     pub fn show_patient(&self, patient_id: &str) -> Result<Table> {
@@ -181,39 +161,23 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
-        if let Some(c) = &columns {
-            check_columns_option(STUDIES_LIST_HEADER, &c)?;
-        };
+        let header = &mut STUDIES_LIST_HEADER.to_vec();
+        let dicom_tags = &mut STUDIES_LIST_DICOM_TAGS.to_vec();
+        get_header_and_dicom_tags(header, dicom_tags, columns)?;
 
-        let mut studies = self.client.studies_expanded()?;
         if let Some(pid) = patient_id {
             self.client.patient(pid)?; // Check if the patient exists
+        }
+
+        let mut studies = self.client.studies_expanded()?;
+
+        if let Some(pid) = patient_id {
             studies.retain(|s| s.parent_id().unwrap() == pid);
         };
 
-        match columns {
-            Some(c) => {
-                // Make sure that the columns are sorted in the same way as the original header
-                let mut sorted_c = STUDIES_LIST_HEADER.to_vec();
-                sorted_c.retain(|v| c.contains(v));
-
-                let mut dicom_tags = c.to_vec();
-                dicom_tags.retain(|v| STUDIES_LIST_DICOM_TAGS.contains(v));
-
-                Ok(utils::create_list_table(
-                    studies,
-                    &sorted_c,
-                    &dicom_tags,
-                    no_header,
-                ))
-            }
-            None => Ok(utils::create_list_table(
-                studies,
-                STUDIES_LIST_HEADER,
-                STUDIES_LIST_DICOM_TAGS,
-                no_header,
-            )),
-        }
+        Ok(utils::create_list_table(
+            studies, header, dicom_tags, no_header,
+        ))
     }
 
     pub fn show_study(&self, study_id: &str) -> Result<Table> {
@@ -278,39 +242,23 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
-        if let Some(c) = &columns {
-            check_columns_option(SERIES_LIST_HEADER, &c)?;
-        };
+        let header = &mut SERIES_LIST_HEADER.to_vec();
+        let dicom_tags = &mut SERIES_LIST_DICOM_TAGS.to_vec();
+        get_header_and_dicom_tags(header, dicom_tags, columns)?;
+
+        if let Some(pid) = study_id {
+            self.client.study(pid)?; // Check if the study exists
+        }
 
         let mut series = self.client.series_expanded()?;
+
         if let Some(sid) = study_id {
-            self.client.study(sid)?; // Check if the study exists
             series.retain(|s| s.parent_id().unwrap() == sid);
         };
 
-        match columns {
-            Some(c) => {
-                // Make sure that the columns are sorted in the same way as the original header
-                let mut sorted_c = SERIES_LIST_HEADER.to_vec();
-                sorted_c.retain(|v| c.contains(v));
-
-                let mut dicom_tags = c.to_vec();
-                dicom_tags.retain(|v| SERIES_LIST_DICOM_TAGS.contains(v));
-
-                Ok(utils::create_list_table(
-                    series,
-                    &sorted_c,
-                    &dicom_tags,
-                    no_header,
-                ))
-            }
-            None => Ok(utils::create_list_table(
-                series,
-                SERIES_LIST_HEADER,
-                SERIES_LIST_DICOM_TAGS,
-                no_header,
-            )),
-        }
+        Ok(utils::create_list_table(
+            series, header, dicom_tags, no_header,
+        ))
     }
 
     pub fn show_series(&self, series_id: &str) -> Result<Table> {
@@ -375,39 +323,23 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
-        if let Some(c) = &columns {
-            check_columns_option(INSTANCES_LIST_HEADER, &c)?;
-        };
+        let header = &mut INSTANCES_LIST_HEADER.to_vec();
+        let dicom_tags = &mut INSTANCES_LIST_DICOM_TAGS.to_vec();
+        get_header_and_dicom_tags(header, dicom_tags, columns)?;
+
+        if let Some(pid) = series_id {
+            self.client.series(pid)?; // Check if the series exists
+        }
 
         let mut instances = self.client.instances_expanded()?;
+
         if let Some(sid) = series_id {
-            self.client.series(sid)?; // Check if the series exists
             instances.retain(|s| s.parent_id().unwrap() == sid);
         };
 
-        match columns {
-            Some(c) => {
-                // Make sure that the columns are sorted in the same way as the original header
-                let mut sorted_c = INSTANCES_LIST_HEADER.to_vec();
-                sorted_c.retain(|v| c.contains(v));
-
-                let mut dicom_tags = c.to_vec();
-                dicom_tags.retain(|v| INSTANCES_LIST_DICOM_TAGS.contains(v));
-
-                Ok(utils::create_list_table(
-                    instances,
-                    &sorted_c,
-                    &dicom_tags,
-                    no_header,
-                ))
-            }
-            None => Ok(utils::create_list_table(
-                instances,
-                INSTANCES_LIST_HEADER,
-                INSTANCES_LIST_DICOM_TAGS,
-                no_header,
-            )),
-        }
+        Ok(utils::create_list_table(
+            instances, header, dicom_tags, no_header,
+        ))
     }
 
     pub fn show_instance(&self, instance_id: &str) -> Result<Table> {
@@ -522,38 +454,39 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
+        let header = &mut MODALITIES_LIST_HEADER.to_vec();
+        let mut real_header = None;
+
         if let Some(c) = &columns {
-            check_columns_option(MODALITIES_LIST_HEADER, &c)?;
+            check_columns_option(&header, &c)?;
         };
 
         let modalities = self.client.modalities_expanded()?;
-        let mut header: Option<&[&str]> = None;
 
         if let Some(c) = columns {
             // Make sure that the columns are sorted in the same way as the original header
-            let mut sorted_c = MODALITIES_LIST_HEADER.to_vec();
-            sorted_c.retain(|v| c.contains(v));
+            header.retain(|v| c.contains(v));
 
             if !no_header {
-                header = Some(&sorted_c);
+                real_header = Some(&header);
             };
 
-            let mut table = create_table(header);
+            let mut table = create_table(real_header.map(|v| v.as_ref()));
             for (m_name, m_config) in modalities {
                 let mut row = vec![];
-                if sorted_c.contains(&"Name") {
+                if header.contains(&"Name") {
                     row.push(m_name);
                 };
-                if sorted_c.contains(&"AET") {
+                if header.contains(&"AET") {
                     row.push(m_config.aet);
                 };
-                if sorted_c.contains(&"Host") {
+                if header.contains(&"Host") {
                     row.push(m_config.host);
                 };
-                if sorted_c.contains(&"Port") {
+                if header.contains(&"Port") {
                     row.push(format!("{}", m_config.port));
                 };
-                if sorted_c.contains(&"Manufacturer") {
+                if header.contains(&"Manufacturer") {
                     row.push(m_config.manufacturer.unwrap());
                 };
                 table.add_row(row.iter());
@@ -561,9 +494,9 @@ impl Orthanc {
             Ok(table)
         } else {
             if !no_header {
-                header = Some(MODALITIES_LIST_HEADER);
+                real_header = Some(&header);
             };
-            let mut table = create_table(header);
+            let mut table = create_table(real_header.map(|v| v.as_ref()));
             for (m_name, m_config) in modalities {
                 let row = vec![
                     m_name,
@@ -694,35 +627,15 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
-        if let Some(c) = &columns {
-            check_columns_option(PATIENTS_LIST_HEADER, &c)?;
-        };
+        let header = &mut PATIENTS_LIST_HEADER.to_vec();
+        let dicom_tags = &mut PATIENTS_LIST_DICOM_TAGS.to_vec();
+        get_header_and_dicom_tags(header, dicom_tags, columns)?;
 
         let patients: Vec<Patient> = self.client.search(parse_tag_kv_pairs(query)?)?;
 
-        match columns {
-            Some(c) => {
-                // Make sure that the columns are sorted in the same way as the original header
-                let mut sorted_c = PATIENTS_LIST_HEADER.to_vec();
-                sorted_c.retain(|v| c.contains(v));
-
-                let mut dicom_tags = c.to_vec();
-                dicom_tags.retain(|v| PATIENTS_LIST_DICOM_TAGS.contains(v));
-
-                Ok(utils::create_list_table(
-                    patients,
-                    &sorted_c,
-                    &dicom_tags,
-                    no_header,
-                ))
-            }
-            None => Ok(utils::create_list_table(
-                patients,
-                PATIENTS_LIST_HEADER,
-                PATIENTS_LIST_DICOM_TAGS,
-                no_header,
-            )),
-        }
+        Ok(utils::create_list_table(
+            patients, header, dicom_tags, no_header,
+        ))
     }
 
     pub fn search_studies(
@@ -731,35 +644,15 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
-        if let Some(c) = &columns {
-            check_columns_option(STUDIES_LIST_HEADER, &c)?;
-        };
+        let header = &mut STUDIES_LIST_HEADER.to_vec();
+        let dicom_tags = &mut STUDIES_LIST_DICOM_TAGS.to_vec();
+        get_header_and_dicom_tags(header, dicom_tags, columns)?;
 
         let studies: Vec<Study> = self.client.search(parse_tag_kv_pairs(query)?)?;
 
-        match columns {
-            Some(c) => {
-                // Make sure that the columns are sorted in the same way as the original header
-                let mut sorted_c = STUDIES_LIST_HEADER.to_vec();
-                sorted_c.retain(|v| c.contains(v));
-
-                let mut dicom_tags = c.to_vec();
-                dicom_tags.retain(|v| STUDIES_LIST_DICOM_TAGS.contains(v));
-
-                Ok(utils::create_list_table(
-                    studies,
-                    &sorted_c,
-                    &dicom_tags,
-                    no_header,
-                ))
-            }
-            None => Ok(utils::create_list_table(
-                studies,
-                STUDIES_LIST_HEADER,
-                STUDIES_LIST_DICOM_TAGS,
-                no_header,
-            )),
-        }
+        Ok(utils::create_list_table(
+            studies, header, dicom_tags, no_header,
+        ))
     }
 
     pub fn search_series(
@@ -768,35 +661,15 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
-        if let Some(c) = &columns {
-            check_columns_option(SERIES_LIST_HEADER, &c)?;
-        };
+        let header = &mut SERIES_LIST_HEADER.to_vec();
+        let dicom_tags = &mut SERIES_LIST_DICOM_TAGS.to_vec();
+        get_header_and_dicom_tags(header, dicom_tags, columns)?;
 
         let series: Vec<Series> = self.client.search(parse_tag_kv_pairs(query)?)?;
 
-        match columns {
-            Some(c) => {
-                // Make sure that the columns are sorted in the same way as the original header
-                let mut sorted_c = SERIES_LIST_HEADER.to_vec();
-                sorted_c.retain(|v| c.contains(v));
-
-                let mut dicom_tags = c.to_vec();
-                dicom_tags.retain(|v| SERIES_LIST_DICOM_TAGS.contains(v));
-
-                Ok(utils::create_list_table(
-                    series,
-                    &sorted_c,
-                    &dicom_tags,
-                    no_header,
-                ))
-            }
-            None => Ok(utils::create_list_table(
-                series,
-                SERIES_LIST_HEADER,
-                SERIES_LIST_DICOM_TAGS,
-                no_header,
-            )),
-        }
+        Ok(utils::create_list_table(
+            series, header, dicom_tags, no_header,
+        ))
     }
 
     pub fn search_instances(
@@ -805,34 +678,14 @@ impl Orthanc {
         columns: Option<Vec<&str>>,
         no_header: bool,
     ) -> Result<Table> {
-        if let Some(c) = &columns {
-            check_columns_option(INSTANCES_LIST_HEADER, &c)?;
-        };
+        let header = &mut INSTANCES_LIST_HEADER.to_vec();
+        let dicom_tags = &mut INSTANCES_LIST_DICOM_TAGS.to_vec();
+        get_header_and_dicom_tags(header, dicom_tags, columns)?;
 
         let instances: Vec<Instance> = self.client.search(parse_tag_kv_pairs(query)?)?;
 
-        match columns {
-            Some(c) => {
-                // Make sure that the columns are sorted in the same way as the original header
-                let mut sorted_c = INSTANCES_LIST_HEADER.to_vec();
-                sorted_c.retain(|v| c.contains(v));
-
-                let mut dicom_tags = c.to_vec();
-                dicom_tags.retain(|v| INSTANCES_LIST_DICOM_TAGS.contains(v));
-
-                Ok(utils::create_list_table(
-                    instances,
-                    &sorted_c,
-                    &dicom_tags,
-                    no_header,
-                ))
-            }
-            None => Ok(utils::create_list_table(
-                instances,
-                INSTANCES_LIST_HEADER,
-                INSTANCES_LIST_DICOM_TAGS,
-                no_header,
-            )),
-        }
+        Ok(utils::create_list_table(
+            instances, header, dicom_tags, no_header,
+        ))
     }
 }

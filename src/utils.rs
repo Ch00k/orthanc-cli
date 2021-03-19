@@ -316,7 +316,7 @@ pub fn check_columns_option(
     requested_columns: &[&str],
 ) -> Result<()> {
     for c in requested_columns {
-        if !original_header.contains(&c) {
+        if !original_header.contains(c) {
             return Err(CliError::new(
                 "Command error",
                 Some(&format!(
@@ -328,6 +328,19 @@ pub fn check_columns_option(
             ));
         }
     }
+    Ok(())
+}
+
+pub fn get_header_and_dicom_tags<'a>(
+    original_header: &mut Vec<&str>,
+    original_dicom_tags: &mut Vec<&str>,
+    columns: Option<Vec<&str>>,
+) -> Result<()> {
+    if let Some(c) = columns {
+        check_columns_option(original_header, &c)?;
+        original_header.retain(|v| c.contains(v));
+        original_dicom_tags.retain(|v| c.contains(v));
+    };
     Ok(())
 }
 
@@ -405,8 +418,8 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![patient_1, patient_2],
-                columns,
-                dicom_tags,
+                &columns,
+                &dicom_tags,
                 no_header,
             )),
             expected_output
@@ -456,8 +469,8 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![study_1, study_2],
-                columns,
-                dicom_tags,
+                &columns,
+                &dicom_tags,
                 no_header,
             )),
             expected_output
@@ -503,8 +516,8 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![series_1, series_2],
-                columns,
-                dicom_tags,
+                &columns,
+                &dicom_tags,
                 no_header,
             )),
             expected_output
@@ -548,8 +561,8 @@ mod tests {
         assert_eq!(
             format_table(create_list_table(
                 vec![instance_1, instance_2],
-                columns,
-                dicom_tags,
+                &columns,
+                &dicom_tags,
                 no_header,
             )),
             expected_output
