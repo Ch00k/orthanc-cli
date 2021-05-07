@@ -26,7 +26,7 @@ chrono = "0.4"
 dicom-object = "0.3"
 maplit = "1.0"
 pretty_assertions = "0.7"
-regex = "1.4"
+regex = "1.5"
 tempfile = "3.2"
 zip = "0.5"
 
