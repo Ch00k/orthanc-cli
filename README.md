@@ -37,7 +37,7 @@ There are multuple different ways to install _orthanc-cli_.
 * using [cargo](https://doc.rust-lang.org/cargo):
 
   ```
-  $ cargo install orthanc-cli
+  $ cargo install --locked orthanc-cli
   ```
 
 * manually downloading a release package from Github Releases [page](https://github.com/Ch00k/orthanc-cli/releases)
