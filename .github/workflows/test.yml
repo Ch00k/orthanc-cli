@@ -38,7 +38,7 @@ jobs:
     name: integration_test
     strategy:
       matrix:
-        orthanc: [1.6.1, 1.7.4, 1.8.2, 1.9.1]
+        orthanc: [1.6.1, 1.7.4, 1.8.2, 1.9.7, 1.10.1, 1.11.0]
     services:
       orthanc:
         image: jodogne/orthanc:${{matrix.orthanc}}
