@@ -27,7 +27,7 @@ dicom-object = "0.4"
 maplit = "1.0"
 pretty_assertions = "0.7"
 regex = "1.4"
-tempfile = "3.2"
+tempfile = "3.3"
 zip = "0.5"
 
 # https://github.com/colin-kiegel/rust-pretty-assertions/issues/19#issuecomment-657672143
