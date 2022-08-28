@@ -1,6 +1,6 @@
 use crate::constants::*;
 use crate::{CliError, Result};
-use comfy_table::{ColumnConstraint, ContentArrangement, Table};
+use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
 use orthanc::entity::*;
 use orthanc::models::*;
 use serde_yaml;
@@ -69,8 +69,10 @@ pub fn create_list_table<T: Entity>(
 
     // This assumes the ID is always the first column
     if columns.contains(&"ID") {
-        if let Some(id_column) = table.get_column_mut(0) {
-            id_column.set_constraint(ColumnConstraint::MinWidth(ID_COLUMN_WIDTH));
+        if let Some(id_column) = table.column_mut(0) {
+            id_column.set_constraint(ColumnConstraint::LowerBoundary(Width::Fixed(
+                ID_COLUMN_WIDTH,
+            )));
         }
     };
     table
