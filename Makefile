@@ -29,11 +29,12 @@ unit_test_coverage: install_tarpaulin
 integration_test: reset_orthanc
 	cargo test --test integration -- --test-threads=1 --show-output ${TEST}
 
-integration_test_coverage: install_tarpaulin_HEAD reset_orthanc
+integration_test_coverage: install_tarpaulin reset_orthanc
 	cargo tarpaulin --test integration --follow-exec --verbose --ignore-tests --all-features --workspace --timeout 120 --out Xml -- --test-threads=1
 
 install_tarpaulin:
-	cargo install --version 0.16.0 cargo-tarpaulin
+	# https://github.com/xd009642/tarpaulin/issues/1046
+	cargo install --version 0.19.1 cargo-tarpaulin
 
 install_tarpaulin_HEAD:
 	cargo install --git https://github.com/xd009642/tarpaulin.git --branch develop cargo-tarpaulin
