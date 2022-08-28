@@ -36,7 +36,7 @@ opt-level = 3
 
 [build-dependencies]
 clap = "3.0.0-beta.2"
-clap_generate = "3.0.0-beta.2"
+clap_generate = "3.0.3"
 
 [[bin]]
 name = "orthanc"
