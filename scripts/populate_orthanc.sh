@@ -3,9 +3,9 @@
 set -e
 
 # ftp://medical.nema.org/medical/dicom/DataSets/WG16/Philips/
-curl https://minuteware.net/orc/test_data.tar.bz2 > /tmp/test_data.tar.bz2
-mkdir -p $ORC_DATAFILES_PATH
-tar xvjf /tmp/test_data.tar.bz2 -C $ORC_DATAFILES_PATH
+#curl https://minuteware.net/orc/test_data.tar.bz2 > /tmp/test_data.tar.bz2
+#mkdir -p $ORC_DATAFILES_PATH
+#tar xvjf /tmp/test_data.tar.bz2 -C $ORC_DATAFILES_PATH
 
 curl_command="curl -i -X POST -H 'Expect:'"
 
